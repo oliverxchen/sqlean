@@ -6,9 +6,17 @@ authors = ["Oliver Chen <oliver.chen@traveloka.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
+ply = "3.11"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^6.2"
+pytest-black = "^0.3"
+pytest-cov = "^2.11"
+pytest-flake8 = "^1.0"
+pytest-mypy = "^0.8"
+pytest-testmon = "^1.0"
+pytest-pylint = "^0.18"
+pytest-watch = "^4.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
