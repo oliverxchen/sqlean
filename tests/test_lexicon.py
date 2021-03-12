@@ -1,12 +1,11 @@
 import pytest
-import re
 
-from sqlean.lexicon import SqleanLexer, Dialect
+from sqlean.lexicon import SqlLexer, Dialect
 
 
 @pytest.fixture()
-def lexer() -> SqleanLexer:
-    return SqleanLexer(Dialect.BIGQUERY)
+def lexer() -> SqlLexer:
+    return SqlLexer(Dialect.BIGQUERY)
 
 
 def assert_types(actual, expected):
@@ -78,13 +77,6 @@ def test_sql_comment(lexer):
         "ID",
         "SQL_COMMENT",
     ]
-    assert_types(actual, expected)
-
-
-def test_jinja_comment(lexer):
-    data = "{# mult-line\ncomment #}"
-    actual = lexer.get_tokens(data)
-    expected = ["JINJA_COMMENT"]
     assert_types(actual, expected)
 
 

@@ -1,13 +1,12 @@
 import pytest
-import re
 
 from sqlean.lexicon import Dialect
-from sqlean.ast import SqleanParser
+from sqlean.ast import SqlParser
 
 
 @pytest.fixture()
-def parser() -> SqleanParser:
-    return SqleanParser(Dialect.BIGQUERY)
+def parser() -> SqlParser:
+    return SqlParser(Dialect.BIGQUERY)
 
 
 def test_select_list(parser):
@@ -23,11 +22,11 @@ FROM
 
 
 #  def test_select_item_function(parser):
-    #  query = "select sum(foo), count(bar) as c from"
-    #  actual = parser.parser.parse(query).print()
-    #  print(actual)
-    #  expected = """SELECT
-    #  SUM(foo) AS sum(foo),
-    #  COUNT(bar) as c
+#  query = "select sum(foo), count(bar) as c from"
+#  actual = parser.parser.parse(query).print()
+#  print(actual)
+#  expected = """SELECT
+#  SUM(foo) AS sum(foo),
+#  COUNT(bar) as c
 #  FROM"""
-    #  assert actual == expected
+#  assert actual == expected

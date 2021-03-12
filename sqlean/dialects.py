@@ -1,3 +1,5 @@
+"""SQL dialect specifications"""
+
 COMMON_SQL = {
     "select": "SELECT",
     "distinct": "DISTINCT",

@@ -1,3 +1,5 @@
+"""Breaks up input into a collection of tokens"""
+
 from enum import Enum
 from typing import List, Dict
 import re
@@ -8,15 +10,19 @@ import sqlean.dialects as dialects
 
 
 class Dialect(str, Enum):
+    """Enum for the different dialects SqlLexer can lex"""
+
     BIGQUERY = "bigquery"
 
 
-class SqleanLexer:
+class SqlLexer:
+    """Class to break up input into tokens"""
+
     tokens: List[str]
 
     def __init__(self, dialect: Dialect):
         self.reserved_words = self.get_reserved_words(dialect)
-        SqleanLexer.set_tokens(self.reserved_words)
+        SqlLexer.set_tokens(self.reserved_words)
 
         # re.S: dot matches all (including newline)
         self.lexer = lex.lex(module=self, reflags=re.S)
@@ -33,7 +39,6 @@ class SqleanLexer:
             "JINJA_BLOCK_START",
             "JINJA_BLOCK_END",
             "SQL_COMMENT",
-            "JINJA_COMMENT",
         ]
 
     @staticmethod
@@ -60,20 +65,19 @@ class SqleanLexer:
         )  # Check for reserved words
         return t
 
-    def t_SQL_COMMENT(self, t):
+    @staticmethod
+    def t_SQL_COMMENT(t):
         r"--.*"
         return t
 
-    def t_JINJA_COMMENT(self, t):
-        r"\{\#.*?\#\}"
-        return t
-
-    def t_JINJA_VAR(self, t):
+    @staticmethod
+    def t_JINJA_VAR(t):
         r"\{\{.*?\}\}"
         return t
 
     # Define a rule so we can track line numbers
-    def t_newline(self, t):
+    @staticmethod
+    def t_newline(t):
         r"\n+"
         t.lexer.lineno += len(t.value)
 
@@ -81,10 +85,11 @@ class SqleanLexer:
     t_ignore = " \t"
 
     # Error handling rule
-    def t_error(self, t):
+    @staticmethod
+    def t_error(t):
         print("Illegal character '%s'" % t.value[0])
         t.lexer.skip(1)
 
     def get_tokens(self, data):
         self.lexer.input(data)
-        return [tok for tok in self.lexer]
+        return list(self.lexer)
