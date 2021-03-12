@@ -1,11 +1,14 @@
 import pytest
+from typing import Generator
 
-from sqlean.lexicon import SqlLexer, Dialect
+from sqlean.configuration import Config
+from sqlean.lexicon import SqlLexer
 
 
 @pytest.fixture()
-def lexer() -> SqlLexer:
-    return SqlLexer(Dialect.BIGQUERY)
+def lexer() -> Generator:
+    yield SqlLexer(Config.get_instance())
+    Config._Config__instance = None  # type: ignore
 
 
 def assert_types(actual, expected):
@@ -81,7 +84,11 @@ def test_sql_comment(lexer):
 
 
 def test_jinja_var(lexer):
-    data = "{{\n  config(\n    foo=bar\n  )\n}}"
+    data = """{{
+  config(
+    foo=bar
+  )
+}}"""
     actual = lexer.get_tokens(data)
     expected = ["JINJA_VAR"]
     assert_types(actual, expected)

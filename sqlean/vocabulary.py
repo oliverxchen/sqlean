@@ -1,4 +1,4 @@
-"""SQL dialect specifications"""
+"""SQL vocabulary for different dialects"""
 
 COMMON_SQL = {
     "select": "SELECT",

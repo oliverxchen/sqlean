@@ -1,6 +1,5 @@
 # Run the tests and linters
 test:
-	rm -f sqlean/parsetab.py && \
 	poetry run pytest \
 		--black \
 		--flake8 \
@@ -11,6 +10,7 @@ test:
 # Run the tests in watch mode
 test-watch:
 	poetry run ptw -- --testmon
+
 
 ##############################################################################
 # The commands below are just for people who are not familiar with poetry. If
@@ -25,6 +25,7 @@ install:
 # Install only the non-dev dependencies.
 install-prod:
 	poetry install --no-dev
+
 # Update the poetry.lock with the latest dependencies that fall within the
 # constraints of pyproject.toml
 update:

@@ -1,18 +1,12 @@
 """Breaks up input into a collection of tokens"""
 
-from enum import Enum
-from typing import List, Dict
 import re
+from typing import List, Dict
 
 import ply.lex as lex
 
-import sqlean.dialects as dialects
-
-
-class Dialect(str, Enum):
-    """Enum for the different dialects SqlLexer can lex"""
-
-    BIGQUERY = "bigquery"
+from sqlean.configuration import Config, SqlDialect
+import sqlean.vocabulary as vocabulary
 
 
 class SqlLexer:
@@ -20,8 +14,8 @@ class SqlLexer:
 
     tokens: List[str]
 
-    def __init__(self, dialect: Dialect):
-        self.reserved_words = self.get_reserved_words(dialect)
+    def __init__(self, config: Config):
+        self.reserved_words = self.get_reserved_words(config.dialect)
         SqlLexer.set_tokens(self.reserved_words)
 
         # re.S: dot matches all (including newline)
@@ -42,12 +36,12 @@ class SqlLexer:
         ]
 
     @staticmethod
-    def get_reserved_words(dialect: Dialect):
+    def get_reserved_words(dialect: SqlDialect):
         """Returns the list of reserved words for the selected dialect"""
         reserved_words = dict()
-        reserved_words.update(dialects.COMMON_SQL)
-        if dialect == Dialect.BIGQUERY:
-            reserved_words.update(dialects.BIGQUERY)
+        reserved_words.update(vocabulary.COMMON_SQL)
+        if dialect == SqlDialect.BIGQUERY:
+            reserved_words.update(vocabulary.BIGQUERY)
         return reserved_words
 
     # Regular expression rules for simple tokens
@@ -75,10 +69,10 @@ class SqlLexer:
         r"\{\{.*?\}\}"
         return t
 
-    # Define a rule so we can track line numbers
+    # Define a rule so we can track line numbers (not tested?)
     @staticmethod
     def t_newline(t):
-        r"\n+"
+        r"\r\n?|\n+"
         t.lexer.lineno += len(t.value)
 
     # A string containing ignored characters (spaces and tabs)

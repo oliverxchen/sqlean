@@ -1,11 +1,12 @@
 """Given a colelction of tokens, recognizes SQL grammar and produces
 an abstract syntax tree (AST)"""
 
-from typing import List
+from typing import List, Optional
 
 import ply.yacc as yacc
 
-from sqlean.lexicon import SqlLexer, Dialect
+from sqlean.configuration import Config
+from sqlean.lexicon import SqlLexer
 from sqlean.node import Query, SelectList, SelectItem
 
 
@@ -14,10 +15,15 @@ class SqlParser:
 
     tokens: List[str]
 
-    def __init__(self, dialect: Dialect):
-        self.lexer = SqlLexer(dialect)
+    def __init__(self, config: Optional[Config] = None):
+        if config is None:
+            config = Config.get_instance()
+        self.config = config
+        self.lexer = SqlLexer(self.config)
         SqlParser.set_tokens(self.lexer.tokens)
-        self.parser = yacc.yacc(module=self)
+
+    def parse(self, query: str) -> Query:
+        return yacc.yacc(module=self, outputdir="sqlean/__pycache__").parse(query)
 
     @classmethod
     def set_tokens(cls, tokens: List[str]) -> None:
@@ -32,9 +38,12 @@ class SqlParser:
     def p_select_list(p):
         """select_list : select_item
         | select_list COMMA select_item"""
+
         if len(p) == 2:
+            # single item select_list
             p[0] = SelectList([p[1]], line=p.lineno, pos=p.lexpos)
         elif len(p) == 4:
+            # multiple item select_list
             p[1].append(p[3])
             p[0] = p[1]
         else:
@@ -53,7 +62,13 @@ class SqlParser:
         """field_expression : ID
         | function LPAREN argument_list RPAREN
         | case_expression"""
-        p[0] = p[1]
+
+        if len(p) == 2:
+            # just a field
+            p[0] = p[1]
+        elif len(p) == 5:
+            # simple function
+            p[0] = 123
 
     @staticmethod
     def p_argument_list(p):
