@@ -3,10 +3,17 @@
 from typing import Optional
 
 
-class ConfigInitializedMoreThanOnceError(RuntimeError):
-    """Run-time error if the Config singleton is initialised a second time"""
+class ConfigError(RuntimeError):
+    """Run-time error with sqlean.configuration.Config"""
 
     def __init__(self, message: Optional[str] = None):
-        if message is None:
-            self.message = "The Config class can only be initialised once."
-        super().__init__(self.message)
+        message = message or "Config was used incorrectly"
+        super().__init__(message)
+
+
+class NodeListError(RuntimeError):
+    """Run-time error with sqlean.node.NodeList"""
+
+    def __init__(self, message: Optional[str] = None):
+        message = message or "NodeList was used incorrectly"
+        super().__init__(message)

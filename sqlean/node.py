@@ -2,9 +2,10 @@
 
 import abc
 from os import linesep as NL
-from typing import List
+from typing import Sequence
 
 from sqlean.configuration import Config
+from sqlean.exceptions import NodeListError
 
 
 INDENT = Config.get_instance().indent
@@ -23,6 +24,10 @@ class Node(abc.ABC):
         output_lines = [f"{indent_level * INDENT}{x}" for x in input_lines.split(NL)]
         return NL.join(output_lines)
 
+    @property
+    def class_name(self):
+        return self.__class__.__name__
+
     @abc.abstractmethod
     def print(self, indent_level: int) -> str:
         """Implement this to output the properly indentded string
@@ -30,46 +35,33 @@ class Node(abc.ABC):
         raise NotImplementedError
 
 
-class NodeList(abc.ABC):
+class NodeList(Node):
     """Base class for any list of the same entity within a query"""
 
-    def __init__(self, items: List[Node]):
-        self.items = items
+    def __init__(self, items: Sequence[Node], line: int, pos: int):
+        super().__init__(line, pos)
+        self.items = list(items)
+        self.type = self._get_list_type()
+
+    def _get_list_type(self):
+        class_names_in_list = {i.class_name for i in self.items}
+        if len(class_names_in_list) > 1:
+            raise NodeListError(
+                f"There was more than one type in NodeList: {str(class_names_in_list)}"
+            )
+        return class_names_in_list.pop()
 
     def append(self, item: Node):
+        if item.class_name != self.type:
+            raise NodeListError(
+                f"Cannot append item with type {item.class_name} "
+                f"to NodeList with type {self.type}"
+            )
         self.items.append(item)
 
-
-#  class ArgumentItem(Node):
-#  """Item within a arugment list"""
-
-#  def __init__(self, value: str, line: int, pos: int):
-#  super().__init__(line, pos)
-#  self.value = value
-
-#  def print(self, indent_level: int) -> str:
-#  return self.add_indent(f"{self.value}", indent_level)
-
-
-#  class ArgumentList(Node):
-#  """List of arguments in a function call"""
-
-#  def __init__(self, argument_items: List[ArgumentItem], line: int, pos: int):
-#  super().__init__(line, pos)
-#  self.argument_items = argument_items
-
-#  def print(self, indent_level: int) -> str:
-#  argument_items_output = [x.print(indent_level) for x in self.argument_items]
-#  return ",\n".join(argument_items_output) + "\n"
-
-#  def append(self, select_item: ArgumentItem):
-#  """add select item to a select list"""
-#  self.select_items += [select_item]
-
-
-#  class FunctionExpression(Node):
-#  def __init__(self, function_name: str, argument_list: ArgumentList):
-#  pass
+    def print(self, indent_level: int) -> str:
+        output = [x.print(indent_level) for x in self.items]
+        return f",{NL}".join(output) + NL
 
 
 class SelectItem(Node):
@@ -82,24 +74,38 @@ class SelectItem(Node):
 
     def print(self, indent_level: int) -> str:
         if self.value == self.alias:
-            return self.add_indent(f"{self.value}", indent_level)
+            return self.add_indent(self.value, indent_level)
         return self.add_indent(f"{self.value} AS {self.alias}", indent_level)
 
 
-class SelectList(Node):
+class SelectList(NodeList):
     """List of items that are selected"""
 
-    def __init__(self, select_items: List[SelectItem], line: int, pos: int):
+    def __init__(self, select_items: Sequence[SelectItem], line: int, pos: int):
+        super().__init__(select_items, line, pos)
+
+
+class ArgumentItem(Node):
+    """Item within an argument list"""
+
+    def __init__(self, value: str, line: int, pos: int):
         super().__init__(line, pos)
-        self.select_items = select_items
+        self.value = value
 
     def print(self, indent_level: int) -> str:
-        select_items_output = [x.print(indent_level) for x in self.select_items]
-        return f",{NL}".join(select_items_output) + NL
+        return self.add_indent(self.value, indent_level)
 
-    def append(self, select_item: SelectItem):
-        """add select item to a select list"""
-        self.select_items += [select_item]
+
+class ArgumentList(NodeList):
+    """List of arguments in a function call"""
+
+    def __init__(self, argument_items: Sequence[ArgumentItem], line: int, pos: int):
+        super().__init__(argument_items, line, pos)
+
+
+#  class FunctionExpression(Node):
+#  def __init__(self, function_name: str, argument_list: ArgumentList):
+#  pass
 
 
 class Query(Node):

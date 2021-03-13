@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Optional, NamedTuple
 
-from sqlean.exceptions import ConfigInitializedMoreThanOnceError
+from sqlean.exceptions import ConfigError
 
 
 class SqlDialect(str, Enum):
@@ -31,7 +31,7 @@ class Config:
         self, indent_size: Optional[int] = None, dialect: Optional[SqlDialect] = None
     ):
         if Config.__instance is not None:
-            raise ConfigInitializedMoreThanOnceError()
+            raise ConfigError("The Config class can only be initialised once")
 
         self.indent: str
         self.dialect: SqlDialect

@@ -1,7 +1,7 @@
 import pytest
 
 from sqlean.configuration import Config, DEFAULT_CONFIG, SqlDialect
-from sqlean.exceptions import ConfigInitializedMoreThanOnceError
+from sqlean.exceptions import ConfigError
 
 
 def test_config_default():
@@ -13,10 +13,9 @@ def test_config_default():
 
 def test_config_singleton():
     _ = Config()
-    with pytest.raises(ConfigInitializedMoreThanOnceError) as excinfo:
+    with pytest.raises(ConfigError) as excinfo:
         _ = Config()
-    assert str(excinfo.value) == "The Config class can only be initialised once."
-    assert isinstance(excinfo.value, RuntimeError)
+    assert str(excinfo.value) == "The Config class can only be initialised once"
     Config._Config__instance = None  # reset for other tests
 
 

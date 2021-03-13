@@ -4,7 +4,7 @@ test:
 		--black \
 		--flake8 \
 		--pylint \
-		--cov=sqlean --cov-fail-under=80 --cov-report html \
+		--cov=sqlean --cov-fail-under=90 --cov-report html \
 		--mypy
 
 # Run the tests in watch mode
