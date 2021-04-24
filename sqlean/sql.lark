@@ -1,0 +1,20 @@
+?start: query
+
+query: SELECT select_clause FROM from_item
+
+SELECT: "SELECT"i
+FROM: "FROM"i
+AS: "AS"i
+
+select_clause: select_item ("," select_item)*
+
+?select_item: CNAME
+    | CNAME CNAME
+    | CNAME AS CNAME
+
+
+from_item: CNAME
+
+%import common.CNAME
+%import common.WS
+%ignore WS
