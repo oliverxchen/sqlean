@@ -1,3 +1,5 @@
+.vscode/
+
 # ply outputs
 sqlean/parser.out
 sqlean/parsetab.py

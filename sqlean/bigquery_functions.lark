@@ -1,0 +1,3 @@
+AGGREGATION_FUNCTION: "SUM"i
+    | "MIN"i
+    | "MAX"i
