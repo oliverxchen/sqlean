@@ -1,11 +1,5 @@
 [MASTER]
 ignore = tests
-min-public-methods = 1
-disable =
-    C0116, # missing-function-docstring
-
-[FORMAT]
-good-names = p,t,t_ID,t_SQL_COMMENT,t_JINJA_VAR
 
 [MISCELLANEOUS]
 notes = FIXME
