@@ -56,9 +56,9 @@ def test_arg_item_generic():
     assert select_item.children[0].children[1].type == "LPAR"
     assert select_item.children[0].children[3].type == "RPAR"
 
-    arg_list_one = select_item.children[0].children[2]
-    assert arg_list_one.data == "arg_list"
-    assert arg_list_one.children[0].value == "x"
+    arg_list = select_item.children[0].children[2]
+    assert arg_list.data == "arg_list"
+    assert arg_list.children[0].value == "x"
 
 
 def test_arg_item_with_date_interval():
@@ -72,11 +72,11 @@ def test_arg_item_with_date_interval():
     assert select_item.children[0].children[1].type == "LPAR"
     assert select_item.children[0].children[3].type == "RPAR"
 
-    arg_list_two = select_item.children[0].children[2]
-    assert arg_list_two.data == "arg_list"
-    assert arg_list_two.children[0].value == "a"
-    assert arg_list_two.children[1].type == "DATE_INTERVAL"
-    assert arg_list_two.children[1].value == "month"
+    arg_list = select_item.children[0].children[2]
+    assert arg_list.data == "arg_list"
+    assert arg_list.children[0].value == "a"
+    assert arg_list.children[1].type == "DATE_INTERVAL"
+    assert arg_list.children[1].value == "month"
 
 
 def test_arg_item_with_time_interval():
@@ -90,8 +90,36 @@ def test_arg_item_with_time_interval():
     assert select_item.children[0].children[1].type == "LPAR"
     assert select_item.children[0].children[3].type == "RPAR"
 
-    arg_list_three = select_item.children[0].children[2]
-    assert arg_list_three.data == "arg_list"
-    assert arg_list_three.children[0].value == "b"
-    assert arg_list_three.children[1].type == "TIME_INTERVAL"
-    assert arg_list_three.children[1].value == "SECOND"
+    arg_list = select_item.children[0].children[2]
+    assert arg_list.data == "arg_list"
+    assert arg_list.children[0].value == "b"
+    assert arg_list.children[1].type == "TIME_INTERVAL"
+    assert arg_list.children[1].value == "SECOND"
+
+
+def test_arg_item_with_func():
+    raw_query = "select date_trunc(date(timestamp_millis(t)), month) from a"
+    select_item = parser.parse(raw_query).children[1].children[0]
+
+    assert select_item.data == "select_item"
+    assert select_item.children[0].data == "select_value"
+    assert select_item.children[0].children[0].type == "FUNCTION"
+    assert select_item.children[0].children[0].value == "date_trunc"
+    assert select_item.children[0].children[1].type == "LPAR"
+    assert select_item.children[0].children[3].type == "RPAR"
+
+    arg_list = select_item.children[0].children[2]
+    assert arg_list.data == "arg_list"
+    assert arg_list.children[0].data == "arg_item"
+    assert arg_list.children[0].children[0].type == "FUNCTION"
+    assert arg_list.children[0].children[0].value == "date"
+
+    inner_arg_list = arg_list.children[0].children[2]
+    assert inner_arg_list.data == "arg_list"
+    assert inner_arg_list.children[0].data == "arg_item"
+    assert inner_arg_list.children[0].children[0].type == "FUNCTION"
+    assert inner_arg_list.children[0].children[0].value == "timestamp_millis"
+
+    inner_inner_arg_list = inner_arg_list.children[0].children[2]
+    assert inner_inner_arg_list.data == "arg_list"
+    assert inner_inner_arg_list.children[0].value == "t"
