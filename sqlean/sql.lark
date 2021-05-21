@@ -21,6 +21,7 @@ arg_list: arg_item ("," arg_item)*
 
 !?arg_item: DATE_INTERVAL
     | TIME_INTERVAL
+    | FUNCTION "(" arg_list ")"
     | CNAME
 
 DATE_INTERVAL: "MONTH"i
