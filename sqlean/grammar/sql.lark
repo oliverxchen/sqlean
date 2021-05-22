@@ -1,0 +1,12 @@
+?start: query
+
+!query: SELECT select_list FROM from_clause
+
+SELECT: "SELECT"i
+FROM: "FROM"i
+
+
+%import from.from_clause
+%import select.select_list
+%import common.WS
+%ignore WS

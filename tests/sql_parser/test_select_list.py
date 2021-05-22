@@ -1,30 +1,15 @@
-from sqlean.sql_parser import parser
-
-
-def test_simple_query():
+def test_select_item_no_alias(parser):
     raw_query = "select field from table"
-    actual = parser.parse(raw_query)
-    assert actual.data == "query"
-
-    query = actual.children
-    assert query[0].type == "SELECT"
-    assert query[1].data == "select_list"
-    assert query[2].type == "FROM"
-    assert query[3].data == "from_item"
-
-
-def test_select_item_no_alias():
-    raw_query = "select field from table"
-    select_item = parser.parse(raw_query).children[1].children[0]
+    select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
     assert select_item.children[0].type == "CNAME"
     assert select_item.children[0].value == "field"
 
 
-def test_select_item_implicit_alias():
+def test_select_item_implicit_alias(parser):
     raw_query = "select field new_field_name from table"
-    select_item = parser.parse(raw_query).children[1].children[0]
+    select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
     assert select_item.children[0].type == "CNAME"
@@ -33,9 +18,9 @@ def test_select_item_implicit_alias():
     assert select_item.children[1].children[0].value == "new_field_name"
 
 
-def test_select_item_explicit_alias():
+def test_select_item_explicit_alias(parser):
     raw_query = "select field as new_field_name from table"
-    select_item = parser.parse(raw_query).children[1].children[0]
+    select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
     assert select_item.children[0].type == "CNAME"
@@ -45,9 +30,9 @@ def test_select_item_explicit_alias():
     assert select_item.children[1].children[1].value == "new_field_name"
 
 
-def test_arg_item_generic():
+def test_arg_item_generic(parser):
     raw_query = "select SUM(x) from c"
-    select_item = parser.parse(raw_query).children[1].children[0]
+    select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
     assert select_item.children[0].data == "select_value"
@@ -61,9 +46,9 @@ def test_arg_item_generic():
     assert arg_list.children[0].value == "x"
 
 
-def test_arg_item_with_date_interval():
+def test_arg_item_with_date_interval(parser):
     raw_query = "select date_trunc(a, month) from c"
-    select_item = parser.parse(raw_query).children[1].children[0]
+    select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
     assert select_item.children[0].data == "select_value"
@@ -79,9 +64,9 @@ def test_arg_item_with_date_interval():
     assert arg_list.children[1].value == "month"
 
 
-def test_arg_item_with_time_interval():
+def test_arg_item_with_time_interval(parser):
     raw_query = "select time_trunc(b, SECOND) from c"
-    select_item = parser.parse(raw_query).children[1].children[0]
+    select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
     assert select_item.children[0].data == "select_value"
@@ -97,9 +82,9 @@ def test_arg_item_with_time_interval():
     assert arg_list.children[1].value == "SECOND"
 
 
-def test_arg_item_with_func():
+def test_arg_item_with_func(parser):
     raw_query = "select date_trunc(date(timestamp_millis(t)), month) from a"
-    select_item = parser.parse(raw_query).children[1].children[0]
+    select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
     assert select_item.children[0].data == "select_value"
