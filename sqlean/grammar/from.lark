@@ -1,0 +1,3 @@
+from_item: CNAME
+
+%import common.CNAME
