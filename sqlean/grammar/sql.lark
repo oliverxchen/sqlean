@@ -1,40 +1,12 @@
 ?start: query
 
-!query: SELECT select_list FROM from_item
+!query: SELECT select_list FROM from_clause
 
 SELECT: "SELECT"i
 FROM: "FROM"i
-AS: "AS"i
-
-select_list: select_item ("," select_item)*
-
-select_item: select_value
-    | select_value alias
-
-!?select_value: CNAME
-    | FUNCTION "(" arg_list ")"
-
-alias: CNAME
-    | AS CNAME
-
-arg_list: arg_item ("," arg_item)*
-
-!?arg_item: DATE_INTERVAL
-    | TIME_INTERVAL
-    | FUNCTION "(" arg_list ")"
-    | CNAME
-
-DATE_INTERVAL: "MONTH"i
-    | "WEEK"i
-
-TIME_INTERVAL: "MINUTE"i
-    | "SECOND"i
 
 
-FUNCTION: CNAME
-
-
-%import common.CNAME
+%import from.from_clause
+%import select.select_list
 %import common.WS
-%import from.from_item
 %ignore WS

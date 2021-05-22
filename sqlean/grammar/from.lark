@@ -1,3 +1,12 @@
-from_item: CNAME
+from_clause: table_id
+//  (join_type table_name (using_clause)*)*
+
+table_id: "`" PROJECT_NAME  "." DATASET_NAME "." TABLE_NAME "`"
+    | "`" PROJECT_NAME  "`.`" DATASET_NAME "`.`" TABLE_NAME "`"
+    | CNAME
+
+PROJECT_NAME: CNAME
+DATASET_NAME: CNAME
+TABLE_NAME: CNAME
 
 %import common.CNAME
