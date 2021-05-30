@@ -48,4 +48,4 @@ def test_sub_query(parser):
     assert sub_query.children[0].type == "SELECT"
     assert sub_query.children[1].data == "select_list"
     assert sub_query.children[2].type == "FROM"
-    assert sub_query.children[3].data == "from_clause
+    assert sub_query.children[3].data == "from_clause"
