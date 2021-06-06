@@ -1,3 +1,12 @@
+def test_select_star(parser):
+    raw_query = "select * from table"
+    select_item = parser.get_tree(raw_query).children[1].children[0]
+    print(select_item)
+    assert select_item.data == "select_item"
+    assert select_item.children[0].type == "STAR"
+    assert select_item.children[0].value == "*"
+
+
 def test_select_item_no_alias(parser):
     raw_query = "select field from table"
     select_item = parser.get_tree(raw_query).children[1].children[0]
