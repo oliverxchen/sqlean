@@ -1,21 +1,44 @@
-?start: query
+?start: query_expr
 
-!query: SELECT select_list FROM from_clause
+!query_expr: "SELECT"i select_list "FROM"i from_clause
 
-SELECT: "SELECT"i
-FROM: "FROM"i
+from_clause: from_item
 
-from_clause: table_id
-//  (join_type table_name (using_clause)*)*
+from_item: table_name // add alias
+    | join_operation
+    | "(" query_expr ")" // add alias
+    // | (join_operation table_name)* //(on_clause)*)*
 
-table_id: "`" PROJECT_NAME  "." DATASET_NAME "." TABLE_NAME "`"
-    | "`" PROJECT_NAME  "`.`" DATASET_NAME "`.`" TABLE_NAME "`"
-    | "(" query ")"
+table_name: "`" PROJECT_ID  "." DATASET_ID "." TABLE_ID "`"
+    | "`" PROJECT_ID  "`.`" DATASET_ID "`.`" TABLE_ID "`"
     | CNAME
 
-PROJECT_NAME: CNAME
-DATASET_NAME: CNAME
-TABLE_NAME: CNAME
+PROJECT_ID: CNAME
+DATASET_ID: CNAME
+TABLE_ID: CNAME
+
+join_operation: cross_join_operation
+    | join_operation_with_condition
+
+cross_join_operation: from_item "CROSS JOIN"i from_item
+
+join_operation_with_condition: from_item join_type from_item //( on_clause | using_clause)
+
+join_type: inner_join
+    | full_join
+    | left_join
+    | right_join
+
+inner_join: ("INNER"i)* "JOIN"i
+full_join: "FULL"i ("OUTER"i)* "JOIN"i
+left_join: "LEFT"i ("OUTER"i)* "JOIN"i
+right_join: "RIGHT"i ("OUTER"i)* "JOIN"i
+
+// on_clause:
+//     ON bool_expression
+
+// using_clause:
+//     USING ( join_column [, ...] )
 
 %import select.select_list
 %import common.WS

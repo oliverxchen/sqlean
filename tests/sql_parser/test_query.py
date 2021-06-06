@@ -1,7 +1,7 @@
 def test_simple_query(parser):
     raw_query = "select field from table"
     actual = parser.get_tree(raw_query)
-    assert actual.data == "query"
+    assert actual.data == "query_expr"
 
     query = actual.children
     assert query[0].type == "SELECT"
