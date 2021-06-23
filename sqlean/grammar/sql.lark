@@ -1,6 +1,6 @@
 ?start: query_expr
 
-!query_expr: "SELECT"i select_list "FROM"i from_clause
+!query_expr: "SELECT"i select_list "FROM"i from_clause ["WHERE"i bool_expression]
 
 from_clause: from_item
 
@@ -40,7 +40,8 @@ right_join: "RIGHT"i ("OUTER"i)* "JOIN"i
 // using_clause:
 //     USING ( join_column [, ...] )
 
-%import select.select_list
+%import expression.select_list
+%import expression.bool_expression
 %import common.WS
 %import common.CNAME
 %ignore WS
