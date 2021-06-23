@@ -44,7 +44,7 @@ def test_arg_item_generic(parser):
     select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
-    assert select_item.children[0].data == "select_value"
+    assert select_item.children[0].data == "base_expression"
     assert select_item.children[0].children[0].type == "FUNCTION"
     assert select_item.children[0].children[0].value == "SUM"
     assert select_item.children[0].children[1].type == "LPAR"
@@ -60,7 +60,7 @@ def test_arg_item_with_date_interval(parser):
     select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
-    assert select_item.children[0].data == "select_value"
+    assert select_item.children[0].data == "base_expression"
     assert select_item.children[0].children[0].type == "FUNCTION"
     assert select_item.children[0].children[0].value == "date_trunc"
     assert select_item.children[0].children[1].type == "LPAR"
@@ -78,7 +78,7 @@ def test_arg_item_with_time_interval(parser):
     select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
-    assert select_item.children[0].data == "select_value"
+    assert select_item.children[0].data == "base_expression"
     assert select_item.children[0].children[0].type == "FUNCTION"
     assert select_item.children[0].children[0].value == "time_trunc"
     assert select_item.children[0].children[1].type == "LPAR"
@@ -96,7 +96,7 @@ def test_arg_item_with_func(parser):
     select_item = parser.get_tree(raw_query).children[1].children[0]
 
     assert select_item.data == "select_item"
-    assert select_item.children[0].data == "select_value"
+    assert select_item.children[0].data == "base_expression"
     assert select_item.children[0].children[0].type == "FUNCTION"
     assert select_item.children[0].children[0].value == "date_trunc"
     assert select_item.children[0].children[1].type == "LPAR"

@@ -1,0 +1,61 @@
+select_list: select_item ("," select_item)*
+
+select_item: expression
+    | expression alias
+    | STAR
+
+STAR: "*"
+
+!?expression: base_expression
+    | bool_expression
+
+!?base_expression: CNAME
+    | FUNCTION "(" arg_list ")"
+
+alias: CNAME
+    | AS CNAME
+
+arg_list: arg_item ("," arg_item)*
+
+!?arg_item: DATE_INTERVAL
+    | TIME_INTERVAL
+    | FUNCTION "(" arg_list ")"
+    | CNAME
+
+DATE_INTERVAL: "MONTH"i
+    | "WEEK"i
+
+TIME_INTERVAL: "MINUTE"i
+    | "SECOND"i
+
+
+AS: "AS"i
+FUNCTION: CNAME
+
+?bool_expression: base_expression
+    | binary_bool_operation
+    | unary_bool_operation
+
+binary_bool_operation: base_expression (BINARY_BOOL_OPERATOR base_expression)+
+
+BINARY_BOOL_OPERATOR: "AND"i
+    | "OR"i
+
+?unary_bool_operation: leading_unary_bool_operation
+    | trailing_unary_bool_operation
+
+leading_unary_bool_operation: LEADING_UNARY_BOOL_OPERATOR base_expression
+trailing_unary_bool_operation: base_expression trailing_unary_bool_operator
+
+LEADING_UNARY_BOOL_OPERATOR: NOT
+trailing_unary_bool_operator: IS [NOT] NULL
+    | IS [NOT] TRUE
+    | IS [NOT] FALSE
+
+NOT: "NOT"i
+IS: "IS"i
+NULL: "NULL"i
+TRUE: "TRUE"i
+FALSE: "FALSE"i
+
+%import common.CNAME
