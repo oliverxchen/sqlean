@@ -29,10 +29,10 @@ join_type: inner_join
     | left_join
     | right_join
 
-inner_join: ("INNER"i)* "JOIN"i
-full_join: "FULL"i ("OUTER"i)* "JOIN"i
-left_join: "LEFT"i ("OUTER"i)* "JOIN"i
-right_join: "RIGHT"i ("OUTER"i)* "JOIN"i
+inner_join: ["INNER"i] "JOIN"i
+full_join: "FULL"i ["OUTER"i] "JOIN"i
+left_join: "LEFT"i ["OUTER"i] "JOIN"i
+right_join: "RIGHT"i ["OUTER"i] "JOIN"i
 
 // on_clause:
 //     ON bool_expression
