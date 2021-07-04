@@ -7,3 +7,7 @@ For example, suppose there were a `bool_operation` rule/tree that could be both
 a binary or unary operation. This would break this principle since you wouldn't
 know if the boolean operator is the 0th child (eg `NOT`) or the 1st child (eg
 `AND` or `OR`).
+
+?? All children of a tree should have the same indentation level.
+
+parsing should just follow BQ syntax
