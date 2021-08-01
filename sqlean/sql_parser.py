@@ -1,6 +1,6 @@
 """Parse sql strings"""
 from os import linesep
-import os.path as path
+from os import path
 from typing import Union
 from lark import Lark, Transformer, Token
 from lark.tree import Tree
@@ -10,136 +10,124 @@ from lark.visitors import Visitor_Recursive
 IMPORT_PATH = path.join(path.dirname(__file__), "grammar")
 
 
+class TreeData(str):
+    """Data structure for tree"""
+
+    indent_level: int
+
+    def __new__(cls, value: str, indent_level: int):
+        """Class method to create a new instance of TreeData"""
+        obj = str.__new__(cls, value)
+        obj.indent_level = indent_level
+        return obj
+
+
 class Parser:
     """SQL parser class"""
 
-    def __init__(self):
+    def __init__(self, num_spaces_per_indent: int = 4):
         self.__parser = Lark.open(
             "grammar/sql.lark", rel_to=__file__, import_paths=[IMPORT_PATH]
         )
+        self.indent = num_spaces_per_indent * " "
 
     def get_tree(self, raw_query: str) -> Tree:
         """Generate a tree for a given query provided as a string"""
         tree = self.__parser.parse(raw_query)
-        TreeGroomer().visit(tree)
+        TreeGroomer().visit_topdown(tree)
         return tree
 
     def print(self, raw_query: str):
         """Pretty print the query"""
         tree = self.get_tree(raw_query)
-        AtomicFormatter().visit_topdown(tree)
-        return Printer().transform(tree)
+        output = Printer(self.indent).transform(tree)
+        print(output)
+        return output
 
 
 class TreeGroomer(Visitor_Recursive):
-    """Clean and add necessary attributes to trees"""
+    """Grooms the trees of ugly branches and leaves, sets indentation."""
 
-    def __default__(self, tree):
-        """Executed on each node of the tree"""
-        tree = self.__remove_prefix_from_node(tree)
-        tree.has_parent = False
-        for child in tree.children:
-            child = self.__update_has_parent(child)
-            child = self.__remove_prefix_from_node(child)
-
-    @staticmethod
-    def __update_has_parent(child: Union[Tree, Token]) -> Union[Tree, Token]:
-        if isinstance(child, Tree):
-            child.has_parent = True  # type: ignore
-        return child
-
-    def __remove_prefix_from_node(
-        self, child: Union[Tree, Token]
-    ) -> Union[Tree, Token]:
-        if isinstance(child, Token):
-            child.type = self.__remove_prefix_from_string(child.type)
-        elif isinstance(child, Tree):
-            child.data = self.__remove_prefix_from_string(child.data)
-        return child
-
-    @staticmethod
-    def __remove_prefix_from_string(input_str: str) -> str:
-        return input_str.split("__")[-1]
-
-
-class AtomicFormatter(Visitor_Recursive):
-    """Format the atoms (eg select_item, table_name, etc) by adding indentation
-    and appropriate capitalisation"""
-
-    indent_type = 4 * " "
+    root = "query_expr"
     groups = {"select_list", "from_clause"}
     indent_exemptions = {"table_name"}
 
     def __default__(self, tree):
         """Executed on each node of the tree"""
-        if not tree.has_parent:
-            tree.num_indent = 0
+
+        if tree.data == TreeGroomer.root:
+            tree.data = TreeData(TreeGroomer.root, 0)
+        else:
+            tree = self.__remove_prefix_from_node(tree)
+
         for child in tree.children:
-            if isinstance(child, Tree):
-                child.num_indent = tree.num_indent + self._incremental_indent(
-                    tree.data, child.data
+            child = self.__remove_prefix_from_node(child)
+            child = self.__set_indent_level(child, tree.data)
+
+    def __remove_prefix_from_node(self, node: Union[Tree, Token]) -> Union[Tree, Token]:
+        if isinstance(node, Token):
+            node.type = self.__remove_prefix_from_string(node.type)
+        elif isinstance(node, Tree):
+            cleaned_data = self.__remove_prefix_from_string(node.data)
+            if hasattr(node.data, "indent_level"):
+                node.data = TreeData(
+                    cleaned_data, node.data.indent_level  # type: ignore
                 )
+            else:
+                node.data = cleaned_data
+        return node
 
-    def select_item(self, tree):
-        """format select_item"""
-        new_value = f"{tree.num_indent * self.indent_type}{tree.children[0].value}"
-        tree.children[0] = tree.children[0].update(value=new_value)
+    @staticmethod
+    def __remove_prefix_from_string(input_str: str) -> str:
+        return input_str.split("__")[-1]
 
-    def table_name(self, tree):
-        """format table_name"""
-        new_value = f"{tree.num_indent * self.indent_type}{tree.children[0].value}"
-        tree.children[0] = tree.children[0].update(value=new_value)
+    def __set_indent_level(self, child, tree_data):
+        if isinstance(child, Tree):
+            child_data = child.data
+            child.data = TreeData(
+                child_data,
+                self.__calculate_indent_level(tree_data, child_data),
+            )
+        return child
 
-    def _incremental_indent(self, tree_data, child_data):
+    def __calculate_indent_level(self, tree_data, child_data):
+        incremental_level = 1
         if (tree_data in self.groups) or (child_data in self.indent_exemptions):
-            return 0
-        return 1
+            incremental_level = 0
+        return tree_data.indent_level + incremental_level
 
 
 # class Debugger(Visitor_Recursive):
 #     """Print out attribues for debugging"""
-
+#
 #     def __default__(self, tree):
-#         print(f"tree.data: {tree.data}")
-#         if hasattr(tree, "has_parent"):
-#             print(f"tree.has_parent: {tree.has_parent}")
-#         print(f"tree.num_indent: {tree.indent}\n")
+#         print(f"tree.data: {tree.data}, {tree.data.indent_level}")
 
 
 class Printer(Transformer):
     """Pretty printer: formats the lists of atoms and the overall query"""
 
-    # def __default__(self, *args):
-    #     """Executed on each node of the tree.
-    #     * tree.data is in zeroth element
-    #     * tree.children is in first element
-    #     * tree.meta is in second element"""
-    #     output = list()
-    #     print("\n")
-    #     print(args)
-    #     for child in args[1]:
-    #         print(child)
-    #         if not isinstance(child, Tree):
-    #             if isinstance(child, Token):
-    #                 output.append(child.value)
-    #             else:
-    #                 output.append(child)
-    #     return linesep.join(output)
+    def __init__(self, indent: str):
+        super().__init__()
+        self.indent = indent
 
-    @staticmethod
-    def select_list(children):
+    # @staticmethod
+    def select_list(self, children):
         """print select_list"""
         output = list()
-        print(children)
         for child in children:
-            output.append(child.children[0])
+            output.append(
+                self.__apply_indent(child.children[0], child.data.indent_level)
+            )
         output_string = f",{linesep}".join(output)
         return output_string
 
-    @staticmethod
-    def from_clause(children):
+    def from_clause(self, children):
         """print from_clause"""
-        return children[0].children[0].children[0].value
+        return self.__apply_indent(
+            children[0].children[0].children[0].value,
+            children[0].children[0].data.indent_level,
+        )
 
     @staticmethod
     def query_expr(children):
@@ -151,3 +139,7 @@ class Printer(Transformer):
             elif isinstance(child, str):
                 output.append(child)
         return linesep.join(output)
+
+    def __apply_indent(self, text: str, indent_level: int) -> str:
+        """Apply indentation to the text"""
+        return f"{self.indent * indent_level}{text}"
