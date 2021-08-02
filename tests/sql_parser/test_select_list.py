@@ -1,119 +1,308 @@
+from tests.conftest import assert_parse_result
+
+
 def test_select_star(parser):
     raw_query = "select * from table"
-    select_item = parser.get_tree(raw_query).children[1].children[0]
-    print(select_item)
-    assert select_item.data == "select_item"
-    assert select_item.children[0].type == "STAR"
-    assert select_item.children[0].value == "*"
+    actual = str(parser.get_tree(raw_query))
+    expected = """
+    Tree(
+        "query_expr",
+        [
+            Token("SELECT", "select"),
+            Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+            Token("FROM", "from"),
+            Tree(
+                "from_clause",
+                [Tree("from_item", [Tree("table_name", [Token("CNAME", "table")])])]
+            )
+        ]
+    )
+    """
+    assert_parse_result(actual, expected)
 
 
 def test_select_item_no_alias(parser):
     raw_query = "select field from table"
-    select_item = parser.get_tree(raw_query).children[1].children[0]
-
-    assert select_item.data == "select_item"
-    assert select_item.children[0].type == "CNAME"
-    assert select_item.children[0].value == "field"
+    actual = str(parser.get_tree(raw_query))
+    expected = """
+    Tree(
+        "query_expr",
+        [
+            Token("SELECT", "select"),
+            Tree(
+                "select_list",
+                [Tree("select_item_unaliased", [Token("CNAME", "field")])]
+            ),
+            Token("FROM", "from"),
+            Tree(
+                "from_clause",
+                [Tree("from_item", [Tree("table_name", [Token("CNAME", "table")])])]
+            )
+        ]
+    )
+    """
+    assert_parse_result(actual, expected)
 
 
 def test_select_item_implicit_alias(parser):
     raw_query = "select field new_field_name from table"
-    select_item = parser.get_tree(raw_query).children[1].children[0]
-
-    assert select_item.data == "select_item"
-    assert select_item.children[0].type == "CNAME"
-    assert select_item.children[0].value == "field"
-    assert select_item.children[1].data == "alias"
-    assert select_item.children[1].children[0].value == "new_field_name"
+    actual = str(parser.get_tree(raw_query))
+    expected = """
+    Tree(
+        "query_expr",
+        [
+            Token("SELECT", "select"),
+            Tree(
+                "select_list",
+                [
+                    Tree(
+                        "select_item_aliased",
+                        [
+                            Token("CNAME", "field"),
+                            Token("ALIAS_NAME", "new_field_name")
+                        ]
+                    )
+                ]
+            ),
+            Token("FROM", "from"),
+            Tree(
+                "from_clause",
+                [Tree("from_item", [Tree("table_name", [Token("CNAME", "table")])])]
+            )
+        ]
+    )
+    """
+    assert_parse_result(actual, expected)
 
 
 def test_select_item_explicit_alias(parser):
     raw_query = "select field as new_field_name from table"
-    select_item = parser.get_tree(raw_query).children[1].children[0]
-
-    assert select_item.data == "select_item"
-    assert select_item.children[0].type == "CNAME"
-    assert select_item.children[0].value == "field"
-    assert select_item.children[1].data == "alias"
-    assert select_item.children[1].children[0].type == "AS"
-    assert select_item.children[1].children[1].value == "new_field_name"
+    actual = str(parser.get_tree(raw_query))
+    expected = """
+    Tree(
+        "query_expr",
+        [
+            Token("SELECT", "select"),
+            Tree(
+                "select_list",
+                [
+                    Tree(
+                        "select_item_aliased",
+                        [
+                            Token("CNAME", "field"),
+                            Token("ALIAS_NAME", "new_field_name")
+                        ]
+                    )
+                ]
+            ),
+            Token("FROM", "from"),
+            Tree(
+                "from_clause",
+                [Tree("from_item", [Tree("table_name", [Token("CNAME", "table")])])]
+            )
+        ]
+    )
+    """
+    assert_parse_result(actual, expected)
 
 
 def test_arg_item_generic(parser):
     raw_query = "select SUM(x) from c"
-    select_item = parser.get_tree(raw_query).children[1].children[0]
-
-    assert select_item.data == "select_item"
-    assert select_item.children[0].data == "base_expression"
-    assert select_item.children[0].children[0].type == "FUNCTION"
-    assert select_item.children[0].children[0].value == "SUM"
-    assert select_item.children[0].children[1].type == "LPAR"
-    assert select_item.children[0].children[3].type == "RPAR"
-
-    arg_list = select_item.children[0].children[2]
-    assert arg_list.data == "arg_list"
-    assert arg_list.children[0].value == "x"
+    actual = str(parser.get_tree(raw_query))
+    expected = """
+    Tree(
+        "query_expr",
+        [
+            Token("SELECT", "select"),
+            Tree(
+                "select_list",
+                [
+                    Tree(
+                        "select_item_unaliased",
+                        [
+                            Tree(
+                                "base_expression",
+                                [
+                                    Token("FUNCTION", "SUM"),
+                                    Token("LPAR", "("),
+                                    Tree("arg_list", [Token("CNAME", "x")]),
+                                    Token("RPAR", ")")
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            ),
+            Token("FROM", "from"),
+            Tree(
+                "from_clause",
+                [Tree("from_item", [Tree("table_name", [Token("CNAME", "c")])])]
+            )
+        ]
+    )
+    """
+    assert_parse_result(actual, expected)
 
 
 def test_arg_item_with_date_interval(parser):
     raw_query = "select date_trunc(a, month) from c"
-    select_item = parser.get_tree(raw_query).children[1].children[0]
-
-    assert select_item.data == "select_item"
-    assert select_item.children[0].data == "base_expression"
-    assert select_item.children[0].children[0].type == "FUNCTION"
-    assert select_item.children[0].children[0].value == "date_trunc"
-    assert select_item.children[0].children[1].type == "LPAR"
-    assert select_item.children[0].children[3].type == "RPAR"
-
-    arg_list = select_item.children[0].children[2]
-    assert arg_list.data == "arg_list"
-    assert arg_list.children[0].value == "a"
-    assert arg_list.children[1].type == "DATE_INTERVAL"
-    assert arg_list.children[1].value == "month"
+    actual = str(parser.get_tree(raw_query))
+    expected = """
+    Tree(
+        "query_expr",
+        [
+            Token("SELECT", "select"),
+            Tree(
+                "select_list",
+                [
+                    Tree(
+                        "select_item_unaliased",
+                        [
+                            Tree(
+                                "base_expression",
+                                [
+                                    Token("FUNCTION", "date_trunc"),
+                                    Token("LPAR", "("),
+                                    Tree(
+                                        "arg_list",
+                                        [
+                                            Token("CNAME", "a"),
+                                            Token("DATE_INTERVAL", "month")
+                                        ]
+                                    ),
+                                    Token("RPAR", ")")
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            ),
+            Token("FROM", "from"),
+            Tree(
+                "from_clause",
+                [Tree("from_item", [Tree("table_name", [Token("CNAME", "c")])])]
+            )
+        ]
+    )
+    """
+    assert_parse_result(actual, expected)
 
 
 def test_arg_item_with_time_interval(parser):
     raw_query = "select time_trunc(b, SECOND) from c"
-    select_item = parser.get_tree(raw_query).children[1].children[0]
-
-    assert select_item.data == "select_item"
-    assert select_item.children[0].data == "base_expression"
-    assert select_item.children[0].children[0].type == "FUNCTION"
-    assert select_item.children[0].children[0].value == "time_trunc"
-    assert select_item.children[0].children[1].type == "LPAR"
-    assert select_item.children[0].children[3].type == "RPAR"
-
-    arg_list = select_item.children[0].children[2]
-    assert arg_list.data == "arg_list"
-    assert arg_list.children[0].value == "b"
-    assert arg_list.children[1].type == "TIME_INTERVAL"
-    assert arg_list.children[1].value == "SECOND"
+    actual = str(parser.get_tree(raw_query))
+    expected = """
+    Tree(
+        "query_expr",
+        [
+            Token("SELECT", "select"),
+            Tree(
+                "select_list",
+                [
+                    Tree(
+                        "select_item_unaliased",
+                        [
+                            Tree(
+                                "base_expression",
+                                [
+                                    Token("FUNCTION", "time_trunc"),
+                                    Token("LPAR", "("),
+                                    Tree(
+                                        "arg_list",
+                                        [
+                                            Token("CNAME", "b"),
+                                            Token("TIME_INTERVAL", "SECOND")
+                                        ]
+                                    ),
+                                    Token("RPAR", ")")
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            ),
+            Token("FROM", "from"),
+            Tree(
+                "from_clause",
+                [Tree("from_item", [Tree("table_name", [Token("CNAME", "c")])])]
+            )
+        ]
+    )
+    """
+    assert_parse_result(actual, expected)
 
 
 def test_arg_item_with_func(parser):
     raw_query = "select date_trunc(date(timestamp_millis(t)), month) from a"
-    select_item = parser.get_tree(raw_query).children[1].children[0]
-
-    assert select_item.data == "select_item"
-    assert select_item.children[0].data == "base_expression"
-    assert select_item.children[0].children[0].type == "FUNCTION"
-    assert select_item.children[0].children[0].value == "date_trunc"
-    assert select_item.children[0].children[1].type == "LPAR"
-    assert select_item.children[0].children[3].type == "RPAR"
-
-    arg_list = select_item.children[0].children[2]
-    assert arg_list.data == "arg_list"
-    assert arg_list.children[0].data == "arg_item"
-    assert arg_list.children[0].children[0].type == "FUNCTION"
-    assert arg_list.children[0].children[0].value == "date"
-
-    inner_arg_list = arg_list.children[0].children[2]
-    assert inner_arg_list.data == "arg_list"
-    assert inner_arg_list.children[0].data == "arg_item"
-    assert inner_arg_list.children[0].children[0].type == "FUNCTION"
-    assert inner_arg_list.children[0].children[0].value == "timestamp_millis"
-
-    inner_inner_arg_list = inner_arg_list.children[0].children[2]
-    assert inner_inner_arg_list.data == "arg_list"
-    assert inner_inner_arg_list.children[0].value == "t"
+    actual = str(parser.get_tree(raw_query))
+    expected = """
+    Tree(
+        "query_expr",
+        [
+            Token("SELECT", "select"),
+            Tree(
+                "select_list",
+                [
+                    Tree(
+                        "select_item_unaliased",
+                        [
+                            Tree(
+                                "base_expression",
+                                [
+                                    Token("FUNCTION", "date_trunc"),
+                                    Token("LPAR", "("),
+                                    Tree(
+                                        "arg_list",
+                                        [
+                                            Tree(
+                                                "arg_item",
+                                                [
+                                                    Token("FUNCTION", "date"),
+                                                    Token("LPAR", "("),
+                                                    Tree(
+                                                        "arg_list",
+                                                        [
+                                                            Tree(
+                                                                "arg_item",
+                                                                [
+                                                                    Token(
+                                                                        "FUNCTION",
+                                                                        "timestamp_millis"
+                                                                    ),
+                                                                    Token("LPAR", "("),
+                                                                    Tree(
+                                                                        "arg_list",
+                                                                        [
+                                                                            Token(
+                                                                                "CNAME",
+                                                                                "t"
+                                                                            )
+                                                                        ]
+                                                                    ),
+                                                                    Token("RPAR", ")")
+                                                                ]
+                                                            )
+                                                        ]
+                                                    ),
+                                                    Token("RPAR", ")")
+                                                ]
+                                            ),
+                                            Token("DATE_INTERVAL", "month")
+                                        ]
+                                    ),
+                                    Token("RPAR", ")")
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            ),
+            Token("FROM", "from"),
+            Tree(
+                "from_clause",
+                [Tree("from_item", [Tree("table_name", [Token("CNAME", "a")])])]
+            )
+        ]
+    )
+    """
+    assert_parse_result(actual, expected)

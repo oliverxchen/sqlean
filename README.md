@@ -24,12 +24,10 @@ How about if we start with `query_file` and and all direct children of that have
 `indent_level = 0`?
 
 custom trees
-https://github.com/lark-parser/lark/issues/676
-
+<https://github.com/lark-parser/lark/issues/676>
 
 ### Constraints
 
 * Visitors can add attributes, but Transformers can't see them
 * Transformers are leaf to root, so cannot determine indent levels
 * Visitors are leaf to root by default, but can be run root to leaf (visit_topdown)
-

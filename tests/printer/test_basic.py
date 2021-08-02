@@ -1,11 +1,11 @@
 def test_select_star(parser):
     raw_query = "select *, foo from table"
-    output = parser.print(raw_query)
-    assert (
-        output
-        == """SELECT
+    actual = parser.print(raw_query)
+    expected = """
+SELECT
     *,
     foo
 FROM
-    table"""
-    )
+    table
+"""
+    assert actual == expected[1:-1]
