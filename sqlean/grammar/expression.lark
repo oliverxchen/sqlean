@@ -1,19 +1,22 @@
 select_list: select_item ("," select_item)*
 
-select_item: expression
-    | expression alias
+?select_item: select_item_unaliased
+    | select_item_aliased
+
+select_item_unaliased: expression
     | STAR
 
+select_item_aliased: expression as_alias
 STAR: "*"
+
+?as_alias: ["AS"i] ALIAS_NAME
+ALIAS_NAME: CNAME
 
 !?expression: base_expression
     | bool_expression
 
 !?base_expression: CNAME
     | FUNCTION "(" arg_list ")"
-
-alias: CNAME
-    | AS CNAME
 
 arg_list: arg_item ("," arg_item)*
 
@@ -28,8 +31,6 @@ DATE_INTERVAL: "MONTH"i
 TIME_INTERVAL: "MINUTE"i
     | "SECOND"i
 
-
-AS: "AS"i
 FUNCTION: CNAME
 
 ?bool_expression: base_expression

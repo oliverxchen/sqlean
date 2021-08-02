@@ -1,13 +1,19 @@
 ?start: query_expr
 
-!query_expr: "SELECT"i select_list "FROM"i from_clause ["WHERE"i bool_expression]
+!query_expr: "SELECT"i select_list ["FROM"i from_clause]
 
-from_clause: from_item
+from_clause: from_item [from_modifier]
 
-from_item: table_name // add alias
+from_item: table_name
     | join_operation
-    | "(" query_expr ")" // add alias
+    | "(" query_expr ")"
     // | (join_operation table_name)* //(on_clause)*)*
+
+
+from_modifier: where_clause // [groupby_modifier]
+where_clause: "WHERE"i bool_expression
+// groupby_modifier: groupby_clause // [having_clause]
+
 
 table_name: "`" PROJECT_ID  "." DATASET_ID "." TABLE_ID "`"
     | "`" PROJECT_ID  "`.`" DATASET_ID "`.`" TABLE_ID "`"
@@ -42,6 +48,7 @@ right_join: "RIGHT"i ["OUTER"i] "JOIN"i
 
 %import expression.select_list
 %import expression.bool_expression
+// %import expression.as_alias
 %import common.WS
 %import common.CNAME
 %ignore WS
