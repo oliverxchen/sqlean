@@ -1,0 +1,40 @@
+select date_trunc(a, month) from c
+
+---
+
+Tree(
+    "query_expr",
+    [
+        Token("SELECT", "select"),
+        Tree(
+            "select_list",
+            [
+                Tree(
+                    "select_item_unaliased",
+                    [
+                        Tree(
+                            "base_expression",
+                            [
+                                Token("FUNCTION", "date_trunc"),
+                                Token("LPAR", "("),
+                                Tree(
+                                    "arg_list",
+                                    [
+                                        Token("CNAME", "a"),
+                                        Token("DATE_INTERVAL", "month"),
+                                    ],
+                                ),
+                                Token("RPAR", ")"),
+                            ],
+                        )
+                    ],
+                )
+            ],
+        ),
+        Token("FROM", "from"),
+        Tree(
+            "from_clause",
+            [Tree("from_item", [Tree("table_name", [Token("CNAME", "c")])])],
+        ),
+    ],
+)

@@ -1,0 +1,36 @@
+select field from table where a AND b
+
+---
+
+Tree(
+    "query_expr",
+    [
+        Token("SELECT", "select"),
+        Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
+        Token("FROM", "from"),
+        Tree(
+            "from_clause",
+            [
+                Tree("from_item", [Tree("table_name", [Token("CNAME", "table")])]),
+                Tree(
+                    "from_modifier",
+                    [
+                        Tree(
+                            "where_clause",
+                            [
+                                Tree(
+                                    "binary_bool_operation",
+                                    [
+                                        Token("CNAME", "a"),
+                                        Token("BINARY_BOOL_OPERATOR", "AND"),
+                                        Token("CNAME", "b"),
+                                    ],
+                                )
+                            ],
+                        )
+                    ],
+                ),
+            ],
+        ),
+    ],
+)

@@ -1,14 +1,32 @@
 import pytest
+
 from sqlean.sql_parser import Parser
 
 
 @pytest.fixture(scope="session")
-def parser():
+def sql_parser():
     return Parser()
 
 
-def assert_parse_result(actual: str, expected: str):
-    def normalise_strings(input_string: str):
-        return input_string.replace(" ", "").replace("\n", "").replace('"', "'")
+def pytest_addoption(parser):
+    parser.addoption(
+        "--generate-snapshots",
+        action="store_true",
+        default=False,
+        help="Generate parsing snapshots",
+    )
 
-    assert normalise_strings(actual) == normalise_strings(expected)
+
+def pytest_collection_modifyitems(config, items):
+    if config.getoption("--generate-snapshots"):
+        skip_others = pytest.mark.skip(
+            reason="--generate-snapshots option used, other tests skipped"
+        )
+        for item in items:
+            if "generate_snapshots" not in item.keywords:
+                item.add_marker(skip_others)
+    else:
+        skip_call = pytest.mark.skip(reason="need --generate-snapshots option to run")
+        for item in items:
+            if "generate_snapshots" in item.keywords:
+                item.add_marker(skip_call)

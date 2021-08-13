@@ -1,0 +1,34 @@
+select SUM(x) from c
+
+---
+
+Tree(
+    "query_expr",
+    [
+        Token("SELECT", "select"),
+        Tree(
+            "select_list",
+            [
+                Tree(
+                    "select_item_unaliased",
+                    [
+                        Tree(
+                            "base_expression",
+                            [
+                                Token("FUNCTION", "SUM"),
+                                Token("LPAR", "("),
+                                Tree("arg_list", [Token("CNAME", "x")]),
+                                Token("RPAR", ")"),
+                            ],
+                        )
+                    ],
+                )
+            ],
+        ),
+        Token("FROM", "from"),
+        Tree(
+            "from_clause",
+            [Tree("from_item", [Tree("table_name", [Token("CNAME", "c")])])],
+        ),
+    ],
+)

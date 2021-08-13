@@ -1,0 +1,35 @@
+select field from table where NOT a
+
+---
+
+Tree(
+    "query_expr",
+    [
+        Token("SELECT", "select"),
+        Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
+        Token("FROM", "from"),
+        Tree(
+            "from_clause",
+            [
+                Tree("from_item", [Tree("table_name", [Token("CNAME", "table")])]),
+                Tree(
+                    "from_modifier",
+                    [
+                        Tree(
+                            "where_clause",
+                            [
+                                Tree(
+                                    "leading_unary_bool_operation",
+                                    [
+                                        Token("LEADING_UNARY_BOOL_OPERATOR", "NOT"),
+                                        Token("CNAME", "a"),
+                                    ],
+                                )
+                            ],
+                        )
+                    ],
+                ),
+            ],
+        ),
+    ],
+)
