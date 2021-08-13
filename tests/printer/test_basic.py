@@ -1,6 +1,6 @@
-def test_select_star(parser):
+def test_select_star(sql_parser):
     raw_query = "select *, foo from table"
-    actual = parser.print(raw_query)
+    actual = sql_parser.print(raw_query)
     expected = """
 SELECT
     *,

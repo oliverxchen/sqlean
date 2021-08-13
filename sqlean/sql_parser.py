@@ -1,13 +1,11 @@
 """Parse sql strings"""
 from os import linesep
-from os import path
 from typing import Union
 from lark import Lark, Transformer, Token
 from lark.tree import Tree
 from lark.visitors import Visitor_Recursive
 
-
-IMPORT_PATH = path.join(path.dirname(__file__), "grammar")
+from sqlean.definitions import IMPORT_PATH
 
 
 class TreeData(str):
@@ -111,9 +109,20 @@ class Printer(Transformer):
         super().__init__()
         self.indent = indent
 
+    def __default__(self, *args):
+        """Executed on each node of the tree.
+        * tree.data is in zeroth element
+        * tree.children is in first element
+        * tree.meta is in second element"""
+        print("\nIN __default__")
+        print(args[1])
+        return Tree(args[0], args[1], args[2])
+
     # @staticmethod
     def select_list(self, children):
         """print select_list"""
+        print("in select_list")
+        print(children)
         output = list()
         for child in children:
             output.append(

@@ -1,0 +1,24 @@
+select field new_field_name from table
+
+---
+
+Tree(
+    "query_expr",
+    [
+        Token("SELECT", "select"),
+        Tree(
+            "select_list",
+            [
+                Tree(
+                    "select_item_aliased",
+                    [Token("CNAME", "field"), Token("ALIAS_NAME", "new_field_name")],
+                )
+            ],
+        ),
+        Token("FROM", "from"),
+        Tree(
+            "from_clause",
+            [Tree("from_item", [Tree("table_name", [Token("CNAME", "table")])])],
+        ),
+    ],
+)

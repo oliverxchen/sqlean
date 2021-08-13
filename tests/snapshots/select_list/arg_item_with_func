@@ -1,0 +1,71 @@
+select date_trunc(date(timestamp_millis(t)), month) from a
+
+---
+
+Tree(
+    "query_expr",
+    [
+        Token("SELECT", "select"),
+        Tree(
+            "select_list",
+            [
+                Tree(
+                    "select_item_unaliased",
+                    [
+                        Tree(
+                            "base_expression",
+                            [
+                                Token("FUNCTION", "date_trunc"),
+                                Token("LPAR", "("),
+                                Tree(
+                                    "arg_list",
+                                    [
+                                        Tree(
+                                            "arg_item",
+                                            [
+                                                Token("FUNCTION", "date"),
+                                                Token("LPAR", "("),
+                                                Tree(
+                                                    "arg_list",
+                                                    [
+                                                        Tree(
+                                                            "arg_item",
+                                                            [
+                                                                Token(
+                                                                    "FUNCTION",
+                                                                    "timestamp_millis",
+                                                                ),
+                                                                Token("LPAR", "("),
+                                                                Tree(
+                                                                    "arg_list",
+                                                                    [
+                                                                        Token(
+                                                                            "CNAME", "t"
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                                Token("RPAR", ")"),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                                Token("RPAR", ")"),
+                                            ],
+                                        ),
+                                        Token("DATE_INTERVAL", "month"),
+                                    ],
+                                ),
+                                Token("RPAR", ")"),
+                            ],
+                        )
+                    ],
+                )
+            ],
+        ),
+        Token("FROM", "from"),
+        Tree(
+            "from_clause",
+            [Tree("from_item", [Tree("table_name", [Token("CNAME", "a")])])],
+        ),
+    ],
+)

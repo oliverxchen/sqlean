@@ -1,0 +1,56 @@
+select field from (select field, field2 from table)
+
+---
+
+Tree(
+    "query_expr",
+    [
+        Token("SELECT", "select"),
+        Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
+        Token("FROM", "from"),
+        Tree(
+            "from_clause",
+            [
+                Tree(
+                    "from_item",
+                    [
+                        Tree(
+                            "query_expr",
+                            [
+                                Token("SELECT", "select"),
+                                Tree(
+                                    "select_list",
+                                    [
+                                        Tree(
+                                            "select_item_unaliased",
+                                            [Token("CNAME", "field")],
+                                        ),
+                                        Tree(
+                                            "select_item_unaliased",
+                                            [Token("CNAME", "field2")],
+                                        ),
+                                    ],
+                                ),
+                                Token("FROM", "from"),
+                                Tree(
+                                    "from_clause",
+                                    [
+                                        Tree(
+                                            "from_item",
+                                            [
+                                                Tree(
+                                                    "table_name",
+                                                    [Token("CNAME", "table")],
+                                                )
+                                            ],
+                                        )
+                                    ],
+                                ),
+                            ],
+                        )
+                    ],
+                )
+            ],
+        ),
+    ],
+)
