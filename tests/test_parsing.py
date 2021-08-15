@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 import black
 import pytest
-from sqlean.definitions import SNAPSHOT_PATH
+from sqlean.definitions import TREE_SNAPSHOT_PATH
 from sqlean.sql_parser import Parser
 
 FILE_SEPARATOR = "---\n"
@@ -45,7 +45,7 @@ def test_all_parsing(sql_parser):
     print("")
     counter = 0
     success_counter = 0
-    for file_address in os.walk(SNAPSHOT_PATH):
+    for file_address in os.walk(TREE_SNAPSHOT_PATH):
         for file_name in file_address[2]:
             file_path = os.path.join(file_address[0], file_name)
             raw, expected = parse_tree_snapshot(file_path)
@@ -60,7 +60,7 @@ def test_all_parsing(sql_parser):
 
 @pytest.mark.generate_snapshots()
 def test_generate_snapshots(sql_parser):
-    for file_address in os.walk(SNAPSHOT_PATH):
+    for file_address in os.walk(TREE_SNAPSHOT_PATH):
         for file_name in file_address[2]:
             file_path = Path(file_address[0]) / file_name
             raw, _ = parse_tree_snapshot(file_path)
