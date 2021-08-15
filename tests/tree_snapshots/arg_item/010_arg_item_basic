@@ -13,12 +13,18 @@ Tree(
                     "select_item_unaliased",
                     [
                         Tree(
-                            "base_expression",
+                            "function_expression",
                             [
                                 Token("FUNCTION", "SUM"),
-                                Token("LPAR", "("),
-                                Tree("arg_list", [Token("CNAME", "x")]),
-                                Token("RPAR", ")"),
+                                Tree(
+                                    "arg_list",
+                                    [
+                                        Tree(
+                                            "arg_item",
+                                            [Tree("field_name", [Token("CNAME", "x")])],
+                                        )
+                                    ],
+                                ),
                             ],
                         )
                     ],
@@ -26,9 +32,6 @@ Tree(
             ],
         ),
         Token("FROM", "from"),
-        Tree(
-            "from_clause",
-            [Tree("from_item", [Tree("table_name", [Token("CNAME", "c")])])],
-        ),
+        Tree("from_clause", [Tree("single_table_name", [Token("CNAME", "c")])]),
     ],
 )

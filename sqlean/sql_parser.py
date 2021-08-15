@@ -134,8 +134,8 @@ class Printer(Transformer):
     def from_clause(self, children):
         """print from_clause"""
         return self.__apply_indent(
-            children[0].children[0].children[0].value,
-            children[0].children[0].data.indent_level,
+            children[0].children[0].value,
+            children[0].data.indent_level,
         )
 
     @staticmethod
