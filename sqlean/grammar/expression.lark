@@ -3,10 +3,9 @@ select_list: select_item ("," select_item)*
 ?select_item: select_item_unaliased
     | select_item_aliased
 
+select_item_aliased: expression as_alias
 select_item_unaliased: expression
     | STAR
-
-select_item_aliased: expression as_alias
 STAR: "*"
 
 ?as_alias: ["AS"i] ALIAS_NAME
@@ -15,15 +14,17 @@ ALIAS_NAME: CNAME
 !?expression: base_expression
     | bool_expression
 
-!?base_expression: CNAME
-    | FUNCTION "(" arg_list ")"
+?base_expression: field_name
+    | function_expression
+
+field_name: CNAME
+function_expression: FUNCTION "(" arg_list ")"
 
 arg_list: arg_item ("," arg_item)*
 
-!?arg_item: DATE_INTERVAL
+arg_item: DATE_INTERVAL
     | TIME_INTERVAL
-    | FUNCTION "(" arg_list ")"
-    | CNAME
+    | expression
 
 DATE_INTERVAL: "MONTH"i
     | "WEEK"i

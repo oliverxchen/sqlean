@@ -31,12 +31,3 @@ custom trees
 * Visitors can add attributes, but Transformers can't see them
 * Transformers are leaf to root, so cannot determine indent levels
 * Visitors are leaf to root by default, but can be run root to leaf (visit_topdown)
-
-## Things to change about the parsing
-
-* `table_name`should distinguish between single name and project/dataset/table
-* maybe inline the from_item
-* join_operation should be inlined
-* suppress LPAR and RPAR
-* functions in select_item (wrapped in base_expression) and arg_item (bare) are
-  parsed differently

@@ -13,49 +13,67 @@ Tree(
                     "select_item_unaliased",
                     [
                         Tree(
-                            "base_expression",
+                            "function_expression",
                             [
                                 Token("FUNCTION", "date_trunc"),
-                                Token("LPAR", "("),
                                 Tree(
                                     "arg_list",
                                     [
                                         Tree(
                                             "arg_item",
                                             [
-                                                Token("FUNCTION", "date"),
-                                                Token("LPAR", "("),
                                                 Tree(
-                                                    "arg_list",
+                                                    "function_expression",
                                                     [
+                                                        Token("FUNCTION", "date"),
                                                         Tree(
-                                                            "arg_item",
+                                                            "arg_list",
                                                             [
-                                                                Token(
-                                                                    "FUNCTION",
-                                                                    "timestamp_millis",
-                                                                ),
-                                                                Token("LPAR", "("),
                                                                 Tree(
-                                                                    "arg_list",
+                                                                    "arg_item",
                                                                     [
-                                                                        Token(
-                                                                            "CNAME", "t"
+                                                                        Tree(
+                                                                            "function_expression",
+                                                                            [
+                                                                                Token(
+                                                                                    "FUNCTION",
+                                                                                    "timestamp_millis",
+                                                                                ),
+                                                                                Tree(
+                                                                                    "arg_list",
+                                                                                    [
+                                                                                        Tree(
+                                                                                            "arg_item",
+                                                                                            [
+                                                                                                Tree(
+                                                                                                    "field_name",
+                                                                                                    [
+                                                                                                        Token(
+                                                                                                            "CNAME",
+                                                                                                            "t",
+                                                                                                        )
+                                                                                                    ],
+                                                                                                )
+                                                                                            ],
+                                                                                        )
+                                                                                    ],
+                                                                                ),
+                                                                            ],
                                                                         )
                                                                     ],
-                                                                ),
-                                                                Token("RPAR", ")"),
+                                                                )
                                                             ],
-                                                        )
+                                                        ),
                                                     ],
-                                                ),
-                                                Token("RPAR", ")"),
+                                                )
                                             ],
                                         ),
-                                        Token("DATE_INTERVAL", "month"),
+                                        Tree(
+                                            "arg_item",
+                                            [Token("DATE_INTERVAL", "month")],
+                                        ),
                                     ],
                                 ),
-                                Token("RPAR", ")"),
                             ],
                         )
                     ],
@@ -63,9 +81,6 @@ Tree(
             ],
         ),
         Token("FROM", "from"),
-        Tree(
-            "from_clause",
-            [Tree("from_item", [Tree("table_name", [Token("CNAME", "a")])])],
-        ),
+        Tree("from_clause", [Tree("single_table_name", [Token("CNAME", "a")])]),
     ],
 )

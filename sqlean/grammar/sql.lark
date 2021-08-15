@@ -4,26 +4,30 @@
 
 from_clause: from_item [from_modifier]
 
-from_item: table_name
+!?from_item: table_name
     | join_operation
-    | "(" query_expr ")"
+    | sub_query_expr
     // | (join_operation table_name)* //(on_clause)*)*
 
+sub_query_expr: "(" query_expr ")"
 
 from_modifier: where_clause // [groupby_modifier]
-where_clause: "WHERE"i bool_expression
+!where_clause: "WHERE"i bool_expression
 // groupby_modifier: groupby_clause // [having_clause]
 
 
-table_name: "`" PROJECT_ID  "." DATASET_ID "." TABLE_ID "`"
+?table_name: single_table_name
+    | explicit_table_name
+
+single_table_name: CNAME
+explicit_table_name: "`" PROJECT_ID  "." DATASET_ID "." TABLE_ID "`"
     | "`" PROJECT_ID  "`.`" DATASET_ID "`.`" TABLE_ID "`"
-    | CNAME
 
 PROJECT_ID: CNAME
 DATASET_ID: CNAME
 TABLE_ID: CNAME
 
-join_operation: cross_join_operation
+?join_operation: cross_join_operation
     | join_operation_with_condition
 
 cross_join_operation: from_item "CROSS JOIN"i from_item
