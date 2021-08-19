@@ -12,7 +12,7 @@ Tree(
                 Tree(
                     "select_item_aliased",
                     [
-                        Tree("field_name", [Token("CNAME", "field")]),
+                        Token("FIELD_NAME", "field"),
                         Token("ALIAS_NAME", "new_field_name"),
                     ],
                 )

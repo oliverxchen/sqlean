@@ -1,16 +1,14 @@
 import os
 from pathlib import Path
-import re
-import black
 import pytest
-from sqlean.definitions import TREE_SNAPSHOT_PATH
+from sqlean.definitions import STYLE_SNAPSHOT_PATH
 from sqlean.sql_parser import Parser
 
 FILE_SEPARATOR = "---\n"
 ESCAPED_FILE_SEPARATOR = "---\\n"
 
 
-def parse_tree_snapshot(file_path: Path):
+def parse_style_snapshot(file_path: Path):
     with open(file_path, "r") as reader:
         rows = reader.readlines()
         try:
@@ -19,36 +17,31 @@ def parse_tree_snapshot(file_path: Path):
             raise ValueError(
                 f"No separator '{ESCAPED_FILE_SEPARATOR}' found in {file_path}"
             )
-        raw_query = "".join(rows[:separator]).strip()
-        expected_tree = "".join(rows[separator + 1 :]).strip()
-    return raw_query, expected_tree
+        raw_query = "".join(rows[: separator - 1]).strip()
+        styled_query = "".join(rows[separator + 2 :]).strip()
+    return raw_query, styled_query
 
 
 def assert_snapshot_correct(
     sql_parser: Parser, raw: str, expected: str, file_path: Path
 ):
-    actual = str(sql_parser.get_tree(raw))
+    actual = sql_parser.print(raw)
     try:
-        assert normalise_strings(actual) == normalise_strings(expected)
+        assert actual == expected
         return 1
     except AssertionError:
         print(f"{file_path} failed!")
         return 0
 
 
-def normalise_strings(input_string: str):
-    """Remove whitespace and commas, change to single quotes"""
-    return re.sub(r"\s|,", "", input_string).replace('"', "'")
-
-
-def test_all_parsing(sql_parser):
+def test_all_styling(sql_parser):
     print("")
     counter = 0
     success_counter = 0
-    for file_address in os.walk(TREE_SNAPSHOT_PATH):
+    for file_address in os.walk(STYLE_SNAPSHOT_PATH):
         for file_name in file_address[2]:
             file_path = os.path.join(file_address[0], file_name)
-            raw, expected = parse_tree_snapshot(file_path)
+            raw, expected = parse_style_snapshot(file_path)
             success_counter += assert_snapshot_correct(
                 sql_parser, raw, expected, file_path
             )
@@ -59,11 +52,11 @@ def test_all_parsing(sql_parser):
 
 
 @pytest.mark.generate_snapshots()
-def test_generate_tree_snapshots(sql_parser):
-    for file_address in os.walk(TREE_SNAPSHOT_PATH):
+def test_generate_style_snapshots(sql_parser):
+    for file_address in os.walk(STYLE_SNAPSHOT_PATH):
         for file_name in file_address[2]:
             file_path = Path(file_address[0]) / file_name
-            raw, _ = parse_tree_snapshot(file_path)
+            raw, _ = parse_style_snapshot(file_path)
             write_snapshot(sql_parser, raw, file_path)
 
 
@@ -71,6 +64,4 @@ def write_snapshot(sql_parser: Parser, raw: str, file_path: Path):
     with open(file_path, "wt") as writer:
         writer.write(raw)
         writer.write(f"\n\n{FILE_SEPARATOR}\n")
-        writer.write(
-            black.format_str(str(sql_parser.get_tree(raw)), mode=black.FileMode())
-        )
+        writer.write(sql_parser.print(raw))

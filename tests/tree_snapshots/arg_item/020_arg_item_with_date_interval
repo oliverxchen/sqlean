@@ -19,10 +19,7 @@ Tree(
                                 Tree(
                                     "arg_list",
                                     [
-                                        Tree(
-                                            "arg_item",
-                                            [Tree("field_name", [Token("CNAME", "a")])],
-                                        ),
+                                        Tree("arg_item", [Token("FIELD_NAME", "a")]),
                                         Tree(
                                             "arg_item",
                                             [Token("DATE_INTERVAL", "month")],

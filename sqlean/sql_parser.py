@@ -39,7 +39,6 @@ class Parser:
         """Pretty print the query"""
         tree = self.get_tree(raw_query)
         output = Printer(self.indent).transform(tree)
-        print(output)
         return output
 
 
@@ -95,11 +94,11 @@ class TreeGroomer(Visitor_Recursive):
         return tree_data.indent_level + incremental_level
 
 
-# class Debugger(Visitor_Recursive):
-#     """Print out attribues for debugging"""
-#
-#     def __default__(self, tree):
-#         print(f"tree.data: {tree.data}, {tree.data.indent_level}")
+class Debugger(Visitor_Recursive):
+    """Print out attribues for debugging"""
+
+    def __default__(self, tree):
+        print(f"tree.data: {tree.data}, {tree.data.indent_level}")
 
 
 class Printer(Transformer):
@@ -115,6 +114,7 @@ class Printer(Transformer):
         * tree.children is in first element
         * tree.meta is in second element"""
         print("\nIN __default__")
+        print(args[0])
         print(args[1])
         return Tree(args[0], args[1], args[2])
 
