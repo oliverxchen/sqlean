@@ -45,14 +45,9 @@ Tree(
                                                                                         Tree(
                                                                                             "arg_item",
                                                                                             [
-                                                                                                Tree(
-                                                                                                    "field_name",
-                                                                                                    [
-                                                                                                        Token(
-                                                                                                            "CNAME",
-                                                                                                            "t",
-                                                                                                        )
-                                                                                                    ],
+                                                                                                Token(
+                                                                                                    "FIELD_NAME",
+                                                                                                    "t",
                                                                                                 )
                                                                                             ],
                                                                                         )

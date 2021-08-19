@@ -1,0 +1,9 @@
+select *, foo from table
+
+---
+
+SELECT
+    *,
+    foo
+FROM
+    table

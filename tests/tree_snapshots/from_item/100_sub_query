@@ -8,12 +8,7 @@ Tree(
         Token("SELECT", "select"),
         Tree(
             "select_list",
-            [
-                Tree(
-                    "select_item_unaliased",
-                    [Tree("field_name", [Token("CNAME", "field")])],
-                )
-            ],
+            [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
         ),
         Token("FROM", "from"),
         Tree(
@@ -31,21 +26,11 @@ Tree(
                                     [
                                         Tree(
                                             "select_item_unaliased",
-                                            [
-                                                Tree(
-                                                    "field_name",
-                                                    [Token("CNAME", "field")],
-                                                )
-                                            ],
+                                            [Token("FIELD_NAME", "field")],
                                         ),
                                         Tree(
                                             "select_item_unaliased",
-                                            [
-                                                Tree(
-                                                    "field_name",
-                                                    [Token("CNAME", "field2")],
-                                                )
-                                            ],
+                                            [Token("FIELD_NAME", "field2")],
                                         ),
                                     ],
                                 ),

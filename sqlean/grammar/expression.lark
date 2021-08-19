@@ -14,10 +14,10 @@ ALIAS_NAME: CNAME
 !?expression: base_expression
     | bool_expression
 
-?base_expression: field_name
+?base_expression: FIELD_NAME
     | function_expression
 
-field_name: CNAME
+FIELD_NAME: CNAME
 function_expression: FUNCTION "(" arg_list ")"
 
 arg_list: arg_item ("," arg_item)*
