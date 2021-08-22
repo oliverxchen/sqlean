@@ -14,14 +14,15 @@ Tree(
         Tree(
             "from_clause",
             [
-                Tree("single_table_name", [Token("CNAME", "table")]),
+                Token("TABLE_NAME", "table"),
                 Tree(
                     "from_modifier",
                     [
+                        Token("WHERE", "where"),
                         Tree(
-                            "where_clause",
-                            [Token("WHERE", "where"), Token("FIELD_NAME", "a")],
-                        )
+                            "where_list",
+                            [Tree("first_where_item", [Token("FIELD_NAME", "a")])],
+                        ),
                     ],
                 ),
             ],

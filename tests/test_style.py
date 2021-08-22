@@ -52,9 +52,11 @@ def test_all_styling(sql_parser):
 
 
 @pytest.mark.generate_snapshots()
-def test_generate_style_snapshots(sql_parser):
+def test_generate_style_snapshots(sql_parser, match):
     for file_address in os.walk(STYLE_SNAPSHOT_PATH):
         for file_name in file_address[2]:
+            if match not in file_name:
+                continue
             file_path = Path(file_address[0]) / file_name
             raw, _ = parse_style_snapshot(file_path)
             write_snapshot(sql_parser, raw, file_path)
@@ -64,4 +66,4 @@ def write_snapshot(sql_parser: Parser, raw: str, file_path: Path):
     with open(file_path, "wt") as writer:
         writer.write(raw)
         writer.write(f"\n\n{FILE_SEPARATOR}\n")
-        writer.write(sql_parser.print(raw))
+        writer.write(sql_parser.print(raw, is_debug=True))

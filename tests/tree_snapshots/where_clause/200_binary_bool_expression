@@ -14,24 +14,24 @@ Tree(
         Tree(
             "from_clause",
             [
-                Tree("single_table_name", [Token("CNAME", "table")]),
+                Token("TABLE_NAME", "table"),
                 Tree(
                     "from_modifier",
                     [
+                        Token("WHERE", "where"),
                         Tree(
-                            "where_clause",
+                            "where_list",
                             [
-                                Token("WHERE", "where"),
+                                Tree("first_where_item", [Token("FIELD_NAME", "a")]),
                                 Tree(
-                                    "binary_bool_operation",
+                                    "subsequent_where_item",
                                     [
-                                        Token("FIELD_NAME", "a"),
                                         Token("BINARY_BOOL_OPERATOR", "AND"),
                                         Token("FIELD_NAME", "b"),
                                     ],
                                 ),
                             ],
-                        )
+                        ),
                     ],
                 ),
             ],

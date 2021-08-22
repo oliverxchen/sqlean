@@ -3,7 +3,7 @@ from os import linesep
 from typing import Union
 from lark import Lark, Transformer, Token
 from lark.tree import Tree
-from lark.visitors import Visitor_Recursive
+from lark.visitors import Visitor_Recursive, v_args
 
 from sqlean.definitions import IMPORT_PATH
 
@@ -12,11 +12,16 @@ class TreeData(str):
     """Data structure for tree"""
 
     indent_level: int
+    is_inline: bool
 
-    def __new__(cls, value: str, indent_level: int):
-        """Class method to create a new instance of TreeData"""
-        obj = str.__new__(cls, value)
+    def __new__(cls, name: str, indent_level: int, is_inline: bool):
+        """Class method to create a new instance of TreeData.
+        TreeData inherits from `str` to be a valid object for
+        tree.data. Lark transformers will have access to the attributes
+        of TreeData that are specified here."""
+        obj = str.__new__(cls, name)
         obj.indent_level = indent_level
+        obj.is_inline = is_inline
         return obj
 
 
@@ -35,9 +40,13 @@ class Parser:
         TreeGroomer().visit_topdown(tree)
         return tree
 
-    def print(self, raw_query: str):
+    def print(self, raw_query: str, is_debug: bool = False) -> str:
         """Pretty print the query"""
         tree = self.get_tree(raw_query)
+        if is_debug:
+            print("\nIn Tree debugger after grooming")
+            Debugger().visit_topdown(tree)
+            print("")
         output = Printer(self.indent).transform(tree)
         return output
 
@@ -46,109 +55,163 @@ class TreeGroomer(Visitor_Recursive):
     """Grooms the trees of ugly branches and leaves, sets indentation."""
 
     root = "query_expr"
-    groups = {"select_list", "from_clause"}
-    indent_exemptions = {"table_name"}
+    nodes_to_indent = {"from_clause", "select_list", "where_list"}
+    nodes_to_dedent = {"from_modifier"}
+    nodes_to_inline = {"arg_item"}
 
     def __default__(self, tree):
         """Executed on each node of the tree"""
 
         if tree.data == TreeGroomer.root:
-            tree.data = TreeData(TreeGroomer.root, 0)
-        else:
-            tree = self.__remove_prefix_from_node(tree)
+            tree.data = TreeData(name=TreeGroomer.root, indent_level=0, is_inline=True)
 
         for child in tree.children:
             child = self.__remove_prefix_from_node(child)
-            child = self.__set_indent_level(child, tree.data)
+            child = self.__set_indent_level(child, tree.data.indent_level)
 
     def __remove_prefix_from_node(self, node: Union[Tree, Token]) -> Union[Tree, Token]:
         if isinstance(node, Token):
             node.type = self.__remove_prefix_from_string(node.type)
-        elif isinstance(node, Tree):
-            cleaned_data = self.__remove_prefix_from_string(node.data)
-            if hasattr(node.data, "indent_level"):
-                node.data = TreeData(
-                    cleaned_data, node.data.indent_level  # type: ignore
-                )
-            else:
-                node.data = cleaned_data
+        elif isinstance(node, Tree) and not hasattr(node.data, "indent_level"):
+            node.data = self.__remove_prefix_from_string(node.data)
         return node
 
     @staticmethod
     def __remove_prefix_from_string(input_str: str) -> str:
         return input_str.split("__")[-1]
 
-    def __set_indent_level(self, child, tree_data):
+    def __set_indent_level(
+        self, child: Union[Tree, Token], parent_indent_level: int
+    ) -> Union[Tree, Token]:
         if isinstance(child, Tree):
-            child_data = child.data
+            name = child.data
             child.data = TreeData(
-                child_data,
-                self.__calculate_indent_level(tree_data, child_data),
+                name=name,
+                indent_level=self.__get_indent_level(name, parent_indent_level),
+                is_inline=self.__get_is_inline(name),
             )
         return child
 
-    def __calculate_indent_level(self, tree_data, child_data):
-        incremental_level = 1
-        if (tree_data in self.groups) or (child_data in self.indent_exemptions):
-            incremental_level = 0
-        return tree_data.indent_level + incremental_level
+    def __get_indent_level(self, name: str, parent_indent_level: int) -> int:
+        increment_level = 0
+        if name in self.nodes_to_indent:
+            increment_level = 1
+        elif name in self.nodes_to_dedent:
+            increment_level = -1
+        return parent_indent_level + increment_level
+
+    def __get_is_inline(self, name: str) -> bool:
+        if name in self.nodes_to_inline:
+            return True
+        return False
 
 
 class Debugger(Visitor_Recursive):
-    """Print out attribues for debugging"""
+    """Print out attributes for debugging"""
 
     def __default__(self, tree):
-        print(f"tree.data: {tree.data}, {tree.data.indent_level}")
+        print(
+            f"name: {tree.data}, "
+            f"indent_level: {tree.data.indent_level}, "
+            f"is_inline: {tree.data.is_inline}"
+        )
 
 
+@v_args(tree=True)
 class Printer(Transformer):
     """Pretty printer: formats the lists of atoms and the overall query"""
+
+    nonkeywords = {"FIELD_NAME", "TABLE_NAME"}
 
     def __init__(self, indent: str):
         super().__init__()
         self.indent = indent
 
-    def __default__(self, *args):
-        """Executed on each node of the tree.
-        * tree.data is in zeroth element
-        * tree.children is in first element
-        * tree.meta is in second element"""
-        print("\nIN __default__")
-        print(args[0])
-        print(args[1])
-        return Tree(args[0], args[1], args[2])
+    def __default_token__(self, token):
+        if token.type in self.nonkeywords:
+            return token
+        return token.upper()
 
-    # @staticmethod
-    def select_list(self, children):
-        """print select_list"""
-        print("in select_list")
-        print(children)
-        output = list()
-        for child in children:
-            output.append(
-                self.__apply_indent(child.children[0], child.data.indent_level)
-            )
-        output_string = f",{linesep}".join(output)
-        return output_string
+    def _simple_indent(self, node):
+        return self._apply_indent(self._rollup_space(node), node.data.indent_level)
 
-    def from_clause(self, children):
-        """print from_clause"""
-        return self.__apply_indent(
-            children[0].children[0].value,
-            children[0].data.indent_level,
-        )
+    def _apply_indent(self, text: str, indent_level: int) -> str:
+        """Apply indentation to text"""
+        return f"{self.indent * indent_level}{text}"
 
     @staticmethod
-    def query_expr(children):
-        """print query_expr"""
-        output = list()
-        for child in children:
-            if hasattr(child, "type"):
-                output.append(child.type)
-            elif isinstance(child, str):
-                output.append(child)
-        return linesep.join(output)
+    def _rollup_linesep(node):
+        """Join list with linesep"""
+        return linesep.join(node.children)
 
-    def __apply_indent(self, text: str, indent_level: int) -> str:
-        """Apply indentation to the text"""
-        return f"{self.indent * indent_level}{text}"
+    @staticmethod
+    def _rollup_space(node):
+        """Join list with space"""
+        return " ".join(node.children)
+
+    @staticmethod
+    def _rollup_comma_inline(node):
+        """Join list with comma space"""
+        return ", ".join(node.children)
+
+    @staticmethod
+    def _rollup_comma_newline(node):
+        """Join list with comma newline"""
+        return f",{linesep}".join(node.children)
+
+    def select_item_unaliased(self, node):
+        """print select_item_unaliased"""
+        return self._simple_indent(node)
+
+    def select_item_aliased(self, node):
+        """print select_item_aliased"""
+        output = f"{node.children[0]} AS {node.children[1]}"
+        return self._apply_indent(output, node.data.indent_level)
+
+    def select_list(self, node):
+        """rollup items in select_list"""
+        return self._rollup_comma_newline(node) + ","
+
+    def single_table_name(self, node):
+        """print single_table_name"""
+        return self._simple_indent(node)
+
+    def from_clause(self, node):
+        """rollup items in from_clause"""
+        return self._rollup_linesep(node)
+
+    def query_expr(self, node):
+        """rollup itms in query_expr"""
+        return self._rollup_linesep(node)
+
+    def leading_unary_bool_operation(self, node):
+        """rollup leading_unary_bool_operation"""
+        return self._rollup_space(node)
+
+    def trailing_unary_bool_operator(self, node):
+        """print trailing_unary_bool_operator"""
+        return self._rollup_space(node)
+
+    def trailing_unary_bool_operation(self, node):
+        """print trailing_unary_bool_operation"""
+        return self._rollup_space(node)
+
+    def where_clause(self, node):
+        """rollup where_clause"""
+        return self._rollup_linesep(node)
+
+    def from_modifier(self, node):
+        """rollup from_modifier"""
+        return self._rollup_linesep(node)
+
+    def where_list(self, node):
+        """rollup where_list"""
+        return self._rollup_linesep(node)
+
+    def first_where_item(self, node):
+        """print first_where_item"""
+        return self._simple_indent(node)
+
+    def subsequent_where_item(self, node):
+        """print subsequent_where_item"""
+        return self._simple_indent(node)

@@ -1,0 +1,10 @@
+select field from table where a
+
+---
+
+SELECT
+    field,
+FROM
+table
+WHERE
+    a

@@ -8,6 +8,6 @@ Tree(
         Token("SELECT", "select"),
         Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
         Token("FROM", "from"),
-        Tree("from_clause", [Tree("single_table_name", [Token("CNAME", "table")])]),
+        Tree("from_clause", [Token("TABLE_NAME", "table")]),
     ],
 )

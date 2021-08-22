@@ -11,15 +11,14 @@ from_clause: from_item [from_modifier]
 
 sub_query_expr: "(" query_expr ")"
 
-from_modifier: where_clause // [groupby_modifier]
-!where_clause: "WHERE"i bool_expression
+!from_modifier: "WHERE"i where_list // [groupby_modifier]
 // groupby_modifier: groupby_clause // [having_clause]
 
 
-?table_name: single_table_name
+?table_name: TABLE_NAME
     | explicit_table_name
 
-single_table_name: CNAME
+TABLE_NAME: CNAME
 explicit_table_name: "`" PROJECT_ID  "." DATASET_ID "." TABLE_ID "`"
     | "`" PROJECT_ID  "`.`" DATASET_ID "`.`" TABLE_ID "`"
 
@@ -51,7 +50,7 @@ right_join: "RIGHT"i ["OUTER"i] "JOIN"i
 //     USING ( join_column [, ...] )
 
 %import expression.select_list
-%import expression.bool_expression
+%import expression.where_list
 // %import expression.as_alias
 %import common.WS
 %import common.CNAME
