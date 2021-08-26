@@ -59,9 +59,11 @@ def test_all_parsing(sql_parser):
 
 
 @pytest.mark.generate_snapshots()
-def test_generate_tree_snapshots(sql_parser):
+def test_generate_tree_snapshots(sql_parser, match):
     for file_address in os.walk(TREE_SNAPSHOT_PATH):
         for file_name in file_address[2]:
+            if match not in file_name:
+                continue
             file_path = Path(file_address[0]) / file_name
             raw, _ = parse_tree_snapshot(file_path)
             write_snapshot(sql_parser, raw, file_path)

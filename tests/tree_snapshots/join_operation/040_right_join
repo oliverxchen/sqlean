@@ -14,9 +14,9 @@ Tree(
                 Tree(
                     "join_operation_with_condition",
                     [
-                        Tree("single_table_name", [Token("CNAME", "table1")]),
+                        Token("TABLE_NAME", "table1"),
                         Tree("join_type", [Tree("right_join", [])]),
-                        Tree("single_table_name", [Token("CNAME", "table2")]),
+                        Token("TABLE_NAME", "table2"),
                     ],
                 )
             ],

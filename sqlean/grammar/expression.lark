@@ -54,6 +54,13 @@ trailing_unary_bool_operator: IS [NOT] NULL
     | IS [NOT] TRUE
     | IS [NOT] FALSE
 
+where_list: first_where_item (subsequent_where_item)*
+!?where_item: base_expression
+    | unary_bool_operation
+    | "(" bool_expression ")"
+first_where_item: where_item
+subsequent_where_item: BINARY_BOOL_OPERATOR where_item
+
 NOT: "NOT"i
 IS: "IS"i
 NULL: "NULL"i

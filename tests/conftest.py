@@ -15,6 +15,7 @@ def pytest_addoption(parser):
         default=False,
         help="Generate parsing snapshots",
     )
+    parser.addoption("--match", action="store", default="")
 
 
 def pytest_collection_modifyitems(config, items):
@@ -30,3 +31,9 @@ def pytest_collection_modifyitems(config, items):
         for item in items:
             if "generate_snapshots" in item.keywords:
                 item.add_marker(skip_call)
+
+
+def pytest_generate_tests(metafunc):
+    option_value = metafunc.config.option.match
+    if "match" in metafunc.fixturenames and option_value is not None:
+        metafunc.parametrize("match", [option_value])
