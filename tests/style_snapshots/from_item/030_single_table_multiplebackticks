@@ -1,0 +1,8 @@
+select field from `project`.`dataset`.`table`
+
+---
+
+SELECT
+    field,
+FROM
+    `project.dataset.table`

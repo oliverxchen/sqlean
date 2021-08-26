@@ -5,6 +5,6 @@ select field from table where NOT a
 SELECT
     field,
 FROM
-table
+    table
 WHERE
     NOT a

@@ -3,6 +3,6 @@ select field new_field_name from table
 ---
 
 SELECT
-    field AS NEW_FIELD_NAME,
+    field AS new_field_name,
 FROM
-table
+    table

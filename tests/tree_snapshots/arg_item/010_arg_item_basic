@@ -27,6 +27,6 @@ Tree(
             ],
         ),
         Token("FROM", "from"),
-        Tree("from_clause", [Token("TABLE_NAME", "c")]),
+        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "c")])]),
     ],
 )

@@ -5,6 +5,6 @@ select field from table where a is not null
 SELECT
     field,
 FROM
-table
+    table
 WHERE
     a IS NOT NULL

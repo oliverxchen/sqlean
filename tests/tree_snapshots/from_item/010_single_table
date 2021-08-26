@@ -11,6 +11,6 @@ Tree(
             [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
         ),
         Token("FROM", "from"),
-        Tree("from_clause", [Token("TABLE_NAME", "table")]),
+        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
     ],
 )

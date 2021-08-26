@@ -121,16 +121,18 @@ class Debugger(Visitor_Recursive):
 class Printer(Transformer):
     """Pretty printer: formats the lists of atoms and the overall query"""
 
-    nonkeywords = {"FIELD_NAME", "TABLE_NAME"}
-
     def __init__(self, indent: str):
         super().__init__()
         self.indent = indent
 
     def __default_token__(self, token):
-        if token.type in self.nonkeywords:
+        if self._is_non_keyword(token):
             return token
         return token.upper()
+
+    @staticmethod
+    def _is_non_keyword(token: Token) -> bool:
+        return token.type.endswith("NAME") or token.type.endswith("_ID")
 
     def _simple_indent(self, node):
         return self._apply_indent(self._rollup_space(node), node.data.indent_level)
@@ -212,6 +214,15 @@ class Printer(Transformer):
         """print first_where_item"""
         return self._simple_indent(node)
 
-    def subsequent_where_item(self, node):
+    def after_where_item(self, node):
         """print subsequent_where_item"""
         return self._simple_indent(node)
+
+    def simple_table_name(self, node):
+        """print simple_table_name"""
+        return self._simple_indent(node)
+
+    def explicit_table_name(self, node):
+        """print explicit_table_name"""
+        output = f"`{node.children[0]}.{node.children[1]}.{node.children[2]}`"
+        return self._apply_indent(output, node.data.indent_level)
