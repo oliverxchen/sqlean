@@ -8,20 +8,20 @@ from lark.visitors import Visitor_Recursive, v_args
 from sqlean.definitions import IMPORT_PATH
 
 
-class TreeData(str):
-    """Data structure for tree"""
+class CustomData(str):
+    """Data structure for trees and tokens"""
 
     indent_level: int
-    is_inline: bool
 
-    def __new__(cls, name: str, indent_level: int, is_inline: bool):
-        """Class method to create a new instance of TreeData.
-        TreeData inherits from `str` to be a valid object for
-        tree.data. Lark transformers will have access to the attributes
-        of TreeData that are specified here."""
+    def __new__(cls, name: str, indent_level: int):
+        """Class method to create a new instance of CustomData.
+        CustomData inherits from `str` to be a valid object for
+        Tree.data and Token.type.
+
+        Lark transformers will have access to the attributes
+        of CustomData that are specified here."""
         obj = str.__new__(cls, name)
         obj.indent_level = indent_level
-        obj.is_inline = is_inline
         return obj
 
 
@@ -54,20 +54,21 @@ class Parser:
 class TreeGroomer(Visitor_Recursive):
     """Grooms the trees of ugly branches and leaves, sets indentation."""
 
-    root = "query_expr"
+    root = "query_file"
     nodes_to_indent = {"from_clause", "select_list", "where_list"}
+    parents_to_indent = {"sub_query_expr"}
     nodes_to_dedent = {"from_modifier"}
-    nodes_to_inline = {"arg_item"}
+    tokens_to_indent = {"FROM"}
 
     def __default__(self, tree):
         """Executed on each node of the tree"""
 
         if tree.data == TreeGroomer.root:
-            tree.data = TreeData(name=TreeGroomer.root, indent_level=0, is_inline=True)
+            tree.data = CustomData(name=TreeGroomer.root, indent_level=0)
 
         for child in tree.children:
             child = self.__remove_prefix_from_node(child)
-            child = self.__set_indent_level(child, tree.data.indent_level)
+            child = self.__set_indent_level(child, tree.data)
 
     def __remove_prefix_from_node(self, node: Union[Tree, Token]) -> Union[Tree, Token]:
         if isinstance(node, Token):
@@ -81,40 +82,36 @@ class TreeGroomer(Visitor_Recursive):
         return input_str.split("__")[-1]
 
     def __set_indent_level(
-        self, child: Union[Tree, Token], parent_indent_level: int
+        self, child: Union[Tree, Token], parent_data: CustomData
     ) -> Union[Tree, Token]:
         if isinstance(child, Tree):
             name = child.data
-            child.data = TreeData(
+            child.data = CustomData(
                 name=name,
-                indent_level=self.__get_indent_level(name, parent_indent_level),
-                is_inline=self.__get_is_inline(name),
+                indent_level=self.__get_indent_level(name, parent_data),
+            )
+        elif child.type in self.tokens_to_indent:
+            child.type = CustomData(
+                name=child.type, indent_level=parent_data.indent_level
             )
         return child
 
-    def __get_indent_level(self, name: str, parent_indent_level: int) -> int:
+    def __get_indent_level(self, name: str, parent_data: CustomData) -> int:
         increment_level = 0
         if name in self.nodes_to_indent:
             increment_level = 1
+        elif parent_data in self.parents_to_indent:
+            increment_level = 1
         elif name in self.nodes_to_dedent:
             increment_level = -1
-        return parent_indent_level + increment_level
-
-    def __get_is_inline(self, name: str) -> bool:
-        if name in self.nodes_to_inline:
-            return True
-        return False
+        return parent_data.indent_level + increment_level
 
 
 class Debugger(Visitor_Recursive):
     """Print out attributes for debugging"""
 
     def __default__(self, tree):
-        print(
-            f"name: {tree.data}, "
-            f"indent_level: {tree.data.indent_level}, "
-            f"is_inline: {tree.data.is_inline}"
-        )
+        print(f"name: {tree.data}, " f"indent_level: {tree.data.indent_level}, ")
 
 
 @v_args(tree=True)
@@ -124,6 +121,10 @@ class Printer(Transformer):
     def __init__(self, indent: str):
         super().__init__()
         self.indent = indent
+
+    def __default__(self, *args):
+        """default for all Trees without a callback"""
+        raise NotImplementedError(f"Unsupported node: {args[0]}")
 
     def __default_token__(self, token):
         if self._is_non_keyword(token):
@@ -226,3 +227,25 @@ class Printer(Transformer):
         """print explicit_table_name"""
         output = f"`{node.children[0]}.{node.children[1]}.{node.children[2]}`"
         return self._apply_indent(output, node.data.indent_level)
+
+    @staticmethod
+    def query_file(node):
+        """print query_file"""
+        return node.children[0]
+
+    def sub_query_expr(self, node):
+        """print sub_query_expr"""
+        return (
+            self._apply_indent("(\n", node.data.indent_level)
+            + node.children[0]
+            + "\n"
+            + self._apply_indent(")", node.data.indent_level)
+        )
+
+    def select_statement(self, node):
+        """print select_statement"""
+        return self._apply_indent(self._rollup_space(node), node.data.indent_level)
+
+    def FROM(self, token):  # pylint: disable=invalid-name
+        """print FROM"""
+        return self._apply_indent(token.upper(), token.type.indent_level)

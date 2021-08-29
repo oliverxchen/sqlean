@@ -3,30 +3,40 @@ select SUM(x) from c
 ---
 
 Tree(
-    "query_expr",
+    "query_file",
     [
-        Token("SELECT", "select"),
         Tree(
-            "select_list",
+            "query_expr",
             [
+                Tree("select_statement", [Token("SELECT", "select")]),
                 Tree(
-                    "select_item_unaliased",
+                    "select_list",
                     [
                         Tree(
-                            "function_expression",
+                            "select_item_unaliased",
                             [
-                                Token("FUNCTION", "SUM"),
                                 Tree(
-                                    "arg_list",
-                                    [Tree("arg_item", [Token("FIELD_NAME", "x")])],
-                                ),
+                                    "function_expression",
+                                    [
+                                        Token("FUNCTION", "SUM"),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [Token("FIELD_NAME", "x")],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
                             ],
                         )
                     ],
-                )
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "c")])]),
             ],
-        ),
-        Token("FROM", "from"),
-        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "c")])]),
+        )
     ],
 )
