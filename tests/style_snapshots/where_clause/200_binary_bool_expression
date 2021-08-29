@@ -5,7 +5,7 @@ select field from table where a AND b
 SELECT
     field,
 FROM
-table
+    table
 WHERE
     a
     AND b

@@ -15,10 +15,10 @@ sub_query_expr: "(" query_expr ")"
 // groupby_modifier: groupby_clause // [having_clause]
 
 
-?table_name: TABLE_NAME
+?table_name: simple_table_name
     | explicit_table_name
 
-TABLE_NAME: CNAME
+simple_table_name: CNAME
 explicit_table_name: "`" PROJECT_ID  "." DATASET_ID "." TABLE_ID "`"
     | "`" PROJECT_ID  "`.`" DATASET_ID "`.`" TABLE_ID "`"
 

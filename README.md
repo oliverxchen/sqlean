@@ -13,6 +13,11 @@ All children of a tree should have the same indentation level.
 As much as possible, parsing should follow BQ syntax. However, the BQ docs do
 not provide a complete grammar.
 
+You should be able to determine from a node itself what the indentation level
+should be. In other words, you shouldn't need to look to the parent. This means
+that anything that should be printed in full on it's own line needs to be a tree
+and not a token.
+
 ### Thoughts
 
 How do we know what should have `indent_level = 0`?
@@ -23,11 +28,7 @@ clause and query that should all be `indent_level = 0`.
 How about if we start with `query_file` and and all direct children of that have
 `indent_level = 0`?
 
-custom trees
-<https://github.com/lark-parser/lark/issues/676>
-
 ### Constraints
 
-* Visitors can add attributes, but Transformers can't see them
 * Transformers are leaf to root, so cannot determine indent levels
 * Visitors are leaf to root by default, but can be run root to leaf (visit_topdown)

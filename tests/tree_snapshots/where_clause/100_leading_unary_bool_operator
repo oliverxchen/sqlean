@@ -14,7 +14,7 @@ Tree(
         Tree(
             "from_clause",
             [
-                Token("TABLE_NAME", "table"),
+                Tree("simple_table_name", [Token("CNAME", "table")]),
                 Tree(
                     "from_modifier",
                     [
