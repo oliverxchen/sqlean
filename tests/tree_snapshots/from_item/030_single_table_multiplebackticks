@@ -3,26 +3,31 @@ select field from `project`.`dataset`.`table`
 ---
 
 Tree(
-    "query_expr",
+    "query_file",
     [
-        Token("SELECT", "select"),
         Tree(
-            "select_list",
-            [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
-        ),
-        Token("FROM", "from"),
-        Tree(
-            "from_clause",
+            "query_expr",
             [
+                Tree("select_statement", [Token("SELECT", "select")]),
                 Tree(
-                    "explicit_table_name",
+                    "select_list",
+                    [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
+                ),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
                     [
-                        Token("PROJECT_ID", "project"),
-                        Token("DATASET_ID", "dataset"),
-                        Token("TABLE_ID", "table"),
+                        Tree(
+                            "explicit_table_name",
+                            [
+                                Token("PROJECT_ID", "project"),
+                                Token("DATASET_ID", "dataset"),
+                                Token("TABLE_ID", "table"),
+                            ],
+                        )
                     ],
-                )
+                ),
             ],
-        ),
+        )
     ],
 )

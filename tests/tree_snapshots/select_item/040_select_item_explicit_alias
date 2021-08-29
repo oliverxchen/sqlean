@@ -3,22 +3,30 @@ select field as new_field_name from table
 ---
 
 Tree(
-    "query_expr",
+    "query_file",
     [
-        Token("SELECT", "select"),
         Tree(
-            "select_list",
+            "query_expr",
             [
+                Tree("select_statement", [Token("SELECT", "select")]),
                 Tree(
-                    "select_item_aliased",
+                    "select_list",
                     [
-                        Token("FIELD_NAME", "field"),
-                        Token("ALIAS_NAME", "new_field_name"),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Token("FIELD_NAME", "field"),
+                                Token("ALIAS_NAME", "new_field_name"),
+                            ],
+                        )
                     ],
-                )
+                ),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [Tree("simple_table_name", [Token("CNAME", "table")])],
+                ),
             ],
-        ),
-        Token("FROM", "from"),
-        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+        )
     ],
 )

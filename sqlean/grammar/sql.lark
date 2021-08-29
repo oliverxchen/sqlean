@@ -1,7 +1,10 @@
-?start: query_expr
+?start: query_file
 
-!query_expr: "SELECT"i select_list ["FROM"i from_clause]
+query_file: query_expr
 
+!query_expr: select_statement select_list ["FROM"i from_clause]
+
+!select_statement: "SELECT"i
 from_clause: from_item [from_modifier]
 
 !?from_item: table_name

@@ -3,38 +3,46 @@ select field from table where a or b and c
 ---
 
 Tree(
-    "query_expr",
+    "query_file",
     [
-        Token("SELECT", "select"),
         Tree(
-            "select_list",
-            [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
-        ),
-        Token("FROM", "from"),
-        Tree(
-            "from_clause",
+            "query_expr",
             [
-                Tree("simple_table_name", [Token("CNAME", "table")]),
+                Tree("select_statement", [Token("SELECT", "select")]),
                 Tree(
-                    "from_modifier",
+                    "select_list",
+                    [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
+                ),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
                     [
-                        Token("WHERE", "where"),
+                        Tree("simple_table_name", [Token("CNAME", "table")]),
                         Tree(
-                            "where_list",
+                            "from_modifier",
                             [
-                                Tree("first_where_item", [Token("FIELD_NAME", "a")]),
+                                Token("WHERE", "where"),
                                 Tree(
-                                    "after_where_item",
+                                    "where_list",
                                     [
-                                        Token("BINARY_BOOL_OPERATOR", "or"),
-                                        Token("FIELD_NAME", "b"),
-                                    ],
-                                ),
-                                Tree(
-                                    "after_where_item",
-                                    [
-                                        Token("BINARY_BOOL_OPERATOR", "and"),
-                                        Token("FIELD_NAME", "c"),
+                                        Tree(
+                                            "first_where_item",
+                                            [Token("FIELD_NAME", "a")],
+                                        ),
+                                        Tree(
+                                            "after_where_item",
+                                            [
+                                                Token("BINARY_BOOL_OPERATOR", "or"),
+                                                Token("FIELD_NAME", "b"),
+                                            ],
+                                        ),
+                                        Tree(
+                                            "after_where_item",
+                                            [
+                                                Token("BINARY_BOOL_OPERATOR", "and"),
+                                                Token("FIELD_NAME", "c"),
+                                            ],
+                                        ),
                                     ],
                                 ),
                             ],
@@ -42,6 +50,6 @@ Tree(
                     ],
                 ),
             ],
-        ),
+        )
     ],
 )

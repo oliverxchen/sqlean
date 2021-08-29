@@ -3,52 +3,60 @@ select field from (select field, field2 from table)
 ---
 
 Tree(
-    "query_expr",
+    "query_file",
     [
-        Token("SELECT", "select"),
         Tree(
-            "select_list",
-            [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
-        ),
-        Token("FROM", "from"),
-        Tree(
-            "from_clause",
+            "query_expr",
             [
+                Tree("select_statement", [Token("SELECT", "select")]),
                 Tree(
-                    "sub_query_expr",
+                    "select_list",
+                    [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
+                ),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
                     [
                         Tree(
-                            "query_expr",
+                            "sub_query_expr",
                             [
-                                Token("SELECT", "select"),
                                 Tree(
-                                    "select_list",
+                                    "query_expr",
                                     [
                                         Tree(
-                                            "select_item_unaliased",
-                                            [Token("FIELD_NAME", "field")],
+                                            "select_statement",
+                                            [Token("SELECT", "select")],
                                         ),
                                         Tree(
-                                            "select_item_unaliased",
-                                            [Token("FIELD_NAME", "field2")],
+                                            "select_list",
+                                            [
+                                                Tree(
+                                                    "select_item_unaliased",
+                                                    [Token("FIELD_NAME", "field")],
+                                                ),
+                                                Tree(
+                                                    "select_item_unaliased",
+                                                    [Token("FIELD_NAME", "field2")],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("FROM", "from"),
+                                        Tree(
+                                            "from_clause",
+                                            [
+                                                Tree(
+                                                    "simple_table_name",
+                                                    [Token("CNAME", "table")],
+                                                )
+                                            ],
                                         ),
                                     ],
-                                ),
-                                Token("FROM", "from"),
-                                Tree(
-                                    "from_clause",
-                                    [
-                                        Tree(
-                                            "simple_table_name",
-                                            [Token("CNAME", "table")],
-                                        )
-                                    ],
-                                ),
+                                )
                             ],
                         )
                     ],
-                )
+                ),
             ],
-        ),
+        )
     ],
 )

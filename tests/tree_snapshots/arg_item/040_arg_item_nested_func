@@ -3,79 +3,86 @@ select date_trunc(date(timestamp_millis(t)), month) from a
 ---
 
 Tree(
-    "query_expr",
+    "query_file",
     [
-        Token("SELECT", "select"),
         Tree(
-            "select_list",
+            "query_expr",
             [
+                Tree("select_statement", [Token("SELECT", "select")]),
                 Tree(
-                    "select_item_unaliased",
+                    "select_list",
                     [
                         Tree(
-                            "function_expression",
+                            "select_item_unaliased",
                             [
-                                Token("FUNCTION", "date_trunc"),
                                 Tree(
-                                    "arg_list",
+                                    "function_expression",
                                     [
+                                        Token("FUNCTION", "date_trunc"),
                                         Tree(
-                                            "arg_item",
+                                            "arg_list",
                                             [
                                                 Tree(
-                                                    "function_expression",
+                                                    "arg_item",
                                                     [
-                                                        Token("FUNCTION", "date"),
                                                         Tree(
-                                                            "arg_list",
+                                                            "function_expression",
                                                             [
+                                                                Token(
+                                                                    "FUNCTION", "date"
+                                                                ),
                                                                 Tree(
-                                                                    "arg_item",
+                                                                    "arg_list",
                                                                     [
                                                                         Tree(
-                                                                            "function_expression",
+                                                                            "arg_item",
                                                                             [
-                                                                                Token(
-                                                                                    "FUNCTION",
-                                                                                    "timestamp_millis",
-                                                                                ),
                                                                                 Tree(
-                                                                                    "arg_list",
+                                                                                    "function_expression",
                                                                                     [
+                                                                                        Token(
+                                                                                            "FUNCTION",
+                                                                                            "timestamp_millis",
+                                                                                        ),
                                                                                         Tree(
-                                                                                            "arg_item",
+                                                                                            "arg_list",
                                                                                             [
-                                                                                                Token(
-                                                                                                    "FIELD_NAME",
-                                                                                                    "t",
+                                                                                                Tree(
+                                                                                                    "arg_item",
+                                                                                                    [
+                                                                                                        Token(
+                                                                                                            "FIELD_NAME",
+                                                                                                            "t",
+                                                                                                        )
+                                                                                                    ],
                                                                                                 )
                                                                                             ],
-                                                                                        )
+                                                                                        ),
                                                                                     ],
-                                                                                ),
+                                                                                )
                                                                             ],
                                                                         )
                                                                     ],
-                                                                )
+                                                                ),
                                                             ],
-                                                        ),
+                                                        )
                                                     ],
-                                                )
+                                                ),
+                                                Tree(
+                                                    "arg_item",
+                                                    [Token("DATE_INTERVAL", "month")],
+                                                ),
                                             ],
                                         ),
-                                        Tree(
-                                            "arg_item",
-                                            [Token("DATE_INTERVAL", "month")],
-                                        ),
                                     ],
-                                ),
+                                )
                             ],
                         )
                     ],
-                )
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "a")])]),
             ],
-        ),
-        Token("FROM", "from"),
-        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "a")])]),
+        )
     ],
 )

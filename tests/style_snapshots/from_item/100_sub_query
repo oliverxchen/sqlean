@@ -1,0 +1,14 @@
+select field from (select field, field2 from table)
+
+---
+
+SELECT
+    field,
+FROM
+    (
+        SELECT
+            field,
+            field2,
+        FROM
+            table
+    )
