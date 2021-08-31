@@ -74,5 +74,9 @@ def write_snapshot(sql_parser: Parser, raw: str, file_path: Path):
         writer.write(raw)
         writer.write(f"\n\n{FILE_SEPARATOR}\n")
         writer.write(
-            black.format_str(str(sql_parser.get_tree(raw)), mode=black.FileMode())
+            black.format_str(
+                str(sql_parser.get_tree(raw)), mode=black.Mode(line_length=120)  # type: ignore # noqa: E501
+            )
         )
+        # The type: ignore is because mypy fails this line in python 3.6 for some
+        # reason.

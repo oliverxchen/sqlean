@@ -22,14 +22,8 @@ Tree(
                                         Tree(
                                             "arg_list",
                                             [
-                                                Tree(
-                                                    "arg_item",
-                                                    [Token("FIELD_NAME", "a")],
-                                                ),
-                                                Tree(
-                                                    "arg_item",
-                                                    [Token("DATE_INTERVAL", "month")],
-                                                ),
+                                                Tree("arg_item", [Token("FIELD_NAME", "a")]),
+                                                Tree("arg_item", [Token("DATE_INTERVAL", "month")]),
                                             ],
                                         ),
                                     ],

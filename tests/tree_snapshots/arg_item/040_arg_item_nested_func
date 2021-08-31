@@ -28,9 +28,7 @@ Tree(
                                                         Tree(
                                                             "function_expression",
                                                             [
-                                                                Token(
-                                                                    "FUNCTION", "date"
-                                                                ),
+                                                                Token("FUNCTION", "date"),
                                                                 Tree(
                                                                     "arg_list",
                                                                     [
@@ -68,10 +66,7 @@ Tree(
                                                         )
                                                     ],
                                                 ),
-                                                Tree(
-                                                    "arg_item",
-                                                    [Token("DATE_INTERVAL", "month")],
-                                                ),
+                                                Tree("arg_item", [Token("DATE_INTERVAL", "month")]),
                                             ],
                                         ),
                                     ],

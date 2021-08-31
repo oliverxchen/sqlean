@@ -9,15 +9,9 @@ Tree(
             "query_expr",
             [
                 Tree("select_statement", [Token("SELECT", "select")]),
-                Tree(
-                    "select_list",
-                    [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
-                ),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])]),
                 Token("FROM", "from"),
-                Tree(
-                    "from_clause",
-                    [Tree("simple_table_name", [Token("CNAME", "table")])],
-                ),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
             ],
         )
     ],
