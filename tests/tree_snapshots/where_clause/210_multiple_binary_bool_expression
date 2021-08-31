@@ -9,10 +9,7 @@ Tree(
             "query_expr",
             [
                 Tree("select_statement", [Token("SELECT", "select")]),
-                Tree(
-                    "select_list",
-                    [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])],
-                ),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])]),
                 Token("FROM", "from"),
                 Tree(
                     "from_clause",
@@ -25,23 +22,14 @@ Tree(
                                 Tree(
                                     "where_list",
                                     [
+                                        Tree("first_where_item", [Token("FIELD_NAME", "a")]),
                                         Tree(
-                                            "first_where_item",
-                                            [Token("FIELD_NAME", "a")],
+                                            "after_where_item",
+                                            [Token("BINARY_BOOL_OPERATOR", "or"), Token("FIELD_NAME", "b")],
                                         ),
                                         Tree(
                                             "after_where_item",
-                                            [
-                                                Token("BINARY_BOOL_OPERATOR", "or"),
-                                                Token("FIELD_NAME", "b"),
-                                            ],
-                                        ),
-                                        Tree(
-                                            "after_where_item",
-                                            [
-                                                Token("BINARY_BOOL_OPERATOR", "and"),
-                                                Token("FIELD_NAME", "c"),
-                                            ],
+                                            [Token("BINARY_BOOL_OPERATOR", "and"), Token("FIELD_NAME", "c")],
                                         ),
                                     ],
                                 ),
