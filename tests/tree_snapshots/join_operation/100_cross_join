@@ -1,4 +1,4 @@
-select * from table1 right	 join table2
+select * from table1 cross  join table2
 
 ---
 
@@ -15,10 +15,10 @@ Tree(
                     "from_clause",
                     [
                         Tree(
-                            "join_operation_with_condition",
+                            "cross_join_operation",
                             [
                                 Tree("simple_table_name", [Token("CNAME", "table1")]),
-                                Tree("right_join", []),
+                                Tree("cross_join", []),
                                 Tree("simple_table_name", [Token("CNAME", "table2")]),
                             ],
                         )
