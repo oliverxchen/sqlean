@@ -285,3 +285,16 @@ class Printer(Transformer):
     def cross_join_operation(self, node):
         """rollup cross_join_operation"""
         return self._rollup_linesep(node)
+
+    def arg_item(self, node):
+        """print arg_item"""
+        return self._rollup_space(node)
+
+    def arg_list(self, node):
+        """rollup arg_list"""
+        return self._rollup_comma_inline(node)
+
+    @staticmethod
+    def function_expression(node):
+        """print function_expression"""
+        return f"{node.children[0]}({node.children[1]})"

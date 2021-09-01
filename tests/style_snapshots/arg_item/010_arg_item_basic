@@ -1,0 +1,8 @@
+select SUM(x) from c
+
+---
+
+SELECT
+    SUM(x),
+FROM
+    c
