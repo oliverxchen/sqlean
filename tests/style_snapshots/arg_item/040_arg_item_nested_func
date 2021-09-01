@@ -1,0 +1,8 @@
+select date_trunc(date(timestamp_millis(t)), month) from a
+
+---
+
+SELECT
+    DATE_TRUNC(DATE(TIMESTAMP_MILLIS(t)), MONTH),
+FROM
+    a
