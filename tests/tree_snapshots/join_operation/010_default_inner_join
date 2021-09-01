@@ -18,7 +18,7 @@ Tree(
                             "join_operation_with_condition",
                             [
                                 Tree("simple_table_name", [Token("CNAME", "table1")]),
-                                Tree("join_type", [Tree("inner_join", [])]),
+                                Tree("inner_join", []),
                                 Tree("simple_table_name", [Token("CNAME", "table2")]),
                             ],
                         )

@@ -32,11 +32,12 @@ TABLE_ID: CNAME
 ?join_operation: cross_join_operation
     | join_operation_with_condition
 
-cross_join_operation: from_item "CROSS JOIN"i from_item
-
+cross_join_operation: from_item cross_join from_item
 join_operation_with_condition: from_item join_type from_item //( on_clause | using_clause)
 
-join_type: inner_join
+cross_join: "CROSS"i "JOIN"i
+
+?join_type: inner_join
     | full_join
     | left_join
     | right_join

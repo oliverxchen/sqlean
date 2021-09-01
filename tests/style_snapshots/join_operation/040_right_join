@@ -1,0 +1,10 @@
+select * from table1 right	 join table2
+
+---
+
+SELECT
+    *,
+FROM
+    table1
+RIGHT OUTER JOIN
+    table2

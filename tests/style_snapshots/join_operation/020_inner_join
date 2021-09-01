@@ -1,0 +1,10 @@
+select * from table1 inner  join table2
+
+---
+
+SELECT
+    *,
+FROM
+    table1
+INNER JOIN
+    table2

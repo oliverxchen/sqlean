@@ -1,0 +1,10 @@
+select * from table1 full outer join table2
+
+---
+
+SELECT
+    *,
+FROM
+    table1
+FULL OUTER JOIN
+    table2

@@ -1,4 +1,5 @@
 """Parse sql strings"""
+# pylint: disable=too-many-public-methods
 from os import linesep
 from typing import Union
 from lark import Lark, Transformer, Token
@@ -57,7 +58,14 @@ class TreeGroomer(Visitor_Recursive):
     root = "query_file"
     nodes_to_indent = {"from_clause", "select_list", "where_list"}
     parents_to_indent = {"sub_query_expr"}
-    nodes_to_dedent = {"from_modifier"}
+    nodes_to_dedent = {
+        "from_modifier",
+        "inner_join",
+        "left_join",
+        "right_join",
+        "full_join",
+        "cross_join",
+    }
     tokens_to_indent = {"FROM"}
 
     def __default__(self, tree):
@@ -249,3 +257,31 @@ class Printer(Transformer):
     def FROM(self, token):  # pylint: disable=invalid-name
         """print FROM"""
         return self._apply_indent(token.upper(), token.type.indent_level)
+
+    def inner_join(self, node):
+        """print inner_join"""
+        return self._apply_indent("INNER JOIN", node.data.indent_level)
+
+    def left_join(self, node):
+        """print left_join"""
+        return self._apply_indent("LEFT OUTER JOIN", node.data.indent_level)
+
+    def right_join(self, node):
+        """print right_join"""
+        return self._apply_indent("RIGHT OUTER JOIN", node.data.indent_level)
+
+    def full_join(self, node):
+        """print full_join"""
+        return self._apply_indent("FULL OUTER JOIN", node.data.indent_level)
+
+    def join_operation_with_condition(self, node):
+        """rollup join_operation_with_condition"""
+        return self._rollup_linesep(node)
+
+    def cross_join(self, node):
+        """print cross_join"""
+        return self._apply_indent("CROSS JOIN", node.data.indent_level)
+
+    def cross_join_operation(self, node):
+        """rollup cross_join_operation"""
+        return self._rollup_linesep(node)
