@@ -1,0 +1,11 @@
+select a, count(b) from table group by a
+
+---
+
+SELECT
+    a,
+    COUNT(b),
+FROM
+    table
+GROUP BY
+    a

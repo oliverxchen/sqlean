@@ -56,7 +56,7 @@ class TreeGroomer(Visitor_Recursive):
     """Grooms the trees of ugly branches and leaves, sets indentation."""
 
     root = "query_file"
-    nodes_to_indent = {"from_clause", "select_list", "where_list"}
+    nodes_to_indent = {"from_clause", "select_list", "where_list", "groupby_list"}
     parents_to_indent = {"sub_query_expr"}
     nodes_to_dedent = {
         "from_modifier",
@@ -65,6 +65,7 @@ class TreeGroomer(Visitor_Recursive):
         "right_join",
         "full_join",
         "cross_join",
+        "groupby_modifier",
     }
     tokens_to_indent = {"FROM"}
 
@@ -298,3 +299,18 @@ class Printer(Transformer):
     def function_expression(node):
         """print function_expression"""
         return f"{node.children[0]}({node.children[1]})"
+
+    def groupby_item(self, node):
+        """print groupby_item"""
+        return self._rollup_space(node)
+
+    def groupby_list(self, node):
+        """rollup groupby_list"""
+        return self._apply_indent(
+            self._rollup_comma_inline(node), node.data.indent_level
+        )
+
+    def groupby_modifier(self, node):
+        """rollup groupby_modifier"""
+        output = self._apply_indent("GROUP BY\n", node.data.indent_level)
+        return output + node.children[2]
