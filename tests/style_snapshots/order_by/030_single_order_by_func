@@ -1,0 +1,10 @@
+select count(b) from table order by round(a)
+
+---
+
+SELECT
+    COUNT(b),
+FROM
+    table
+ORDER BY
+    ROUND(a)

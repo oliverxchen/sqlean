@@ -15,19 +15,13 @@ Tree(
                     "from_clause",
                     [
                         Tree("simple_table_name", [Token("CNAME", "table")]),
+                        Token("WHERE", "where"),
                         Tree(
-                            "from_modifier",
+                            "where_list",
                             [
-                                Token("WHERE", "where"),
+                                Tree("first_where_item", [Token("FIELD_NAME", "a")]),
                                 Tree(
-                                    "where_list",
-                                    [
-                                        Tree("first_where_item", [Token("FIELD_NAME", "a")]),
-                                        Tree(
-                                            "after_where_item",
-                                            [Token("BINARY_BOOL_OPERATOR", "AND"), Token("FIELD_NAME", "b")],
-                                        ),
-                                    ],
+                                    "after_where_item", [Token("BINARY_BOOL_OPERATOR", "AND"), Token("FIELD_NAME", "b")]
                                 ),
                             ],
                         ),
