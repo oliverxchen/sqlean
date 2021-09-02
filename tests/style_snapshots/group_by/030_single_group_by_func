@@ -1,0 +1,10 @@
+select count(b) from table group by round(a)
+
+---
+
+SELECT
+    COUNT(b),
+FROM
+    table
+GROUP BY
+    ROUND(a)

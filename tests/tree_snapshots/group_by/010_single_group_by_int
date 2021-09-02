@@ -1,0 +1,48 @@
+select a, count(b) from table group by 1
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Tree("select_statement", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree("select_item_unaliased", [Token("FIELD_NAME", "a")]),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Token("FUNCTION", "count"),
+                                        Tree("arg_list", [Tree("arg_item", [Token("FIELD_NAME", "b")])]),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [
+                        Tree("simple_table_name", [Token("CNAME", "table")]),
+                        Tree(
+                            "groupby_modifier",
+                            [
+                                Token("GROUP", "group"),
+                                Token("BY", "by"),
+                                Tree("groupby_list", [Tree("groupby_item", [Token("INT", "1")])]),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ],
+)
