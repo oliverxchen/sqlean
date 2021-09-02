@@ -56,18 +56,22 @@ class TreeGroomer(Visitor_Recursive):
     """Grooms the trees of ugly branches and leaves, sets indentation."""
 
     root = "query_file"
-    nodes_to_indent = {"from_clause", "select_list", "where_list", "groupby_list"}
-    parents_to_indent = {"sub_query_expr"}
-    nodes_to_dedent = {
-        "from_modifier",
-        "inner_join",
-        "left_join",
-        "right_join",
-        "full_join",
-        "cross_join",
-        "groupby_modifier",
+    node_indent_map = {
+        "from_clause": 1,
+        "select_list": 1,
+        "from_modifier": -1,
+        "inner_join": -1,
+        "left_join": -1,
+        "right_join": -1,
+        "full_join": -1,
+        "cross_join": -1,
+        "groupby_modifier": -1,
+        "groupby_list": 1,
+        "orderby_modifier": -1,
+        "orderby_list": 1,
     }
-    tokens_to_indent = {"FROM"}
+    token_indent_map = {"FROM": 0, "WHERE": -1}
+    parents_to_indent = {"sub_query_expr"}
 
     def __default__(self, tree):
         """Executed on each node of the tree"""
@@ -99,20 +103,17 @@ class TreeGroomer(Visitor_Recursive):
                 name=name,
                 indent_level=self.__get_indent_level(name, parent_data),
             )
-        elif child.type in self.tokens_to_indent:
-            child.type = CustomData(
-                name=child.type, indent_level=parent_data.indent_level
-            )
+        elif child.type in self.token_indent_map:
+            indent_level = parent_data.indent_level + self.token_indent_map[child.type]
+            child.type = CustomData(name=child.type, indent_level=indent_level)
         return child
 
     def __get_indent_level(self, name: str, parent_data: CustomData) -> int:
         increment_level = 0
-        if name in self.nodes_to_indent:
-            increment_level = 1
+        if name in self.node_indent_map:
+            increment_level = self.node_indent_map[name]
         elif parent_data in self.parents_to_indent:
             increment_level = 1
-        elif name in self.nodes_to_dedent:
-            increment_level = -1
         return parent_data.indent_level + increment_level
 
 
@@ -151,6 +152,9 @@ class Printer(Transformer):
         """Apply indentation to text"""
         return f"{self.indent * indent_level}{text}"
 
+    def _token_indent(self, token):
+        return self._apply_indent(token.upper(), token.type.indent_level)
+
     @staticmethod
     def _rollup_linesep(node):
         """Join list with linesep"""
@@ -170,6 +174,14 @@ class Printer(Transformer):
     def _rollup_comma_newline(node):
         """Join list with comma newline"""
         return f",{linesep}".join(node.children)
+
+    def FROM(self, token):  # pylint: disable=invalid-name
+        """print FROM"""
+        return self._token_indent(token)
+
+    def WHERE(self, token):  # pylint: disable=invalid-name
+        """print WHERE"""
+        return self._token_indent(token)
 
     def select_item_unaliased(self, node):
         """print select_item_unaliased"""
@@ -212,10 +224,6 @@ class Printer(Transformer):
         """rollup where_clause"""
         return self._rollup_linesep(node)
 
-    def from_modifier(self, node):
-        """rollup from_modifier"""
-        return self._rollup_linesep(node)
-
     def where_list(self, node):
         """rollup where_list"""
         return self._rollup_linesep(node)
@@ -254,10 +262,6 @@ class Printer(Transformer):
     def select_statement(self, node):
         """print select_statement"""
         return self._apply_indent(self._rollup_space(node), node.data.indent_level)
-
-    def FROM(self, token):  # pylint: disable=invalid-name
-        """print FROM"""
-        return self._apply_indent(token.upper(), token.type.indent_level)
 
     def inner_join(self, node):
         """print inner_join"""
@@ -313,4 +317,19 @@ class Printer(Transformer):
     def groupby_modifier(self, node):
         """rollup groupby_modifier"""
         output = self._apply_indent("GROUP BY\n", node.data.indent_level)
+        return output + node.children[2]
+
+    def orderby_item(self, node):
+        """print orderby_item"""
+        return self._rollup_space(node)
+
+    def orderby_list(self, node):
+        """rollup orderby_list"""
+        return self._apply_indent(
+            self._rollup_comma_inline(node), node.data.indent_level
+        )
+
+    def orderby_modifier(self, node):
+        """rollup orderby_modifier"""
+        output = self._apply_indent("ORDER BY\n", node.data.indent_level)
         return output + node.children[2]

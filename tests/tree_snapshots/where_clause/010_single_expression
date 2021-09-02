@@ -15,13 +15,8 @@ Tree(
                     "from_clause",
                     [
                         Tree("simple_table_name", [Token("CNAME", "table")]),
-                        Tree(
-                            "from_modifier",
-                            [
-                                Token("WHERE", "where"),
-                                Tree("where_list", [Tree("first_where_item", [Token("FIELD_NAME", "a")])]),
-                            ],
-                        ),
+                        Token("WHERE", "where"),
+                        Tree("where_list", [Tree("first_where_item", [Token("FIELD_NAME", "a")])]),
                     ],
                 ),
             ],

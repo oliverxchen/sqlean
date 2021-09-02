@@ -1,0 +1,11 @@
+select a, count(b) from table order by a  asc
+
+---
+
+SELECT
+    a,
+    COUNT(b),
+FROM
+    table
+ORDER BY
+    a ASC

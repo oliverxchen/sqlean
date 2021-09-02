@@ -5,7 +5,7 @@ query_file: query_expr
 !query_expr: select_statement select_list ["FROM"i from_clause]
 
 !select_statement: "SELECT"i
-from_clause: from_item [from_modifier]
+!from_clause: from_item ["WHERE"i where_list] [groupby_modifier] [orderby_modifier]
 
 !?from_item: table_name
     | join_operation
@@ -14,14 +14,15 @@ from_clause: from_item [from_modifier]
 
 sub_query_expr: "(" query_expr ")"
 
-!?from_modifier: "WHERE"i where_list
-    | ["WHERE"i where_list] groupby_modifier
-
 !groupby_modifier: "GROUP"i "BY"i groupby_list //[having_clause]
 groupby_list: groupby_item ("," groupby_item)*
 groupby_item: base_expression | INT
 
 // !having_clause: "HAVING"i where_list
+
+!orderby_modifier: "ORDER"i "BY"i orderby_list
+orderby_list: orderby_item ("," orderby_item)*
+!orderby_item: (base_expression | INT) ["ASC"i | "DESC"i]
 
 ?table_name: simple_table_name
     | explicit_table_name
