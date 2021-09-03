@@ -2,7 +2,7 @@
 
 query_file: query_expr
 
-!query_expr: select_statement select_list ["FROM"i from_clause]
+!query_expr: select_statement select_list ["FROM"i from_clause] [limit_clause]
 
 !select_statement: "SELECT"i
 !from_clause: from_item ["WHERE"i where_list] [groupby_modifier] [orderby_modifier]
@@ -58,6 +58,8 @@ right_join: "RIGHT"i ["OUTER"i] "JOIN"i
 
 // using_clause:
 //     USING ( join_column [, ...] )
+
+!limit_clause: "LIMIT"i INT ["OFFSET"i INT]
 
 %import expression.select_list
 %import expression.where_list

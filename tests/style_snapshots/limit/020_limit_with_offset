@@ -1,0 +1,9 @@
+select * from table limit 100 offset 10
+
+---
+
+SELECT
+    *,
+FROM
+    table
+LIMIT 100 OFFSET 10

@@ -333,3 +333,7 @@ class Printer(Transformer):
         """rollup orderby_modifier"""
         output = self._apply_indent("ORDER BY\n", node.data.indent_level)
         return output + node.children[2]
+
+    def limit_clause(self, node):
+        """rollup limit_clause"""
+        return self._simple_indent(node)
