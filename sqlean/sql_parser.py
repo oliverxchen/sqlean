@@ -65,13 +65,15 @@ class TreeGroomer(Visitor_Recursive):
         "right_join": -1,
         "full_join": -1,
         "cross_join": -1,
+        "using_clause": -1,
         "groupby_modifier": -1,
         "groupby_list": 1,
         "orderby_modifier": -1,
         "orderby_list": 1,
+        "on_clause": -1,
     }
     token_indent_map = {"FROM": 0, "WHERE": -1}
-    parents_to_indent = {"sub_query_expr"}
+    parents_to_indent = {"sub_query_expr", "on_clause"}
 
     def __default__(self, tree):
         """Executed on each node of the tree"""
@@ -224,15 +226,15 @@ class Printer(Transformer):
         """rollup where_clause"""
         return self._rollup_linesep(node)
 
-    def where_list(self, node):
+    def bool_list(self, node):
         """rollup where_list"""
         return self._rollup_linesep(node)
 
-    def first_where_item(self, node):
+    def first_bool_item(self, node):
         """print first_where_item"""
         return self._simple_indent(node)
 
-    def after_where_item(self, node):
+    def after_bool_item(self, node):
         """print subsequent_where_item"""
         return self._simple_indent(node)
 
@@ -337,3 +339,20 @@ class Printer(Transformer):
     def limit_clause(self, node):
         """rollup limit_clause"""
         return self._simple_indent(node)
+
+    def using_list(self, node):
+        """rollup using_list"""
+        return self._rollup_comma_inline(node)
+
+    def using_clause(self, node):
+        """rollup using_clause"""
+        return self._apply_indent(f"USING ({node.children[2]})", node.data.indent_level)
+
+    def binary_comparison_operation(self, node):
+        """rollup binary_comparison_operation"""
+        return self._rollup_space(node)
+
+    def on_clause(self, node):
+        """rollup on_clause"""
+        output = self._apply_indent("ON\n", node.data.indent_level)
+        return output + node.children[1]

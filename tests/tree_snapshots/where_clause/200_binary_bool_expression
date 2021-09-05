@@ -17,11 +17,11 @@ Tree(
                         Tree("simple_table_name", [Token("CNAME", "table")]),
                         Token("WHERE", "where"),
                         Tree(
-                            "where_list",
+                            "bool_list",
                             [
-                                Tree("first_where_item", [Token("FIELD_NAME", "a")]),
+                                Tree("first_bool_item", [Token("FIELD_NAME", "a")]),
                                 Tree(
-                                    "after_where_item", [Token("BINARY_BOOL_OPERATOR", "AND"), Token("FIELD_NAME", "b")]
+                                    "after_bool_item", [Token("BINARY_BOOL_OPERATOR", "AND"), Token("FIELD_NAME", "b")]
                                 ),
                             ],
                         ),

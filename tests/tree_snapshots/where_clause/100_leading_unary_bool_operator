@@ -17,10 +17,10 @@ Tree(
                         Tree("simple_table_name", [Token("CNAME", "table")]),
                         Token("WHERE", "where"),
                         Tree(
-                            "where_list",
+                            "bool_list",
                             [
                                 Tree(
-                                    "first_where_item",
+                                    "first_bool_item",
                                     [
                                         Tree(
                                             "leading_unary_bool_operation",
