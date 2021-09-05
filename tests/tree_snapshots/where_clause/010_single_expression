@@ -16,7 +16,7 @@ Tree(
                     [
                         Tree("simple_table_name", [Token("CNAME", "table")]),
                         Token("WHERE", "where"),
-                        Tree("where_list", [Tree("first_where_item", [Token("FIELD_NAME", "a")])]),
+                        Tree("bool_list", [Tree("first_bool_item", [Token("FIELD_NAME", "a")])]),
                     ],
                 ),
             ],

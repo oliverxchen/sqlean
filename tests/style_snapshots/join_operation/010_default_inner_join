@@ -1,4 +1,5 @@
 select * from table1 join table2
+using (field_a)
 
 ---
 
@@ -8,3 +9,4 @@ FROM
     table1
 INNER JOIN
     table2
+USING (field_a)

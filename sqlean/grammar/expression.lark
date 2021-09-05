@@ -17,6 +17,18 @@ ALIAS_NAME: CNAME
 ?base_expression: FIELD_NAME
     | function_expression
 
+?bool_expression: base_expression
+    | unary_bool_operation
+    | binary_comparison_operation
+
+binary_bool_operation: bool_expression (BINARY_BOOL_OPERATOR bool_expression)+
+
+bool_list: first_bool_item (after_bool_item)*
+first_bool_item: bool_item
+after_bool_item: BINARY_BOOL_OPERATOR bool_item
+!?bool_item: "(" (bool_expression | binary_bool_operation) ")"
+    | bool_expression
+
 FIELD_NAME: CNAME
 function_expression: FUNCTION "(" arg_list ")"
 
@@ -34,14 +46,21 @@ TIME_INTERVAL: "MINUTE"i
 
 FUNCTION: CNAME
 
-?bool_expression: base_expression
-    | binary_bool_operation
-    | unary_bool_operation
-
-binary_bool_operation: base_expression (BINARY_BOOL_OPERATOR base_expression)+
+binary_comparison_operation: base_expression BINARY_COMPARISON_OPERATOR base_expression
 
 BINARY_BOOL_OPERATOR: "AND"i
     | "OR"i
+
+BINARY_COMPARISON_OPERATOR: "="
+    | ">"
+    | ">="
+    | "<"
+    | "<="
+    | NOT_EQUAL
+
+NOT_EQUAL: "!="
+    | "<>"
+
 
 ?unary_bool_operation: leading_unary_bool_operation
     | trailing_unary_bool_operation
@@ -53,13 +72,6 @@ LEADING_UNARY_BOOL_OPERATOR: NOT
 trailing_unary_bool_operator: IS [NOT] NULL
     | IS [NOT] TRUE
     | IS [NOT] FALSE
-
-where_list: first_where_item (after_where_item)*
-!?where_item: base_expression
-    | unary_bool_operation
-    | "(" bool_expression ")"
-first_where_item: where_item
-after_where_item: BINARY_BOOL_OPERATOR where_item
 
 NOT: "NOT"i
 IS: "IS"i

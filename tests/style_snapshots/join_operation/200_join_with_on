@@ -1,0 +1,14 @@
+select * from table1 join table2
+on field_a = field_b and field_c = field_d
+
+---
+
+SELECT
+    *,
+FROM
+    table1
+INNER JOIN
+    table2
+ON
+    field_a = field_b
+    AND field_c = field_d

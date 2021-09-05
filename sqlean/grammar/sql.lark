@@ -5,7 +5,7 @@ query_file: query_expr
 !query_expr: select_statement select_list ["FROM"i from_clause] [limit_clause]
 
 !select_statement: "SELECT"i
-!from_clause: from_item ["WHERE"i where_list] [groupby_modifier] [orderby_modifier]
+!from_clause: from_item ["WHERE"i bool_list] [groupby_modifier] [orderby_modifier]
 
 !?from_item: table_name
     | join_operation
@@ -18,7 +18,7 @@ sub_query_expr: "(" query_expr ")"
 groupby_list: groupby_item ("," groupby_item)*
 groupby_item: base_expression | INT
 
-// !having_clause: "HAVING"i where_list
+// !having_clause: "HAVING"i bool_list
 
 !orderby_modifier: "ORDER"i "BY"i orderby_list
 orderby_list: orderby_item ("," orderby_item)*
@@ -39,7 +39,7 @@ TABLE_ID: CNAME
     | join_operation_with_condition
 
 cross_join_operation: from_item cross_join from_item
-join_operation_with_condition: from_item join_type from_item //( on_clause | using_clause)
+join_operation_with_condition: from_item join_type from_item (on_clause | using_clause)
 
 cross_join: "CROSS"i "JOIN"i
 
@@ -53,17 +53,16 @@ full_join: "FULL"i ["OUTER"i] "JOIN"i
 left_join: "LEFT"i ["OUTER"i] "JOIN"i
 right_join: "RIGHT"i ["OUTER"i] "JOIN"i
 
-// on_clause:
-//     ON bool_expression
-
-// using_clause:
-//     USING ( join_column [, ...] )
+!on_clause: "ON"i bool_list
+!using_clause: "USING"i "(" using_list ")"
+using_list: FIELD_NAME ("," FIELD_NAME)*
 
 !limit_clause: "LIMIT"i INT ["OFFSET"i INT]
 
 %import expression.select_list
-%import expression.where_list
+%import expression.bool_list
 %import expression.base_expression
+%import expression.FIELD_NAME
 // %import expression.as_alias
 %import common.WS
 %import common.CNAME
