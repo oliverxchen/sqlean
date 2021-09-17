@@ -18,16 +18,6 @@ should be. In other words, you shouldn't need to look to the parent. This means
 that anything that should be printed in full on it's own line needs to be a tree
 and not a token.
 
-### Thoughts
-
-How do we know what should have `indent_level = 0`?
-
-If `has_parent = 0`? Not really, because we can have a config block, a with
-clause and query that should all be `indent_level = 0`.
-
-How about if we start with `query_file` and and all direct children of that have
-`indent_level = 0`?
-
 ### Constraints
 
 * Transformers are leaf to root, so cannot determine indent levels

@@ -5,8 +5,12 @@ from typing import Union
 from lark import Lark, Transformer, Token
 from lark.tree import Tree
 from lark.visitors import Visitor_Recursive, v_args
+from rich.traceback import install
 
 from sqlean.definitions import IMPORT_PATH
+
+
+install()
 
 
 class CustomData(str):
