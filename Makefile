@@ -7,10 +7,6 @@ test:
 		--cov=sqlean --cov-fail-under=90 --cov-report html \
 		--mypy
 
-# Run the tests in watch mode
-test-watch:
-	poetry run ptw -- --testmon
-
 
 ##############################################################################
 # The commands below are just for people who are not familiar with poetry. If
