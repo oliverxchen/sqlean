@@ -1,9 +1,0 @@
-select * from table limit 100
-
----
-
-SELECT
-    *,
-FROM
-    table
-LIMIT 100

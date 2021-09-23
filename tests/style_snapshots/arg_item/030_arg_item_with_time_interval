@@ -1,8 +1,0 @@
-select time_trunc(b, SECOND) from c
-
----
-
-SELECT
-    TIME_TRUNC(b, SECOND),
-FROM
-    c

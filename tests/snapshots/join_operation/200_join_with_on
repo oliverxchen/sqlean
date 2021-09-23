@@ -1,0 +1,81 @@
+select * from table1 join table2
+on field_a = field_b and field_c = field_d
+
+---
+
+SELECT
+    *,
+FROM
+    table1
+INNER JOIN
+    table2
+ON
+    field_a = field_b
+    AND field_c = field_d
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Tree("select_statement", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [
+                        Tree(
+                            "join_operation_with_condition",
+                            [
+                                Tree("simple_table_name", [Token("CNAME", "table1")]),
+                                Tree("inner_join", []),
+                                Tree("simple_table_name", [Token("CNAME", "table2")]),
+                                Tree(
+                                    "on_clause",
+                                    [
+                                        Token("ON", "on"),
+                                        Tree(
+                                            "bool_list",
+                                            [
+                                                Tree(
+                                                    "first_bool_item",
+                                                    [
+                                                        Tree(
+                                                            "binary_comparison_operation",
+                                                            [
+                                                                Token("FIELD_NAME", "field_a"),
+                                                                Token("BINARY_COMPARISON_OPERATOR", "="),
+                                                                Token("FIELD_NAME", "field_b"),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                                Tree(
+                                                    "after_bool_item",
+                                                    [
+                                                        Token("BINARY_BOOL_OPERATOR", "and"),
+                                                        Tree(
+                                                            "binary_comparison_operation",
+                                                            [
+                                                                Token("FIELD_NAME", "field_c"),
+                                                                Token("BINARY_COMPARISON_OPERATOR", "="),
+                                                                Token("FIELD_NAME", "field_d"),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        )
+                    ],
+                ),
+            ],
+        )
+    ],
+)

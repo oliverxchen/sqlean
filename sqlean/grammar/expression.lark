@@ -1,4 +1,4 @@
-select_list: select_item ("," select_item)*
+select_list: select_item ("," select_item)* [","]
 
 ?select_item: select_item_unaliased
     | select_item_aliased

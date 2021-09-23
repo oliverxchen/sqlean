@@ -1,6 +1,7 @@
 # Run the tests and linters
 test:
 	poetry run pytest \
+		-rP \
 		--black \
 		--flake8 \
 		--pylint \

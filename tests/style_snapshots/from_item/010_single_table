@@ -1,8 +1,0 @@
-select field from table
-
----
-
-SELECT
-    field,
-FROM
-    table
