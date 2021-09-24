@@ -1,0 +1,90 @@
+select date_trunc(date(timestamp_millis(t)), month) from a
+
+---
+
+SELECT
+    DATE_TRUNC(DATE(TIMESTAMP_MILLIS(t)), MONTH),
+FROM
+    a
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Tree("select_statement", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Token("FUNCTION", "date_trunc"),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Tree(
+                                                            "function_expression",
+                                                            [
+                                                                Token("FUNCTION", "date"),
+                                                                Tree(
+                                                                    "arg_list",
+                                                                    [
+                                                                        Tree(
+                                                                            "arg_item",
+                                                                            [
+                                                                                Tree(
+                                                                                    "function_expression",
+                                                                                    [
+                                                                                        Token(
+                                                                                            "FUNCTION",
+                                                                                            "timestamp_millis",
+                                                                                        ),
+                                                                                        Tree(
+                                                                                            "arg_list",
+                                                                                            [
+                                                                                                Tree(
+                                                                                                    "arg_item",
+                                                                                                    [
+                                                                                                        Token(
+                                                                                                            "FIELD_NAME",
+                                                                                                            "t",
+                                                                                                        )
+                                                                                                    ],
+                                                                                                )
+                                                                                            ],
+                                                                                        ),
+                                                                                    ],
+                                                                                )
+                                                                            ],
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                                Tree("arg_item", [Token("DATE_INTERVAL", "month")]),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        )
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "a")])]),
+            ],
+        )
+    ],
+)

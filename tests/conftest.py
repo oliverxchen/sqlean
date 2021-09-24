@@ -10,12 +10,14 @@ def sql_parser():
 
 def pytest_addoption(parser):
     parser.addoption(
+        "-G",
         "--generate-snapshots",
         action="store_true",
         default=False,
         help="Generate parsing snapshots",
     )
-    parser.addoption("--match", action="store", default="")
+    parser.addoption("-M", "--match", action="store", default="")
+    parser.addoption("-L", "--loc", action="store", default="")
 
 
 def pytest_collection_modifyitems(config, items):
@@ -34,6 +36,9 @@ def pytest_collection_modifyitems(config, items):
 
 
 def pytest_generate_tests(metafunc):
-    option_value = metafunc.config.option.match
-    if "match" in metafunc.fixturenames and option_value is not None:
-        metafunc.parametrize("match", [option_value])
+    match_option_value = metafunc.config.option.match
+    if "match" in metafunc.fixturenames and match_option_value is not None:
+        metafunc.parametrize("match", [match_option_value])
+    loc_option_value = metafunc.config.option.loc
+    if "loc" in metafunc.fixturenames and loc_option_value is not None:
+        metafunc.parametrize("loc", [loc_option_value])
