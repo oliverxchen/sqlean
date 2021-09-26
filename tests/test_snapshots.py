@@ -65,7 +65,7 @@ class AllResults:
         assert self.idempotence.n_total() == self.idempotence.n_pass
 
 
-def test_all_parsing(sql_parser):
+def test_all_parsing(sql_parser: Parser) -> None:
     all_test_results = AllResults()
 
     for file_address in os.walk(SNAPSHOT_PATH):
@@ -134,7 +134,7 @@ def parse_snapshot(file_path: Path) -> Tuple[str, str, str]:
     return raw_query, styled_query, tree_repr
 
 
-def normalise_string(input_string: str):
+def normalise_string(input_string: str) -> str:
     """Remove whitespace and commas, change to single quotes"""
     return re.sub(r"\s|,", "", input_string).replace('"', "'")
 
@@ -187,7 +187,7 @@ class AllSnapshotResults:
 
 
 @pytest.mark.generate_snapshots()
-def test_generate_tree_snapshots(sql_parser, match, location):
+def test_generate_tree_snapshots(sql_parser: Parser, match: str, location: str) -> None:
     all_snapshot_results = AllSnapshotResults()
     walk_path = get_walk_path(location)
 

@@ -1,14 +1,19 @@
+from typing import List
 import pytest
+from _pytest.config import Config
+from _pytest.config.argparsing import Parser as PytestParser
+from _pytest.nodes import Item
+from _pytest.python import Metafunc
 
 from sqlean.sql_parser import Parser
 
 
 @pytest.fixture(scope="session")
-def sql_parser():
+def sql_parser() -> Parser:
     return Parser()
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: PytestParser) -> None:
     parser.addoption(
         "-G",
         "--generate-snapshots",
@@ -20,7 +25,7 @@ def pytest_addoption(parser):
     parser.addoption("-L", "--location", action="store", default="")
 
 
-def pytest_collection_modifyitems(config, items):
+def pytest_collection_modifyitems(config: Config, items: List[Item]) -> None:
     if config.getoption("--generate-snapshots"):
         skip_others = pytest.mark.skip(
             reason="--generate-snapshots option used, other tests skipped"
@@ -35,7 +40,7 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(skip_call)
 
 
-def pytest_generate_tests(metafunc):
+def pytest_generate_tests(metafunc: Metafunc) -> None:
     match_option_value = metafunc.config.option.match
     if "match" in metafunc.fixturenames and match_option_value is not None:
         metafunc.parametrize("match", [match_option_value])
