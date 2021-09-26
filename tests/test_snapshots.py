@@ -28,8 +28,8 @@ class Results:
     def print_fails(self) -> None:
         if len(self.fail_files) == 0:
             return
-        parse_failures = "\n".join(self.fail_files)
-        print(Panel(parse_failures, title=f"{self.title} failures"))
+        fails = "\n".join(self.fail_files)
+        print(Panel(fails, title=f"{self.title} failures"))
 
     def get_summary(self) -> str:
         return f"{self.title.ljust(11)}: {self.n_pass} / {self.n_total()} passed"
@@ -143,38 +143,106 @@ def get_short_file_path(file_path: Path) -> str:
     return str(file_path.relative_to(SNAPSHOT_PATH)).replace("/", " / ")
 
 
-@pytest.mark.generate_snapshots()
-def test_generate_tree_snapshots(sql_parser, match, loc):
-    walk_path = get_walk_path(loc)
-    if os.path.isfile(walk_path):
-        write_snapshot(sql_parser, walk_path)
-        return
+class SnapshotResults:
+    def __init__(self, title: str) -> None:
+        self.title = title
+        self.changed_files: List[str] = []
+        self.n_same: int = 0
 
-    for file_address in os.walk(walk_path):
-        for file_name in file_address[2]:
-            if match not in file_name:
-                continue
-            file_path = Path(file_address[0]) / file_name
-            write_snapshot(sql_parser, file_path)
+    def n_total(self) -> int:
+        return len(self.changed_files) + self.n_same
 
+    def print_changed(self) -> None:
+        if len(self.changed_files) == 0:
+            return
+        changed = "\n".join(self.changed_files)
+        print(Panel(changed, title=f"{self.title} changed"))
 
-def get_walk_path(loc):
-    tree_snapshot_dir = SNAPSHOT_PATH.name
-    index = loc.find(tree_snapshot_dir)
-    return SNAPSHOT_PATH / loc[index + 15 :]
-
-
-def write_snapshot(sql_parser: Parser, file_path: Path) -> None:
-    raw, _, _ = parse_snapshot(file_path)
-    with open(file_path, "wt", encoding="utf-8") as writer:
-        writer.write(raw)
-        writer.write(f"\n\n{FILE_SEPARATOR}\n")
-        writer.write(sql_parser.print(raw, is_debug=True))
-        writer.write(f"\n\n{FILE_SEPARATOR}\n")
-        writer.write(
-            black.format_str(
-                str(sql_parser.get_tree(raw)), mode=black.Mode(line_length=120)  # type: ignore # noqa: E501
-            )
+    def get_summary(self) -> str:
+        return (
+            f"{self.title.ljust(5)}: {self.n_same} / {self.n_total()} stayed the same"
         )
-        # The type: ignore is because mypy fails this line in python 3.6 for some
-        # reason.
+
+    def needs_rewrite(self, actual: str, expected: str, file_path: Path) -> bool:
+        if actual == expected:
+            self.n_same += 1
+            needs_rewrite = False
+        else:
+            self.changed_files.append(get_short_file_path(file_path))
+            needs_rewrite = True
+        return needs_rewrite
+
+
+class AllSnapshotResults:
+    parse: SnapshotResults = SnapshotResults("Parse")
+    style: SnapshotResults = SnapshotResults("Style")
+
+    def print_all_changes(self) -> None:
+        self.style.print_changed()
+        self.parse.print_changed()
+
+    def print_summary(self) -> None:
+        summary = f"{self.style.get_summary()}\n{self.parse.get_summary()}"
+        print(Panel(summary, title="Summary"))
+
+
+@pytest.mark.generate_snapshots()
+def test_generate_tree_snapshots(sql_parser, match, location):
+    all_snapshot_results = AllSnapshotResults()
+    walk_path = get_walk_path(location)
+
+    if os.path.isfile(walk_path):
+        all_snapshot_results = write_snapshot(
+            sql_parser, walk_path, all_snapshot_results
+        )
+
+    else:
+        for file_address in os.walk(walk_path):
+            for file_name in file_address[2]:
+                if match not in file_name:
+                    continue
+                file_path = Path(file_address[0]) / file_name
+                all_snapshot_results = write_snapshot(
+                    sql_parser, file_path, all_snapshot_results
+                )
+    all_snapshot_results.print_all_changes()
+    all_snapshot_results.print_summary()
+
+
+def get_walk_path(location: str) -> Path:
+    snapshot_dir = SNAPSHOT_PATH.name
+    index = location.find(snapshot_dir)
+    output = SNAPSHOT_PATH / location[index + len(snapshot_dir) + 1 :]
+    return output
+
+
+def write_snapshot(
+    sql_parser: Parser,
+    file_path: Path,
+    all_snapshot_results: AllSnapshotResults,
+) -> AllSnapshotResults:
+    raw, snapshot_styled, snapshot_tree = parse_snapshot(file_path)
+    styled = sql_parser.print(
+        raw, is_debug=True, file_path=get_short_file_path(file_path)
+    )
+    tree_repr = black.format_str(
+        str(sql_parser.get_tree(raw)), mode=black.Mode(line_length=120)  # type: ignore
+    )
+    # The type: ignore is because mypy fails this line in python 3.6 for some reason.
+
+    style_needs_rewrite = all_snapshot_results.style.needs_rewrite(
+        styled, snapshot_styled, file_path
+    )
+    parse_needs_rewrite = all_snapshot_results.parse.needs_rewrite(
+        normalise_string(tree_repr), normalise_string(snapshot_tree), file_path
+    )
+
+    if style_needs_rewrite or parse_needs_rewrite:
+        with open(file_path, "wt", encoding="utf-8") as writer:
+            writer.write(raw)
+            writer.write(f"\n\n{FILE_SEPARATOR}\n")
+            writer.write(styled)
+            writer.write(f"\n\n{FILE_SEPARATOR}\n")
+            writer.write(tree_repr)
+
+    return all_snapshot_results

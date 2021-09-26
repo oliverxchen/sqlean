@@ -17,7 +17,7 @@ def pytest_addoption(parser):
         help="Generate parsing snapshots",
     )
     parser.addoption("-M", "--match", action="store", default="")
-    parser.addoption("-L", "--loc", action="store", default="")
+    parser.addoption("-L", "--location", action="store", default="")
 
 
 def pytest_collection_modifyitems(config, items):
@@ -39,6 +39,6 @@ def pytest_generate_tests(metafunc):
     match_option_value = metafunc.config.option.match
     if "match" in metafunc.fixturenames and match_option_value is not None:
         metafunc.parametrize("match", [match_option_value])
-    loc_option_value = metafunc.config.option.loc
-    if "loc" in metafunc.fixturenames and loc_option_value is not None:
-        metafunc.parametrize("loc", [loc_option_value])
+    location_option_value = metafunc.config.option.location
+    if "location" in metafunc.fixturenames and location_option_value is not None:
+        metafunc.parametrize("location", [location_option_value])
