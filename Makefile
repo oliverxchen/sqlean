@@ -1,3 +1,6 @@
+L="."
+M=""
+
 # Run the tests and linters
 test:
 	poetry run pytest \
@@ -8,6 +11,13 @@ test:
 		--cov=sqlean --cov-fail-under=90 --cov-report html \
 		--mypy
 
+# Create snapshots for testing
+snapshot:
+	poetry run pytest \
+		-rP \
+		--generate-snapshots \
+		--location ${L} \
+		--match ${M}
 
 ##############################################################################
 # The commands below are just for people who are not familiar with poetry. If

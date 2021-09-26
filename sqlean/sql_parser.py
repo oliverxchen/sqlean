@@ -2,9 +2,12 @@
 # pylint: disable=too-many-public-methods
 from os import linesep
 from typing import Union
+
 from lark import Lark, Transformer, Token
 from lark.tree import Tree
 from lark.visitors import Visitor_Recursive, v_args
+from rich import print as rich_print
+from rich.panel import Panel
 from rich.traceback import install
 
 from sqlean.definitions import IMPORT_PATH
@@ -45,13 +48,13 @@ class Parser:
         TreeGroomer().visit_topdown(tree)
         return tree
 
-    def print(self, raw_query: str, is_debug: bool = False) -> str:
+    def print(self, raw_query: str, is_debug: bool = False, file_path: str = "") -> str:
         """Pretty print the query"""
         tree = self.get_tree(raw_query)
         if is_debug:
-            print("\nIn Tree debugger after grooming")
-            Debugger().visit_topdown(tree)
-            print("")
+            debug = Debugger()
+            debug.visit_topdown(tree)
+            rich_print(Panel(debug.get_logs(), title=file_path))
         output = Printer(self.indent).transform(tree)
         return output
 
@@ -126,8 +129,16 @@ class TreeGroomer(Visitor_Recursive):
 class Debugger(Visitor_Recursive):
     """Print out attributes for debugging"""
 
+    def __init__(self) -> None:
+        self.log = ""
+        super().__init__()
+
     def __default__(self, tree):
-        print(f"name: {tree.data}, " f"indent_level: {tree.data.indent_level}, ")
+        self.log += f"{tree.data.ljust(30)}indent_level: {tree.data.indent_level}\n"
+
+    def get_logs(self) -> str:
+        """retrieve the debug logs, ready for printing"""
+        return self.log.rstrip()
 
 
 @v_args(tree=True)
