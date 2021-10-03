@@ -111,13 +111,14 @@ class FromMixin(CraftMixin):
         """print simple_table_name"""
         return self._simple_indent(node)
 
-    def single_table_name(self, node: CTree) -> str:
-        """print single_table_name"""
-        return self._simple_indent(node)
-
     def explicit_table_name(self, node: CTree) -> str:
         """print explicit_table_name"""
         output = f"`{self._rollup_dot(node)}`"
+        return self._apply_indent(output, node.data.indent_level)
+
+    def table_item_aliased(self, node: CTree) -> str:
+        """print explicit_table_name"""
+        output = f"{str(node.children[0]).lstrip()} AS {node.children[1]}"
         return self._apply_indent(output, node.data.indent_level)
 
 
@@ -218,7 +219,7 @@ class FunctionMixin(CraftMixin):
     @staticmethod
     def function_expression(node: CTree) -> str:
         """print function_expression"""
-        return f"{node.children[0]}({node.children[1]})"
+        return f"{str(node.children[0]).upper()}({node.children[1]})"
 
     def arg_list(self, node: CTree) -> str:
         """rollup arg_list"""

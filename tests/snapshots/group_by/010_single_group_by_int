@@ -22,15 +22,15 @@ Tree(
                 Tree(
                     "select_list",
                     [
-                        Tree("select_item_unaliased", [Token("FIELD_NAME", "a")]),
+                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
                         Tree(
                             "select_item_unaliased",
                             [
                                 Tree(
                                     "function_expression",
                                     [
-                                        Token("FUNCTION", "count"),
-                                        Tree("arg_list", [Tree("arg_item", [Token("FIELD_NAME", "b")])]),
+                                        Token("CNAME", "count"),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
                                     ],
                                 )
                             ],

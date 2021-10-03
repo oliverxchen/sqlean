@@ -21,7 +21,10 @@ class Parser:
 
     def __init__(self, num_spaces_per_indent: int = 4):
         self.__parser = Lark.open(
-            "grammar/sql.lark", rel_to=__file__, import_paths=[IMPORT_PATH]
+            "grammar/sql.lark",
+            rel_to=__file__,
+            import_paths=[IMPORT_PATH],
+            parser="lalr",
         )
         self.indent = num_spaces_per_indent * " "
 

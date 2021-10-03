@@ -35,10 +35,7 @@ Tree(
                                     [
                                         Token("USING", "using"),
                                         Token("LPAR", "("),
-                                        Tree(
-                                            "using_list",
-                                            [Token("FIELD_NAME", "field_a"), Token("FIELD_NAME", "field_b")],
-                                        ),
+                                        Tree("using_list", [Token("CNAME", "field_a"), Token("CNAME", "field_b")]),
                                         Token("RPAR", ")"),
                                     ],
                                 ),
