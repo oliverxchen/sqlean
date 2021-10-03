@@ -33,7 +33,7 @@ Tree(
                                                 Token("TABLE_ID", "c"),
                                             ],
                                         ),
-                                        Token("FIELD_NAME", "field"),
+                                        Token("CNAME", "field"),
                                     ],
                                 )
                             ],

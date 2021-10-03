@@ -18,7 +18,7 @@ Tree(
             "query_expr",
             [
                 Tree("select_statement", [Token("SELECT", "select")]),
-                Tree("select_list", [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])]),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
                 Token("FROM", "from"),
                 Tree(
                     "from_clause",
@@ -33,7 +33,7 @@ Tree(
                                     [
                                         Tree(
                                             "leading_unary_bool_operation",
-                                            [Token("LEADING_UNARY_BOOL_OPERATOR", "NOT"), Token("FIELD_NAME", "a")],
+                                            [Token("LEADING_UNARY_BOOL_OPERATOR", "NOT"), Token("CNAME", "a")],
                                         )
                                     ],
                                 )

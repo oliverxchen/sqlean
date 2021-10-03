@@ -25,8 +25,8 @@ Tree(
                                 Tree(
                                     "function_expression",
                                     [
-                                        Token("FUNCTION", "SUM"),
-                                        Tree("arg_list", [Tree("arg_item", [Token("FIELD_NAME", "x")])]),
+                                        Token("CNAME", "SUM"),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "x")])]),
                                     ],
                                 )
                             ],

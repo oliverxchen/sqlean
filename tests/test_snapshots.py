@@ -148,7 +148,7 @@ class SnapshotResults:
         self.title = title
         self.changed_files: List[str] = []
         self.n_same: int = 0
-        self.style_errors: List[str] = []
+        self.errors: List[str] = []
 
     def n_total(self) -> int:
         return len(self.changed_files) + self.n_same
@@ -159,11 +159,11 @@ class SnapshotResults:
         changed = "\n".join(self.changed_files)
         print(Panel(changed, title=f"{self.title} changed"))
 
-    def print_style_errors(self) -> None:
-        if len(self.style_errors) == 0:
+    def print_errors(self) -> None:
+        if len(self.errors) == 0:
             return
-        errors = "\n".join(self.style_errors)
-        print(Panel(errors, title="Style errors"))
+        errors = "\n".join(self.errors)
+        print(Panel(errors, title=f"{self.title} errors"))
 
     def get_summary(self) -> str:
         return (
@@ -185,7 +185,8 @@ class SnapshotResults:
             self.changed_files.append(short_file_path)
             needs_rewrite = True
         if error is not None:
-            self.style_errors.append(f"{short_file_path} — {error}")
+            underline = "—" * len(short_file_path)
+            self.errors.append(f"{short_file_path}\n{underline}\n{error}\n")
         return needs_rewrite
 
 
@@ -194,8 +195,9 @@ class AllSnapshotResults:
     style: SnapshotResults = SnapshotResults("Style")
 
     def print_all_changes(self) -> None:
-        self.style.print_style_errors()
+        self.style.print_errors()
         self.style.print_changed()
+        self.parse.print_errors()
         self.parse.print_changed()
 
     def print_summary(self) -> None:
@@ -203,7 +205,7 @@ class AllSnapshotResults:
         print(Panel(summary, title="Summary"))
 
     def has_errors(self) -> bool:
-        return len(self.style.style_errors) > 0
+        return len(self.style.errors) > 0
 
 
 @pytest.mark.generate_snapshots()
@@ -228,7 +230,7 @@ def test_generate_snapshots(sql_parser: Parser, match: str, location: str) -> No
     all_snapshot_results.print_all_changes()
     all_snapshot_results.print_summary()
     if all_snapshot_results.has_errors():
-        raise AssertionError("Styling error")
+        raise AssertionError("Snapshot error")
 
 
 def get_walk_path(location: str) -> Path:
@@ -257,12 +259,20 @@ def write_snapshot(
         styled, snapshot_styled, file_path, style_error
     )
 
-    tree_repr = black.format_str(
-        str(sql_parser.get_tree(raw)), mode=black.Mode(line_length=120)  # type: ignore
-    )
+    try:
+        tree_repr = black.format_str(
+            str(sql_parser.get_tree(raw)), mode=black.Mode(line_length=120)  # type: ignore # noqa: E501
+        )
+        parse_error = None
+    except (LarkError) as error:
+        parse_error = str(error)
+        tree_repr = f"!!! {parse_error} !!!"
     # The type: ignore is because mypy fails this line in python 3.6 for some reason.
     parse_needs_rewrite = all_snapshot_results.parse.needs_rewrite(
-        normalise_string(tree_repr), normalise_string(snapshot_tree), file_path
+        normalise_string(tree_repr),
+        normalise_string(snapshot_tree),
+        file_path,
+        parse_error,
     )
 
     if style_needs_rewrite or parse_needs_rewrite:

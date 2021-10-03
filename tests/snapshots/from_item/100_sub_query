@@ -22,7 +22,7 @@ Tree(
             "query_expr",
             [
                 Tree("select_statement", [Token("SELECT", "select")]),
-                Tree("select_list", [Tree("select_item_unaliased", [Token("FIELD_NAME", "field")])]),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
                 Token("FROM", "from"),
                 Tree(
                     "from_clause",
@@ -37,8 +37,8 @@ Tree(
                                         Tree(
                                             "select_list",
                                             [
-                                                Tree("select_item_unaliased", [Token("FIELD_NAME", "field")]),
-                                                Tree("select_item_unaliased", [Token("FIELD_NAME", "field2")]),
+                                                Tree("select_item_unaliased", [Token("CNAME", "field")]),
+                                                Tree("select_item_unaliased", [Token("CNAME", "field2")]),
                                             ],
                                         ),
                                         Token("FROM", "from"),

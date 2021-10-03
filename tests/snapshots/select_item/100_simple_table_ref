@@ -21,15 +21,7 @@ Tree(
                     [
                         Tree(
                             "select_item_unaliased",
-                            [
-                                Tree(
-                                    "table_referenced_field",
-                                    [
-                                        Tree("simple_table_name", [Token("CNAME", "table")]),
-                                        Token("FIELD_NAME", "field"),
-                                    ],
-                                )
-                            ],
+                            [Tree("table_referenced_field", [Token("CNAME", "table"), Token("CNAME", "field")])],
                         )
                     ],
                 ),

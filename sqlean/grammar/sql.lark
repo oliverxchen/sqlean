@@ -7,22 +7,11 @@ query_file: query_expr
 !select_statement: "SELECT"i
 !from_clause: from_item ["WHERE"i bool_list] [groupby_modifier] [orderby_modifier]
 
-!?from_item: table_name
-    | join_operation
+!?from_item: join_operation
+    | table_item
     | sub_query_expr
-    // | (join_operation table_name)* //(on_clause)*)*
 
 sub_query_expr: "(" query_expr ")"
-
-!groupby_modifier: "GROUP"i "BY"i groupby_list //[having_clause]
-groupby_list: groupby_item ("," groupby_item)*
-groupby_item: base_expression | INT
-
-// !having_clause: "HAVING"i bool_list
-
-!orderby_modifier: "ORDER"i "BY"i orderby_list
-orderby_list: orderby_item ("," orderby_item)*
-!orderby_item: (base_expression | INT) ["ASC"i | "DESC"i]
 
 ?join_operation: cross_join_operation
     | join_operation_with_condition
@@ -44,16 +33,24 @@ right_join: "RIGHT"i ["OUTER"i] "JOIN"i
 
 !on_clause: "ON"i bool_list
 !using_clause: "USING"i "(" using_list ")"
-using_list: FIELD_NAME ("," FIELD_NAME)*
+using_list: CNAME ("," CNAME)*
+
+!groupby_modifier: "GROUP"i "BY"i groupby_list //[having_clause]
+groupby_list: groupby_item ("," groupby_item)*
+groupby_item: base_expression | INT
+
+// !having_clause: "HAVING"i bool_list
+
+!orderby_modifier: "ORDER"i "BY"i orderby_list
+orderby_list: orderby_item ("," orderby_item)*
+!orderby_item: (base_expression | INT) ["ASC"i | "DESC"i]
 
 !limit_clause: "LIMIT"i INT ["OFFSET"i INT]
 
 %import expression.select_list
 %import expression.bool_list
 %import expression.base_expression
-%import expression.FIELD_NAME
-%import table.table_name
-// %import expression.as_alias
+%import table.table_item
 %import common.WS
 %import common.CNAME
 %import common.INT

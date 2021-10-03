@@ -25,11 +25,11 @@ Tree(
                                 Tree(
                                     "function_expression",
                                     [
-                                        Token("FUNCTION", "time_trunc"),
+                                        Token("CNAME", "time_trunc"),
                                         Tree(
                                             "arg_list",
                                             [
-                                                Tree("arg_item", [Token("FIELD_NAME", "b")]),
+                                                Tree("arg_item", [Token("CNAME", "b")]),
                                                 Tree("arg_item", [Token("TIME_INTERVAL", "SECOND")]),
                                             ],
                                         ),

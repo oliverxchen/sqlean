@@ -27,8 +27,8 @@ Tree(
                                 Tree(
                                     "function_expression",
                                     [
-                                        Token("FUNCTION", "count"),
-                                        Tree("arg_list", [Tree("arg_item", [Token("FIELD_NAME", "b")])]),
+                                        Token("CNAME", "count"),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
                                     ],
                                 )
                             ],
@@ -54,15 +54,13 @@ Tree(
                                                 Tree(
                                                     "function_expression",
                                                     [
-                                                        Token("FUNCTION", "round"),
-                                                        Tree(
-                                                            "arg_list", [Tree("arg_item", [Token("FIELD_NAME", "a")])]
-                                                        ),
+                                                        Token("CNAME", "round"),
+                                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
                                                     ],
                                                 )
                                             ],
                                         ),
-                                        Tree("groupby_item", [Token("FIELD_NAME", "a")]),
+                                        Tree("groupby_item", [Token("CNAME", "a")]),
                                         Tree("groupby_item", [Token("INT", "1")]),
                                     ],
                                 ),

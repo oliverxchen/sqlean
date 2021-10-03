@@ -1,13 +1,11 @@
-select field from table where a
+select field from table t
 
 ---
 
 SELECT
     field,
 FROM
-    table
-WHERE
-    a
+    table AS t
 
 ---
 
@@ -23,9 +21,10 @@ Tree(
                 Tree(
                     "from_clause",
                     [
-                        Tree("simple_table_name", [Token("CNAME", "table")]),
-                        Token("WHERE", "where"),
-                        Tree("bool_list", [Tree("first_bool_item", [Token("CNAME", "a")])]),
+                        Tree(
+                            "table_item_aliased",
+                            [Tree("simple_table_name", [Token("CNAME", "table")]), Token("CNAME", "t")],
+                        )
                     ],
                 ),
             ],
