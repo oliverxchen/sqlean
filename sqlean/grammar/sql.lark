@@ -24,17 +24,6 @@ groupby_item: base_expression | INT
 orderby_list: orderby_item ("," orderby_item)*
 !orderby_item: (base_expression | INT) ["ASC"i | "DESC"i]
 
-?table_name: simple_table_name
-    | explicit_table_name
-
-simple_table_name: CNAME
-explicit_table_name: "`" PROJECT_ID  "." DATASET_ID "." TABLE_ID "`"
-    | "`" PROJECT_ID  "`.`" DATASET_ID "`.`" TABLE_ID "`"
-
-PROJECT_ID: CNAME
-DATASET_ID: CNAME
-TABLE_ID: CNAME
-
 ?join_operation: cross_join_operation
     | join_operation_with_condition
 
@@ -63,6 +52,7 @@ using_list: FIELD_NAME ("," FIELD_NAME)*
 %import expression.bool_list
 %import expression.base_expression
 %import expression.FIELD_NAME
+%import table.table_name
 // %import expression.as_alias
 %import common.WS
 %import common.CNAME

@@ -22,7 +22,10 @@ class CraftMixin(Transformer):  # type: ignore
         return self.__indent
 
     def _simple_indent(self, node: CTree) -> str:
-        return self._apply_indent(self._rollup_space(node), node.data.indent_level)
+        """Apply indentation to a node, left strips previous indentation"""
+        return self._apply_indent(
+            self._rollup_space(node).lstrip(), node.data.indent_level
+        )
 
     def _apply_indent(self, text: str, indent_level: int) -> str:
         """Apply indentation to text"""
@@ -43,6 +46,10 @@ class CraftMixin(Transformer):  # type: ignore
     def _rollup_space(self, node: CTree) -> str:
         """Join list with space"""
         return " ".join(self._stringify_children(node))
+
+    def _rollup_dot(self, node: CTree) -> str:
+        """Join list with space"""
+        return ".".join(self._stringify_children(node))
 
     def _rollup_comma_inline(self, node: CTree) -> str:
         """Join list with comma space"""
@@ -87,6 +94,10 @@ class SelectMixin(CraftMixin):
         output = f"{node.children[0]} AS {node.children[1]}"
         return self._apply_indent(output, node.data.indent_level)
 
+    def table_referenced_field(self, node: CTree) -> str:
+        """print table_referenced_field"""
+        return self._rollup_dot(node)
+
 
 @v_args(tree=True)
 class FromMixin(CraftMixin):
@@ -106,7 +117,7 @@ class FromMixin(CraftMixin):
 
     def explicit_table_name(self, node: CTree) -> str:
         """print explicit_table_name"""
-        output = f"`{node.children[0]}.{node.children[1]}.{node.children[2]}`"
+        output = f"`{self._rollup_dot(node)}`"
         return self._apply_indent(output, node.data.indent_level)
 
 
