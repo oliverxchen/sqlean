@@ -15,7 +15,12 @@ ALIAS_NAME: CNAME
     | bool_expression
 
 ?base_expression: FIELD_NAME
+    | table_referenced_field
     | function_expression
+
+FIELD_NAME: CNAME
+table_referenced_field: table_name "." FIELD_NAME
+function_expression: FUNCTION "(" arg_list ")"
 
 ?bool_expression: base_expression
     | unary_bool_operation
@@ -28,9 +33,6 @@ first_bool_item: bool_item
 after_bool_item: BINARY_BOOL_OPERATOR bool_item
 !?bool_item: "(" (bool_expression | binary_bool_operation) ")"
     | bool_expression
-
-FIELD_NAME: CNAME
-function_expression: FUNCTION "(" arg_list ")"
 
 arg_list: arg_item ("," arg_item)*
 
@@ -80,3 +82,4 @@ TRUE: "TRUE"i
 FALSE: "FALSE"i
 
 %import common.CNAME
+%import table.table_name

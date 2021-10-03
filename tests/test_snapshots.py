@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import re
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import black
 from lark.exceptions import LarkError
@@ -148,6 +148,7 @@ class SnapshotResults:
         self.title = title
         self.changed_files: List[str] = []
         self.n_same: int = 0
+        self.style_errors: List[str] = []
 
     def n_total(self) -> int:
         return len(self.changed_files) + self.n_same
@@ -158,18 +159,33 @@ class SnapshotResults:
         changed = "\n".join(self.changed_files)
         print(Panel(changed, title=f"{self.title} changed"))
 
+    def print_style_errors(self) -> None:
+        if len(self.style_errors) == 0:
+            return
+        errors = "\n".join(self.style_errors)
+        print(Panel(errors, title="Style errors"))
+
     def get_summary(self) -> str:
         return (
             f"{self.title.ljust(5)}: {self.n_same} / {self.n_total()} stayed the same"
         )
 
-    def needs_rewrite(self, actual: str, expected: str, file_path: Path) -> bool:
+    def needs_rewrite(
+        self,
+        actual: str,
+        expected: str,
+        file_path: Path,
+        error: Optional[str] = None,
+    ) -> bool:
+        short_file_path = get_short_file_path(file_path)
         if actual == expected:
             self.n_same += 1
             needs_rewrite = False
         else:
-            self.changed_files.append(get_short_file_path(file_path))
+            self.changed_files.append(short_file_path)
             needs_rewrite = True
+        if error is not None:
+            self.style_errors.append(f"{short_file_path} — {error}")
         return needs_rewrite
 
 
@@ -178,16 +194,20 @@ class AllSnapshotResults:
     style: SnapshotResults = SnapshotResults("Style")
 
     def print_all_changes(self) -> None:
+        self.style.print_style_errors()
         self.style.print_changed()
         self.parse.print_changed()
 
     def print_summary(self) -> None:
-        summary = f"{self.style.get_summary()}\n{self.parse.get_summary()}"
+        summary = f"{self.style.get_summary()}\n" + f"{self.parse.get_summary()}"
         print(Panel(summary, title="Summary"))
+
+    def has_errors(self) -> bool:
+        return len(self.style.style_errors) > 0
 
 
 @pytest.mark.generate_snapshots()
-def test_generate_tree_snapshots(sql_parser: Parser, match: str, location: str) -> None:
+def test_generate_snapshots(sql_parser: Parser, match: str, location: str) -> None:
     all_snapshot_results = AllSnapshotResults()
     walk_path = get_walk_path(location)
 
@@ -207,6 +227,8 @@ def test_generate_tree_snapshots(sql_parser: Parser, match: str, location: str) 
                 )
     all_snapshot_results.print_all_changes()
     all_snapshot_results.print_summary()
+    if all_snapshot_results.has_errors():
+        raise AssertionError("Styling error")
 
 
 def get_walk_path(location: str) -> Path:
@@ -222,17 +244,23 @@ def write_snapshot(
     all_snapshot_results: AllSnapshotResults,
 ) -> AllSnapshotResults:
     raw, snapshot_styled, snapshot_tree = parse_snapshot(file_path)
-    styled = sql_parser.print(
-        raw, is_debug=True, file_path=get_short_file_path(file_path)
+
+    try:
+        styled = sql_parser.print(
+            raw, is_debug=True, file_path=get_short_file_path(file_path)
+        )
+        style_error = None
+    except (NotImplementedError, LarkError) as error:
+        style_error = str(error)
+        styled = f"!!! {style_error} !!!"
+    style_needs_rewrite = all_snapshot_results.style.needs_rewrite(
+        styled, snapshot_styled, file_path, style_error
     )
+
     tree_repr = black.format_str(
         str(sql_parser.get_tree(raw)), mode=black.Mode(line_length=120)  # type: ignore
     )
     # The type: ignore is because mypy fails this line in python 3.6 for some reason.
-
-    style_needs_rewrite = all_snapshot_results.style.needs_rewrite(
-        styled, snapshot_styled, file_path
-    )
     parse_needs_rewrite = all_snapshot_results.parse.needs_rewrite(
         normalise_string(tree_repr), normalise_string(snapshot_tree), file_path
     )
