@@ -66,7 +66,7 @@ class TreeGroomer(Visitor_Recursive):
         "on_clause": -1,
     }
     token_indent_map = {"FROM": 0, "WHERE": -1}
-    parents_to_indent = {"sub_query_expr", "on_clause"}
+    parents_to_indent = {"sub_query_expr", "on_clause", "with_clause"}
 
     def __default__(self, tree: CTree) -> None:
         """Executed on each node of the tree"""
