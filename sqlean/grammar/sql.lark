@@ -2,16 +2,21 @@
 
 query_file: query_expr
 
-!query_expr: select_statement select_list ["FROM"i from_clause] [limit_clause]
+!?query_expr: "WITH"i with_clause ("," with_clause)* select_expr
+    | select_expr
 
-!select_statement: "SELECT"i
+!with_clause: CNAME "AS"i "(" query_expr ")"
+
+!select_expr: select_type select_list ["FROM"i from_clause] [limit_clause]
+
+!select_type: "SELECT"i
 !from_clause: from_item ["WHERE"i bool_list] [groupby_modifier] [orderby_modifier]
 
 !?from_item: join_operation
     | table_item
     | sub_query_expr
 
-sub_query_expr: "(" query_expr ")"
+!sub_query_expr: "(" query_expr ")"
 
 ?join_operation: cross_join_operation
     | join_operation_with_condition

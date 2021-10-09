@@ -16,9 +16,9 @@ Tree(
     "query_file",
     [
         Tree(
-            "query_expr",
+            "select_expr",
             [
-                Tree("select_statement", [Token("SELECT", "select")]),
+                Tree("select_type", [Token("SELECT", "select")]),
                 Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
                 Token("FROM", "from"),
                 Tree(

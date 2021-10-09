@@ -1,0 +1,116 @@
+with cte_1 as (
+	select * from table_a
+),
+
+cte_2 as (
+    select * from table_b
+)
+
+select * from cte_1 inner join cte_2 using(field_a)
+
+---
+
+WITH
+
+cte_1 AS (
+    SELECT
+        *,
+    FROM
+        table_a
+),
+
+cte_2 AS (
+    SELECT
+        *,
+    FROM
+        table_b
+)
+
+SELECT
+    *,
+FROM
+    cte_1
+INNER JOIN
+    cte_2
+USING (field_a)
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "with"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_1"),
+                        Token("AS", "as"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table_a")])]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_2"),
+                        Token("AS", "as"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table_b")])]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "select")]),
+                        Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                        Token("FROM", "from"),
+                        Tree(
+                            "from_clause",
+                            [
+                                Tree(
+                                    "join_operation_with_condition",
+                                    [
+                                        Tree("simple_table_name", [Token("CNAME", "cte_1")]),
+                                        Tree("inner_join", []),
+                                        Tree("simple_table_name", [Token("CNAME", "cte_2")]),
+                                        Tree(
+                                            "using_clause",
+                                            [
+                                                Token("USING", "using"),
+                                                Token("LPAR", "("),
+                                                Tree("using_list", [Token("CNAME", "field_a")]),
+                                                Token("RPAR", ")"),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

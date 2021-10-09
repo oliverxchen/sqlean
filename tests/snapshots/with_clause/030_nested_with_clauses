@@ -1,0 +1,102 @@
+with cte_1 as (
+    with cte_2 as (
+        select * from table_sub
+    )
+	select * from cte_2
+)
+select * from cte_1
+
+---
+
+WITH
+
+cte_1 AS (
+    WITH
+
+    cte_2 AS (
+        SELECT
+            *,
+        FROM
+            table_sub
+    )
+
+    SELECT
+        *,
+    FROM
+        cte_2
+)
+
+SELECT
+    *,
+FROM
+    cte_1
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "with"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_1"),
+                        Token("AS", "as"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "query_expr",
+                            [
+                                Token("WITH", "with"),
+                                Tree(
+                                    "with_clause",
+                                    [
+                                        Token("CNAME", "cte_2"),
+                                        Token("AS", "as"),
+                                        Token("LPAR", "("),
+                                        Tree(
+                                            "select_expr",
+                                            [
+                                                Tree("select_type", [Token("SELECT", "select")]),
+                                                Tree(
+                                                    "select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]
+                                                ),
+                                                Token("FROM", "from"),
+                                                Tree(
+                                                    "from_clause",
+                                                    [Tree("simple_table_name", [Token("CNAME", "table_sub")])],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                    ],
+                                ),
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                                        Token("FROM", "from"),
+                                        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "cte_2")])]),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "select")]),
+                        Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                        Token("FROM", "from"),
+                        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "cte_1")])]),
+                    ],
+                ),
+            ],
+        )
+    ],
+)
