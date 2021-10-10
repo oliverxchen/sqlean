@@ -3,6 +3,7 @@
 from os import linesep
 from typing import List
 
+import black
 from lark import Transformer
 from lark.tree import Tree
 from lark.visitors import v_args
@@ -30,7 +31,8 @@ class CraftMixin(Transformer):  # type: ignore
 
     def _apply_indent(self, text: str, indent_level: int) -> str:
         """Apply indentation to text"""
-        return f"{self.indent * indent_level}{text}"
+        lines = [f"{self.indent * indent_level}{line}" for line in text.split(linesep)]
+        return linesep.join(lines)
 
     def _token_indent(self, token: CToken) -> str:
         return self._apply_indent(token.upper(), token.type.indent_level)
@@ -43,6 +45,10 @@ class CraftMixin(Transformer):  # type: ignore
     def _rollup_linesep(self, node: CTree) -> str:
         """Join list with linesep"""
         return linesep.join(self._stringify_children(node))
+
+    def _rollup_double_linesep(self, node: CTree) -> str:
+        """Join list with a double linesep"""
+        return (2 * linesep).join(self._stringify_children(node))
 
     def _rollup_space(self, node: CTree) -> str:
         """Join list with space"""
@@ -60,6 +66,11 @@ class CraftMixin(Transformer):  # type: ignore
         """Join list with comma newline"""
         return f",{linesep}".join(self._stringify_children(node))
 
+    @staticmethod
+    def _apply_black(token: CToken) -> str:
+        """Apply black to token"""
+        return black.format_str(str(token), mode=black.Mode()).strip()
+
 
 @v_args(tree=True)
 class TerminalMixin(CraftMixin):
@@ -73,15 +84,19 @@ class TerminalMixin(CraftMixin):
         """print WHERE"""
         return self._token_indent(token)
 
+    def CONFIG_EXPR(self, token: CToken) -> str:  # pylint: disable=invalid-name
+        """print CONFIG_EXPR"""
+        blacked = self._apply_black(token)
+        return self._apply_indent(blacked, 1)
+
 
 @v_args(tree=True)
 class QueryMixin(CraftMixin):
     """Mixin for query level nodes"""
 
-    @staticmethod
-    def query_file(node: CTree) -> str:
+    def query_file(self, node: CTree) -> str:
         """print query_file"""
-        return str(node.children[0])
+        return self._rollup_double_linesep(node)
 
     def query_expr(self, node: CTree) -> str:
         """rollup itms in query_expr"""
@@ -319,12 +334,22 @@ class ComparisonMixin(CraftMixin):
 
 
 @v_args(tree=True)
+class JinjaMixin(CraftMixin):
+    """Mixin for Jinja related nodes"""
+
+    def config(self, node: CTree) -> str:
+        """print config"""
+        return self._rollup_linesep(node)
+
+
+@v_args(tree=True)
 class Styler(  # pylint: disable=too-many-ancestors
     BoolMixin,
     ComparisonMixin,
     FromMixin,
     FromModifierMixin,
     FunctionMixin,
+    JinjaMixin,
     JoinMixin,
     QueryMixin,
     SelectMixin,
@@ -343,4 +368,8 @@ class Styler(  # pylint: disable=too-many-ancestors
 
     @staticmethod
     def _is_non_keyword(token: CToken) -> bool:
-        return token.type.endswith("NAME") or token.type.endswith("_ID")
+        return (
+            token.type.endswith("NAME")
+            or token.type.endswith("_EXPR")
+            or token.type.endswith("_ID")
+        )

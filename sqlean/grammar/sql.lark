@@ -1,6 +1,6 @@
 ?start: query_file
 
-query_file: query_expr
+query_file: [config] query_expr
 
 !?query_expr: "WITH"i with_clause ("," with_clause)* select_expr
     | select_expr
@@ -56,6 +56,7 @@ orderby_list: orderby_item ("," orderby_item)*
 %import expression.bool_list
 %import expression.base_expression
 %import table.table_item
+%import jinja.config
 %import common.WS
 %import common.CNAME
 %import common.INT
