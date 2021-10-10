@@ -1,0 +1,43 @@
+{{
+	config(
+        materialized = "table",
+        sort = "event_time")
+}}
+
+select * from table
+
+---
+
+{{
+    config(materialized="table", sort="event_time")
+}}
+
+SELECT
+    *,
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "config",
+            [
+                Token("VARIABLE_START", "{{"),
+                Token("CONFIG_EXPR", 'config(\n        materialized = "table",\n        sort = "event_time")'),
+                Token("VARIABLE_END", "}}"),
+            ],
+        ),
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        ),
+    ],
+)
