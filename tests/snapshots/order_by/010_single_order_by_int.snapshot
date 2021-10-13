@@ -45,8 +45,7 @@ Tree(
                         Tree(
                             "orderby_modifier",
                             [
-                                Token("ORDER", "order"),
-                                Token("BY", "by"),
+                                Token("ORDER_BY", "order by"),
                                 Tree("orderby_list", [Tree("orderby_item", [Token("INT", "1")])]),
                             ],
                         ),

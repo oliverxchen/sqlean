@@ -45,8 +45,7 @@ Tree(
                         Tree(
                             "groupby_modifier",
                             [
-                                Token("GROUP", "group"),
-                                Token("BY", "by"),
+                                Token("GROUP_BY", "group by"),
                                 Tree("groupby_list", [Tree("groupby_item", [Token("CNAME", "a")])]),
                             ],
                         ),
