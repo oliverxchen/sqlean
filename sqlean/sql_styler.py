@@ -229,8 +229,8 @@ class JoinMixin(CraftMixin):
 
     def on_clause(self, node: CTree) -> str:
         """rollup on_clause"""
-        output = self._apply_indent("ON\n", node.data.indent_level)
-        return output + str(node.children[1])
+        output = self._apply_indent("ON", node.data.indent_level)
+        return output + linesep + str(node.children[1])
 
 
 @v_args(tree=True)
@@ -244,8 +244,8 @@ class FromModifierMixin(CraftMixin):
 
     def groupby_modifier(self, node: CTree) -> str:
         """rollup groupby_modifier"""
-        output = self._apply_indent("GROUP BY\n", node.data.indent_level)
-        return output + str(node.children[2])
+        output = self._apply_indent("GROUP BY", node.data.indent_level)
+        return output + linesep + str(node.children[1])
 
     def groupby_list(self, node: CTree) -> str:
         """rollup groupby_list"""
@@ -259,8 +259,8 @@ class FromModifierMixin(CraftMixin):
 
     def orderby_modifier(self, node: CTree) -> str:
         """rollup orderby_modifier"""
-        output = self._apply_indent("ORDER BY\n", node.data.indent_level)
-        return output + str(node.children[2])
+        output = self._apply_indent("ORDER BY", node.data.indent_level)
+        return output + linesep + str(node.children[1])
 
     def orderby_list(self, node: CTree) -> str:
         """rollup orderby_list"""

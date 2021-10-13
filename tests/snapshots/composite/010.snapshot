@@ -1,0 +1,639 @@
+with
+
+cte_a as (
+	select
+		a
+		, sum(b) as total_b
+		, stddev(c) standard_deviation_c
+	from
+		table_a
+	group
+	by
+		1
+	order by 2 desc
+)
+
+, cte_b AS (
+	WITH
+	cte_c AS (
+	select
+		a
+		, date_trunc(date(timestamp), month) as month
+	FROM
+		(Select * from `project.dataset.table_b` AS table_b where table_b.timestamp > placeholder)
+	),
+
+	cte_d as (
+	select
+		table_c.a , date_trunc(date(table_c.timestamp), month) as month
+	FROM
+		`project`.`dataset`.`table_c` table_c
+	)
+
+	select
+	a, coalesce(table_b.month, table_c.month) as month
+	from cte_c full outer join cte_d on cte_c.a = cte_d.a
+)
+
+SELEct * from cte_a left join cte_b using (a)
+where total_b > b
+order by 1  limit 10
+
+---
+
+WITH
+
+cte_a AS (
+    SELECT
+        a,
+        SUM(b) AS total_b,
+        STDDEV(c) AS standard_deviation_c,
+    FROM
+        table_a
+    GROUP BY
+        1
+    ORDER BY
+        2 DESC
+),
+
+cte_b AS (
+    WITH
+
+    cte_c AS (
+        SELECT
+            a,
+            DATE_TRUNC(DATE(timestamp), MONTH) AS month,
+        FROM
+            (
+                SELECT
+                    *,
+                FROM
+                    `project.dataset.table_b` AS table_b
+                WHERE
+                    table_b.timestamp > placeholder
+            )
+    ),
+
+    cte_d AS (
+        SELECT
+            table_c.a,
+            DATE_TRUNC(DATE(table_c.timestamp), MONTH) AS month,
+        FROM
+            `project.dataset.table_c` AS table_c
+    )
+
+    SELECT
+        a,
+        COALESCE(table_b.month, table_c.month) AS month,
+    FROM
+        cte_c
+    FULL OUTER JOIN
+        cte_d
+    ON
+        cte_c.a = cte_d.a
+)
+
+SELECT
+    *,
+FROM
+    cte_a
+LEFT OUTER JOIN
+    cte_b
+USING (a)
+WHERE
+    total_b > b
+ORDER BY
+    1
+LIMIT 10
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "with"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_a"),
+                        Token("AS", "as"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree(
+                                    "select_list",
+                                    [
+                                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                                        Tree(
+                                            "select_item_aliased",
+                                            [
+                                                Tree(
+                                                    "function_expression",
+                                                    [
+                                                        Token("CNAME", "sum"),
+                                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                                    ],
+                                                ),
+                                                Token("CNAME", "total_b"),
+                                            ],
+                                        ),
+                                        Tree(
+                                            "select_item_aliased",
+                                            [
+                                                Tree(
+                                                    "function_expression",
+                                                    [
+                                                        Token("CNAME", "stddev"),
+                                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "c")])]),
+                                                    ],
+                                                ),
+                                                Token("CNAME", "standard_deviation_c"),
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("FROM", "from"),
+                                Tree(
+                                    "from_clause",
+                                    [
+                                        Tree("simple_table_name", [Token("CNAME", "table_a")]),
+                                        Tree(
+                                            "groupby_modifier",
+                                            [
+                                                Token("GROUP_BY", "group\n\tby"),
+                                                Tree("groupby_list", [Tree("groupby_item", [Token("INT", "1")])]),
+                                            ],
+                                        ),
+                                        Tree(
+                                            "orderby_modifier",
+                                            [
+                                                Token("ORDER_BY", "order by"),
+                                                Tree(
+                                                    "orderby_list",
+                                                    [Tree("orderby_item", [Token("INT", "2"), Token("DESC", "desc")])],
+                                                ),
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_b"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "query_expr",
+                            [
+                                Token("WITH", "WITH"),
+                                Tree(
+                                    "with_clause",
+                                    [
+                                        Token("CNAME", "cte_c"),
+                                        Token("AS", "AS"),
+                                        Token("LPAR", "("),
+                                        Tree(
+                                            "select_expr",
+                                            [
+                                                Tree("select_type", [Token("SELECT", "select")]),
+                                                Tree(
+                                                    "select_list",
+                                                    [
+                                                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                                                        Tree(
+                                                            "select_item_aliased",
+                                                            [
+                                                                Tree(
+                                                                    "function_expression",
+                                                                    [
+                                                                        Token("CNAME", "date_trunc"),
+                                                                        Tree(
+                                                                            "arg_list",
+                                                                            [
+                                                                                Tree(
+                                                                                    "arg_item",
+                                                                                    [
+                                                                                        Tree(
+                                                                                            "function_expression",
+                                                                                            [
+                                                                                                Token("CNAME", "date"),
+                                                                                                Tree(
+                                                                                                    "arg_list",
+                                                                                                    [
+                                                                                                        Tree(
+                                                                                                            "arg_item",
+                                                                                                            [
+                                                                                                                Token(
+                                                                                                                    "CNAME",
+                                                                                                                    "timestamp",
+                                                                                                                )
+                                                                                                            ],
+                                                                                                        )
+                                                                                                    ],
+                                                                                                ),
+                                                                                            ],
+                                                                                        )
+                                                                                    ],
+                                                                                ),
+                                                                                Tree(
+                                                                                    "arg_item",
+                                                                                    [Token("DATE_INTERVAL", "month")],
+                                                                                ),
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                Token("CNAME", "month"),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Token("FROM", "FROM"),
+                                                Tree(
+                                                    "from_clause",
+                                                    [
+                                                        Tree(
+                                                            "sub_query_expr",
+                                                            [
+                                                                Token("LPAR", "("),
+                                                                Tree(
+                                                                    "select_expr",
+                                                                    [
+                                                                        Tree(
+                                                                            "select_type", [Token("SELECT", "Select")]
+                                                                        ),
+                                                                        Tree(
+                                                                            "select_list",
+                                                                            [
+                                                                                Tree(
+                                                                                    "select_item_unaliased",
+                                                                                    [Token("STAR", "*")],
+                                                                                )
+                                                                            ],
+                                                                        ),
+                                                                        Token("FROM", "from"),
+                                                                        Tree(
+                                                                            "from_clause",
+                                                                            [
+                                                                                Tree(
+                                                                                    "table_item_aliased",
+                                                                                    [
+                                                                                        Tree(
+                                                                                            "explicit_table_name",
+                                                                                            [
+                                                                                                Token(
+                                                                                                    "PROJECT_ID",
+                                                                                                    "project",
+                                                                                                ),
+                                                                                                Token(
+                                                                                                    "DATASET_ID",
+                                                                                                    "dataset",
+                                                                                                ),
+                                                                                                Token(
+                                                                                                    "TABLE_ID",
+                                                                                                    "table_b",
+                                                                                                ),
+                                                                                            ],
+                                                                                        ),
+                                                                                        Token("CNAME", "table_b"),
+                                                                                    ],
+                                                                                ),
+                                                                                Token("WHERE", "where"),
+                                                                                Tree(
+                                                                                    "bool_list",
+                                                                                    [
+                                                                                        Tree(
+                                                                                            "first_bool_item",
+                                                                                            [
+                                                                                                Tree(
+                                                                                                    "binary_comparison_operation",
+                                                                                                    [
+                                                                                                        Tree(
+                                                                                                            "table_referenced_field",
+                                                                                                            [
+                                                                                                                Token(
+                                                                                                                    "CNAME",
+                                                                                                                    "table_b",
+                                                                                                                ),
+                                                                                                                Token(
+                                                                                                                    "CNAME",
+                                                                                                                    "timestamp",
+                                                                                                                ),
+                                                                                                            ],
+                                                                                                        ),
+                                                                                                        Token(
+                                                                                                            "BINARY_COMPARISON_OPERATOR",
+                                                                                                            ">",
+                                                                                                        ),
+                                                                                                        Token(
+                                                                                                            "CNAME",
+                                                                                                            "placeholder",
+                                                                                                        ),
+                                                                                                    ],
+                                                                                                )
+                                                                                            ],
+                                                                                        )
+                                                                                    ],
+                                                                                ),
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                Token("RPAR", ")"),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                    ],
+                                ),
+                                Token("COMMA", ","),
+                                Tree(
+                                    "with_clause",
+                                    [
+                                        Token("CNAME", "cte_d"),
+                                        Token("AS", "as"),
+                                        Token("LPAR", "("),
+                                        Tree(
+                                            "select_expr",
+                                            [
+                                                Tree("select_type", [Token("SELECT", "select")]),
+                                                Tree(
+                                                    "select_list",
+                                                    [
+                                                        Tree(
+                                                            "select_item_unaliased",
+                                                            [
+                                                                Tree(
+                                                                    "table_referenced_field",
+                                                                    [Token("CNAME", "table_c"), Token("CNAME", "a")],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "select_item_aliased",
+                                                            [
+                                                                Tree(
+                                                                    "function_expression",
+                                                                    [
+                                                                        Token("CNAME", "date_trunc"),
+                                                                        Tree(
+                                                                            "arg_list",
+                                                                            [
+                                                                                Tree(
+                                                                                    "arg_item",
+                                                                                    [
+                                                                                        Tree(
+                                                                                            "function_expression",
+                                                                                            [
+                                                                                                Token("CNAME", "date"),
+                                                                                                Tree(
+                                                                                                    "arg_list",
+                                                                                                    [
+                                                                                                        Tree(
+                                                                                                            "arg_item",
+                                                                                                            [
+                                                                                                                Tree(
+                                                                                                                    "table_referenced_field",
+                                                                                                                    [
+                                                                                                                        Token(
+                                                                                                                            "CNAME",
+                                                                                                                            "table_c",
+                                                                                                                        ),
+                                                                                                                        Token(
+                                                                                                                            "CNAME",
+                                                                                                                            "timestamp",
+                                                                                                                        ),
+                                                                                                                    ],
+                                                                                                                )
+                                                                                                            ],
+                                                                                                        )
+                                                                                                    ],
+                                                                                                ),
+                                                                                            ],
+                                                                                        )
+                                                                                    ],
+                                                                                ),
+                                                                                Tree(
+                                                                                    "arg_item",
+                                                                                    [Token("DATE_INTERVAL", "month")],
+                                                                                ),
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                Token("CNAME", "month"),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Token("FROM", "FROM"),
+                                                Tree(
+                                                    "from_clause",
+                                                    [
+                                                        Tree(
+                                                            "table_item_aliased",
+                                                            [
+                                                                Tree(
+                                                                    "explicit_table_name",
+                                                                    [
+                                                                        Token("PROJECT_ID", "project"),
+                                                                        Token("DATASET_ID", "dataset"),
+                                                                        Token("TABLE_ID", "table_c"),
+                                                                    ],
+                                                                ),
+                                                                Token("CNAME", "table_c"),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                    ],
+                                ),
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree(
+                                            "select_list",
+                                            [
+                                                Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                                                Tree(
+                                                    "select_item_aliased",
+                                                    [
+                                                        Tree(
+                                                            "function_expression",
+                                                            [
+                                                                Token("CNAME", "coalesce"),
+                                                                Tree(
+                                                                    "arg_list",
+                                                                    [
+                                                                        Tree(
+                                                                            "arg_item",
+                                                                            [
+                                                                                Tree(
+                                                                                    "table_referenced_field",
+                                                                                    [
+                                                                                        Token("CNAME", "table_b"),
+                                                                                        Token("CNAME", "month"),
+                                                                                    ],
+                                                                                )
+                                                                            ],
+                                                                        ),
+                                                                        Tree(
+                                                                            "arg_item",
+                                                                            [
+                                                                                Tree(
+                                                                                    "table_referenced_field",
+                                                                                    [
+                                                                                        Token("CNAME", "table_c"),
+                                                                                        Token("CNAME", "month"),
+                                                                                    ],
+                                                                                )
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Token("CNAME", "month"),
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("FROM", "from"),
+                                        Tree(
+                                            "from_clause",
+                                            [
+                                                Tree(
+                                                    "join_operation_with_condition",
+                                                    [
+                                                        Tree("simple_table_name", [Token("CNAME", "cte_c")]),
+                                                        Tree("full_join", []),
+                                                        Tree("simple_table_name", [Token("CNAME", "cte_d")]),
+                                                        Tree(
+                                                            "on_clause",
+                                                            [
+                                                                Token("ON", "on"),
+                                                                Tree(
+                                                                    "bool_list",
+                                                                    [
+                                                                        Tree(
+                                                                            "first_bool_item",
+                                                                            [
+                                                                                Tree(
+                                                                                    "binary_comparison_operation",
+                                                                                    [
+                                                                                        Tree(
+                                                                                            "table_referenced_field",
+                                                                                            [
+                                                                                                Token("CNAME", "cte_c"),
+                                                                                                Token("CNAME", "a"),
+                                                                                            ],
+                                                                                        ),
+                                                                                        Token(
+                                                                                            "BINARY_COMPARISON_OPERATOR",
+                                                                                            "=",
+                                                                                        ),
+                                                                                        Tree(
+                                                                                            "table_referenced_field",
+                                                                                            [
+                                                                                                Token("CNAME", "cte_d"),
+                                                                                                Token("CNAME", "a"),
+                                                                                            ],
+                                                                                        ),
+                                                                                    ],
+                                                                                )
+                                                                            ],
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "SELEct")]),
+                        Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                        Token("FROM", "from"),
+                        Tree(
+                            "from_clause",
+                            [
+                                Tree(
+                                    "join_operation_with_condition",
+                                    [
+                                        Tree("simple_table_name", [Token("CNAME", "cte_a")]),
+                                        Tree("left_join", []),
+                                        Tree("simple_table_name", [Token("CNAME", "cte_b")]),
+                                        Tree(
+                                            "using_clause",
+                                            [
+                                                Token("USING", "using"),
+                                                Token("LPAR", "("),
+                                                Tree("using_list", [Token("CNAME", "a")]),
+                                                Token("RPAR", ")"),
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("WHERE", "where"),
+                                Tree(
+                                    "bool_list",
+                                    [
+                                        Tree(
+                                            "first_bool_item",
+                                            [
+                                                Tree(
+                                                    "binary_comparison_operation",
+                                                    [
+                                                        Token("CNAME", "total_b"),
+                                                        Token("BINARY_COMPARISON_OPERATOR", ">"),
+                                                        Token("CNAME", "b"),
+                                                    ],
+                                                )
+                                            ],
+                                        )
+                                    ],
+                                ),
+                                Tree(
+                                    "orderby_modifier",
+                                    [
+                                        Token("ORDER_BY", "order by"),
+                                        Tree("orderby_list", [Tree("orderby_item", [Token("INT", "1")])]),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Tree("limit_clause", [Token("LIMIT", "limit"), Token("INT", "10")]),
+                    ],
+                ),
+            ],
+        )
+    ],
+)
