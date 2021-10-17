@@ -6,6 +6,7 @@ from typing import List
 import black
 from lark import Transformer
 from lark.tree import Tree
+from lark.lexer import Token
 from lark.visitors import v_args
 
 from sqlean.custom_classes import CToken, CTree
@@ -74,7 +75,7 @@ class CraftMixin(Transformer):  # type: ignore
 
 @v_args(tree=True)
 class TerminalMixin(CraftMixin):
-    """Mixin for terminals that need to be separate printed"""
+    """Mixin for terminals that need to be separately printed"""
 
     def FROM(self, token: CToken) -> str:  # pylint: disable=invalid-name
         """print FROM"""
@@ -88,6 +89,13 @@ class TerminalMixin(CraftMixin):
         """print CONFIG_EXPR"""
         blacked = self._apply_black(token)
         return self._apply_indent(blacked, 1)
+
+    @staticmethod
+    def INLINE_COMMENT(token: Token) -> Token:  # pylint: disable=invalid-name
+        """print INLINE_COMMENT"""
+        content = "-- " + token[2:].strip()
+        token = token.update(value=content)
+        return token
 
 
 @v_args(tree=True)
@@ -146,9 +154,27 @@ class SelectMixin(CraftMixin):
         """print select_type"""
         return self._apply_indent(self._rollup_space(node), node.data.indent_level)
 
-    def select_list(self, node: CTree) -> str:
+    @staticmethod
+    def select_list(node: CTree) -> str:
         """rollup items in select_list"""
-        return self._rollup_comma_newline(node) + ","
+        counter = 0
+        output: List[str] = []
+        while counter < len(node.children):
+            child = node.children[counter]
+            if counter + 1 < len(node.children):
+                next_child = node.children[counter + 1]
+                if (
+                    isinstance(next_child, Token)
+                    and next_child.type == "INLINE_COMMENT"
+                ):
+                    output.append(f"{str(child)},  {str(next_child)}")
+                    counter += 1
+                else:
+                    output.append(str(child) + ",")
+            else:
+                output.append(str(child) + ",")
+            counter += 1
+        return linesep.join(output)
 
     def select_item_unaliased(self, node: CTree) -> str:
         """print select_item_unaliased"""

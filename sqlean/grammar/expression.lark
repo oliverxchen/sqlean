@@ -1,4 +1,4 @@
-select_list: select_item ("," select_item)* [","]
+select_list: select_item ("," [INLINE_COMMENT] select_item)* [","] [INLINE_COMMENT]
 
 ?select_item: select_item_unaliased
     | select_item_aliased
@@ -79,5 +79,7 @@ TRUE: "TRUE"i
 FALSE: "FALSE"i
 
 %import common.CNAME
-%import table.explicit_table_name
+
 %import alias.as_alias
+%import comment.INLINE_COMMENT
+%import table.explicit_table_name
