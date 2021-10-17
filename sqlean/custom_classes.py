@@ -1,5 +1,5 @@
 """Parse sql strings"""
-from typing import Any, List, Sequence, Union
+from typing import List, Sequence, Union
 
 from lark import Token
 from lark.tree import Tree
@@ -25,7 +25,7 @@ class CData(str):
 class CToken(Token):
     """Custom structure for tokens"""
 
-    def __init__(self, type_: CData, value: Any) -> None:
+    def __init__(self, type_: CData, value: str) -> None:
         """Initialize the CToken object"""
         super().__init__(type_, value)
         self.type: CData = type_

@@ -1,0 +1,177 @@
+WITH
+
+cte_1 AS (
+    select
+	    a, --comment on why to include a
+	    b, --comment on why to include b
+	    c --comment on why to include c
+    from table
+),
+
+cte_2 AS (
+    select
+	    a,
+	    b, --another comment on b
+	    c
+    from table_2
+),
+
+cte_3 AS (
+    select
+	    a, --another comment on a
+	    b,
+	    c --another comment on c
+    from table_3
+)
+
+SELECT
+    a --comment on a
+FROM cte_1
+
+---
+
+WITH
+
+cte_1 AS (
+    SELECT
+        a,  -- comment on why to include a
+        b,  -- comment on why to include b
+        c,  -- comment on why to include c
+    FROM
+        table
+),
+
+cte_2 AS (
+    SELECT
+        a,
+        b,  -- another comment on b
+        c,
+    FROM
+        table_2
+),
+
+cte_3 AS (
+    SELECT
+        a,  -- another comment on a
+        b,
+        c,  -- another comment on c
+    FROM
+        table_3
+)
+
+SELECT
+    a,  -- comment on a
+FROM
+    cte_1
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "WITH"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_1"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree(
+                                    "select_list",
+                                    [
+                                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                                        Token("INLINE_COMMENT", "--comment on why to include a"),
+                                        Tree("select_item_unaliased", [Token("CNAME", "b")]),
+                                        Token("INLINE_COMMENT", "--comment on why to include b"),
+                                        Tree("select_item_unaliased", [Token("CNAME", "c")]),
+                                        Token("INLINE_COMMENT", "--comment on why to include c"),
+                                    ],
+                                ),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_2"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree(
+                                    "select_list",
+                                    [
+                                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                                        Tree("select_item_unaliased", [Token("CNAME", "b")]),
+                                        Token("INLINE_COMMENT", "--another comment on b"),
+                                        Tree("select_item_unaliased", [Token("CNAME", "c")]),
+                                    ],
+                                ),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table_2")])]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_3"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree(
+                                    "select_list",
+                                    [
+                                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                                        Token("INLINE_COMMENT", "--another comment on a"),
+                                        Tree("select_item_unaliased", [Token("CNAME", "b")]),
+                                        Tree("select_item_unaliased", [Token("CNAME", "c")]),
+                                        Token("INLINE_COMMENT", "--another comment on c"),
+                                    ],
+                                ),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table_3")])]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "SELECT")]),
+                        Tree(
+                            "select_list",
+                            [
+                                Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                                Token("INLINE_COMMENT", "--comment on a"),
+                            ],
+                        ),
+                        Token("FROM", "FROM"),
+                        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "cte_1")])]),
+                    ],
+                ),
+            ],
+        )
+    ],
+)
