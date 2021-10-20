@@ -1,9 +1,9 @@
-select time_trunc(b, SECOND) from c
+select SUM(x) from c
 
 ---
 
 SELECT
-    TIME_TRUNC(b, SECOND),
+    SUM(x),
 FROM
     c
 
@@ -25,14 +25,8 @@ Tree(
                                 Tree(
                                     "function_expression",
                                     [
-                                        Token("CNAME", "time_trunc"),
-                                        Tree(
-                                            "arg_list",
-                                            [
-                                                Tree("arg_item", [Token("CNAME", "b")]),
-                                                Tree("arg_item", [Token("TIME_INTERVAL", "SECOND")]),
-                                            ],
-                                        ),
+                                        Tree("function_name", [Token("CNAME", "SUM")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "x")])]),
                                     ],
                                 )
                             ],

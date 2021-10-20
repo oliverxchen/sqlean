@@ -1,0 +1,106 @@
+select
+	function(a),
+	safe.function(a),
+	dataset_id.function(a),
+	`project_id`.dataset_id.function(a)
+from
+	table
+
+---
+
+SELECT
+    FUNCTION(a),
+    SAFE.FUNCTION(a),
+    dataset_id.FUNCTION(a),
+    `project_id`.dataset_id.FUNCTION(a),
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "function")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree(
+                                            "function_name",
+                                            [Token("CNAME", "safe"), Token("DOT", "."), Token("CNAME", "function")],
+                                        ),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree(
+                                            "function_name",
+                                            [
+                                                Token("CNAME", "dataset_id"),
+                                                Token("DOT", "."),
+                                                Token("CNAME", "function"),
+                                            ],
+                                        ),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree(
+                                            "function_name",
+                                            [
+                                                Token("BACKQUOTE", "`"),
+                                                Token("PROJECT_ID", "project_id"),
+                                                Token("ANON_1", "`."),
+                                                Token("CNAME", "dataset_id"),
+                                                Token("DOT", "."),
+                                                Token("CNAME", "function"),
+                                            ],
+                                        ),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)

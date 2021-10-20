@@ -25,7 +25,7 @@ Tree(
                                 Tree(
                                     "function_expression",
                                     [
-                                        Token("CNAME", "date_trunc"),
+                                        Tree("function_name", [Token("CNAME", "date_trunc")]),
                                         Tree(
                                             "arg_list",
                                             [
@@ -35,7 +35,7 @@ Tree(
                                                         Tree(
                                                             "function_expression",
                                                             [
-                                                                Token("CNAME", "date"),
+                                                                Tree("function_name", [Token("CNAME", "date")]),
                                                                 Tree(
                                                                     "arg_list",
                                                                     [
@@ -45,8 +45,14 @@ Tree(
                                                                                 Tree(
                                                                                     "function_expression",
                                                                                     [
-                                                                                        Token(
-                                                                                            "CNAME", "timestamp_millis"
+                                                                                        Tree(
+                                                                                            "function_name",
+                                                                                            [
+                                                                                                Token(
+                                                                                                    "CNAME",
+                                                                                                    "timestamp_millis",
+                                                                                                )
+                                                                                            ],
                                                                                         ),
                                                                                         Tree(
                                                                                             "arg_list",

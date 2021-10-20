@@ -1,0 +1,135 @@
+select
+	EXTRACT(day from a) as alias,
+	extract(isoweek from b) alias_2,
+	extract(second from c),
+	extract(hour from d)
+from table
+
+---
+
+SELECT
+    EXTRACT(DAY FROM a) AS alias,
+    EXTRACT(ISOWEEK FROM b) AS alias_2,
+    EXTRACT(SECOND FROM c),
+    EXTRACT(HOUR FROM d),
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "EXTRACT")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("DATE_INTERVAL", "day"),
+                                                        Token("FROM", "from"),
+                                                        Token("CNAME", "a"),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "alias"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "extract")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("DATE_INTERVAL", "isoweek"),
+                                                        Token("FROM", "from"),
+                                                        Token("CNAME", "b"),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "alias_2"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "extract")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("TIME_INTERVAL", "second"),
+                                                        Token("FROM", "from"),
+                                                        Token("CNAME", "c"),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "extract")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("TIME_INTERVAL", "hour"),
+                                                        Token("FROM", "from"),
+                                                        Token("CNAME", "d"),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)
