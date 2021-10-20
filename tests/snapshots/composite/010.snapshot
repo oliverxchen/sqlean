@@ -135,7 +135,7 @@ Tree(
                                                 Tree(
                                                     "function_expression",
                                                     [
-                                                        Token("CNAME", "sum"),
+                                                        Tree("function_name", [Token("CNAME", "sum")]),
                                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
                                                     ],
                                                 ),
@@ -148,7 +148,7 @@ Tree(
                                                 Tree(
                                                     "function_expression",
                                                     [
-                                                        Token("CNAME", "stddev"),
+                                                        Tree("function_name", [Token("CNAME", "stddev")]),
                                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "c")])]),
                                                     ],
                                                 ),
@@ -217,7 +217,10 @@ Tree(
                                                                 Tree(
                                                                     "function_expression",
                                                                     [
-                                                                        Token("CNAME", "date_trunc"),
+                                                                        Tree(
+                                                                            "function_name",
+                                                                            [Token("CNAME", "date_trunc")],
+                                                                        ),
                                                                         Tree(
                                                                             "arg_list",
                                                                             [
@@ -227,7 +230,15 @@ Tree(
                                                                                         Tree(
                                                                                             "function_expression",
                                                                                             [
-                                                                                                Token("CNAME", "date"),
+                                                                                                Tree(
+                                                                                                    "function_name",
+                                                                                                    [
+                                                                                                        Token(
+                                                                                                            "CNAME",
+                                                                                                            "date",
+                                                                                                        )
+                                                                                                    ],
+                                                                                                ),
                                                                                                 Tree(
                                                                                                     "arg_list",
                                                                                                     [
@@ -389,7 +400,10 @@ Tree(
                                                                 Tree(
                                                                     "function_expression",
                                                                     [
-                                                                        Token("CNAME", "date_trunc"),
+                                                                        Tree(
+                                                                            "function_name",
+                                                                            [Token("CNAME", "date_trunc")],
+                                                                        ),
                                                                         Tree(
                                                                             "arg_list",
                                                                             [
@@ -399,7 +413,15 @@ Tree(
                                                                                         Tree(
                                                                                             "function_expression",
                                                                                             [
-                                                                                                Token("CNAME", "date"),
+                                                                                                Tree(
+                                                                                                    "function_name",
+                                                                                                    [
+                                                                                                        Token(
+                                                                                                            "CNAME",
+                                                                                                            "date",
+                                                                                                        )
+                                                                                                    ],
+                                                                                                ),
                                                                                                 Tree(
                                                                                                     "arg_list",
                                                                                                     [
@@ -479,7 +501,7 @@ Tree(
                                                         Tree(
                                                             "function_expression",
                                                             [
-                                                                Token("CNAME", "coalesce"),
+                                                                Tree("function_name", [Token("CNAME", "coalesce")]),
                                                                 Tree(
                                                                     "arg_list",
                                                                     [

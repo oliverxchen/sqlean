@@ -29,7 +29,7 @@ Tree(
                                 Tree(
                                     "function_expression",
                                     [
-                                        Token("CNAME", "count"),
+                                        Tree("function_name", [Token("CNAME", "count")]),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
                                     ],
                                 )

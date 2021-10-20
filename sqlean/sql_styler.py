@@ -12,7 +12,7 @@ from lark.visitors import v_args
 from sqlean.custom_classes import CToken, CTree
 
 
-class CraftMixin(Transformer):  # type: ignore
+class BaseMixin(Transformer):  # type: ignore
     """Mixin that crafts tokens and trees into styled strings"""
 
     def __init__(self, indent: str) -> None:
@@ -43,6 +43,10 @@ class CraftMixin(Transformer):  # type: ignore
         """Stringify children"""
         return [str(child) for child in node.children]
 
+    def _rollup(self, node: CTree) -> str:
+        """Join list"""
+        return "".join(self._stringify_children(node))
+
     def _rollup_linesep(self, node: CTree) -> str:
         """Join list with linesep"""
         return linesep.join(self._stringify_children(node))
@@ -53,7 +57,8 @@ class CraftMixin(Transformer):  # type: ignore
 
     def _rollup_space(self, node: CTree) -> str:
         """Join list with space"""
-        return " ".join(self._stringify_children(node))
+        output = [child.lstrip() for child in self._stringify_children(node)]
+        return " ".join(output)
 
     def _rollup_dot(self, node: CTree) -> str:
         """Join list with space"""
@@ -74,7 +79,7 @@ class CraftMixin(Transformer):  # type: ignore
 
 
 @v_args(tree=True)
-class TerminalMixin(CraftMixin):
+class TerminalMixin(BaseMixin):
     """Mixin for terminals that need to be separately printed"""
 
     def FROM(self, token: CToken) -> str:  # pylint: disable=invalid-name
@@ -99,7 +104,7 @@ class TerminalMixin(CraftMixin):
 
 
 @v_args(tree=True)
-class QueryMixin(CraftMixin):
+class QueryMixin(BaseMixin):
     """Mixin for query level nodes"""
 
     def query_file(self, node: CTree) -> str:
@@ -143,7 +148,7 @@ class QueryMixin(CraftMixin):
 
 
 @v_args(tree=True)
-class SelectMixin(CraftMixin):
+class SelectMixin(BaseMixin):
     """Mixin for SELECT related nodes"""
 
     def select_expr(self, node: CTree) -> str:
@@ -191,7 +196,7 @@ class SelectMixin(CraftMixin):
 
 
 @v_args(tree=True)
-class FromMixin(CraftMixin):
+class FromMixin(BaseMixin):
     """Mixin for FROM/table related nodes"""
 
     def from_clause(self, node: CTree) -> str:
@@ -214,7 +219,7 @@ class FromMixin(CraftMixin):
 
 
 @v_args(tree=True)
-class JoinMixin(CraftMixin):
+class JoinMixin(BaseMixin):
     """Mixin for JOIN related nodes"""
 
     def join_operation_with_condition(self, node: CTree) -> str:
@@ -260,7 +265,7 @@ class JoinMixin(CraftMixin):
 
 
 @v_args(tree=True)
-class FromModifierMixin(CraftMixin):
+class FromModifierMixin(BaseMixin):
     """Mixin for FROM modifier related nodes.
     Eg GROUP BY/ORDER BY/LIMIT"""
 
@@ -304,13 +309,30 @@ class FromModifierMixin(CraftMixin):
 
 
 @v_args(tree=True)
-class FunctionMixin(CraftMixin):
+class FunctionMixin(BaseMixin):
     """Mixin for function related nodes"""
 
     @staticmethod
     def function_expression(node: CTree) -> str:
         """print function_expression"""
-        return f"{str(node.children[0]).upper()}({node.children[1]})"
+        return f"{str(node.children[0])}({node.children[1]})"
+
+    @staticmethod
+    def function_name(node: CTree) -> str:
+        """print function_name"""
+        if len(node.children) == 6:
+            upper_set = {5}
+        elif len(node.children) == 3 and str(node.children[0]).upper() != "SAFE":
+            upper_set = {2}
+        else:
+            upper_set = set(range(len(node.children)))
+        children: List[str] = []
+        for i, child in enumerate(node.children):
+            if i in upper_set:
+                children.append(str(child).upper())
+            else:
+                children.append(str(child))
+        return "".join(children)
 
     def arg_list(self, node: CTree) -> str:
         """rollup arg_list"""
@@ -320,9 +342,13 @@ class FunctionMixin(CraftMixin):
         """print arg_item"""
         return self._rollup_space(node)
 
+    def data_type(self, node: CTree) -> str:
+        """print data_type"""
+        return self._rollup(node)
+
 
 @v_args(tree=True)
-class BoolMixin(CraftMixin):
+class BoolMixin(BaseMixin):
     """Mixin for bool related nodes"""
 
     def leading_unary_bool_operation(self, node: CTree) -> str:
@@ -351,7 +377,7 @@ class BoolMixin(CraftMixin):
 
 
 @v_args(tree=True)
-class ComparisonMixin(CraftMixin):
+class ComparisonMixin(BaseMixin):
     """Mixin for comparison related nodes"""
 
     def binary_comparison_operation(self, node: CTree) -> str:
@@ -360,7 +386,7 @@ class ComparisonMixin(CraftMixin):
 
 
 @v_args(tree=True)
-class JinjaMixin(CraftMixin):
+class JinjaMixin(BaseMixin):
     """Mixin for Jinja related nodes"""
 
     def config(self, node: CTree) -> str:

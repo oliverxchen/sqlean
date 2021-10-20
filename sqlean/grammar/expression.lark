@@ -1,29 +1,24 @@
 select_list: select_item ("," [INLINE_COMMENT] select_item)* [","] [INLINE_COMMENT]
-
 ?select_item: select_item_unaliased
     | select_item_aliased
-
 select_item_aliased: expression as_alias
 select_item_unaliased: expression
     | STAR
-
 STAR: "*"
 
 ?expression: base_expression
     | bool_expression
-
 ?base_expression: function_expression
     | table_referenced_field
     | CNAME
-
 table_referenced_field: CNAME "." CNAME
     | explicit_table_name "." CNAME
-
-function_expression: CNAME "(" arg_list ")"
+function_expression: function_name "(" arg_list ")"
+!function_name: CNAME
+    | ["`" PROJECT_ID  "`."] CNAME "." CNAME
 
 ?bool_expression: unary_bool_operation
     | binary_comparison_operation
-
 binary_bool_operation: bool_expression (BINARY_BOOL_OPERATOR bool_expression)+
 
 bool_list: first_bool_item (after_bool_item)*
@@ -34,52 +29,73 @@ after_bool_item: BINARY_BOOL_OPERATOR bool_item
     | base_expression
 
 arg_list: arg_item ("," arg_item)*
-
-arg_item: DATE_INTERVAL
-    | TIME_INTERVAL
+!arg_item: interval
     | expression
-
-DATE_INTERVAL.2: "MONTH"i
+    | expression "AS"i data_type
+    | interval "FROM"i expression
+!data_type: "BOOL"i
+    | "BYTES"i ["(" INT ")"]
+    | "DATE"i
+    | "DATETIME"i
+    | "INT64"i
+    | "INT"i
+    | "SMALLINT"i
+    | "INTEGER"i
+    | "BIGINT"i
+    | "TINYINT"i
+    | "BYTEINT"i
+    | "NUMERIC"i
+    | "DECIMAL"i
+    | "BIGNUMERIC"i
+    | "BIGDECIMAL"i
+    | "FLOAT64"i
+    | "STRING"i
+?interval: DATE_INTERVAL
+    | TIME_INTERVAL
+DATE_INTERVAL.2: "DAY"i
+    | "DAYOFYEAR"i
+    | "MONTH"i
     | "WEEK"i
-
-TIME_INTERVAL.2: "MINUTE"i
+    | "ISOWEEK"i
+    | "YEAR"i
+    | "ISOYEAR"i
+TIME_INTERVAL.2: "MICROSECOND"i
+    | "MILLISECOND"i
     | "SECOND"i
+    | "MINUTE"i
+    | "HOUR"i
 
 binary_comparison_operation: base_expression BINARY_COMPARISON_OPERATOR base_expression
-
 BINARY_BOOL_OPERATOR.2: "AND"i
     | "OR"i
-
 BINARY_COMPARISON_OPERATOR: "="
     | ">"
     | ">="
     | "<"
     | "<="
     | NOT_EQUAL
-
 NOT_EQUAL: "!="
     | "<>"
 
-
 ?unary_bool_operation: leading_unary_bool_operation
     | trailing_unary_bool_operation
-
 leading_unary_bool_operation: LEADING_UNARY_BOOL_OPERATOR base_expression
 trailing_unary_bool_operation: base_expression trailing_unary_bool_operator
-
 LEADING_UNARY_BOOL_OPERATOR: NOT
 trailing_unary_bool_operator: IS [NOT] NULL
     | IS [NOT] TRUE
     | IS [NOT] FALSE
-
 NOT: "NOT"i
 IS: "IS"i
 NULL: "NULL"i
 TRUE: "TRUE"i
 FALSE: "FALSE"i
 
-%import common.CNAME
 
+%import common.CNAME
+%import common.INT
 %import alias.as_alias
 %import comment.INLINE_COMMENT
 %import table.explicit_table_name
+%import table.PROJECT_ID
+%import table.DATASET_ID

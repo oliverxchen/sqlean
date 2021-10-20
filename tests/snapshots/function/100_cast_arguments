@@ -1,0 +1,247 @@
+select
+	cast(a as int) as alias,
+	cast(b as int64) alias_2,
+	cast(c as string),
+	cast(d as numeric),
+	cast(e as bytes),
+	cast(f as bytes(3)),
+	cast(g as decimal),
+	cast(h as float64),
+from table
+
+---
+
+SELECT
+    CAST(a AS INT) AS alias,
+    CAST(b AS INT64) AS alias_2,
+    CAST(c AS STRING),
+    CAST(d AS NUMERIC),
+    CAST(e AS BYTES),
+    CAST(f AS BYTES(3)),
+    CAST(g AS DECIMAL),
+    CAST(h AS FLOAT64),
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("CNAME", "a"),
+                                                        Token("AS", "as"),
+                                                        Tree("data_type", [Token("ANON_2", "int")]),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "alias"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("CNAME", "b"),
+                                                        Token("AS", "as"),
+                                                        Tree("data_type", [Token("INT64", "int64")]),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "alias_2"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("CNAME", "c"),
+                                                        Token("AS", "as"),
+                                                        Tree("data_type", [Token("STRING", "string")]),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("CNAME", "d"),
+                                                        Token("AS", "as"),
+                                                        Tree("data_type", [Token("NUMERIC", "numeric")]),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("CNAME", "e"),
+                                                        Token("AS", "as"),
+                                                        Tree("data_type", [Token("BYTES", "bytes")]),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("CNAME", "f"),
+                                                        Token("AS", "as"),
+                                                        Tree(
+                                                            "data_type",
+                                                            [
+                                                                Token("BYTES", "bytes"),
+                                                                Token("LPAR", "("),
+                                                                Token("INT", "3"),
+                                                                Token("RPAR", ")"),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("CNAME", "g"),
+                                                        Token("AS", "as"),
+                                                        Tree("data_type", [Token("DECIMAL", "decimal")]),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("CNAME", "h"),
+                                                        Token("AS", "as"),
+                                                        Tree("data_type", [Token("FLOAT64", "float64")]),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)

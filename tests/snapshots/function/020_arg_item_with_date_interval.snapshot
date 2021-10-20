@@ -25,7 +25,7 @@ Tree(
                                 Tree(
                                     "function_expression",
                                     [
-                                        Token("CNAME", "date_trunc"),
+                                        Tree("function_name", [Token("CNAME", "date_trunc")]),
                                         Tree(
                                             "arg_list",
                                             [
