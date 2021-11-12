@@ -164,10 +164,7 @@ Tree(
                                         Tree("simple_table_name", [Token("CNAME", "table_a")]),
                                         Tree(
                                             "groupby_modifier",
-                                            [
-                                                Token("GROUP_BY", "group\n\tby"),
-                                                Tree("groupby_list", [Tree("groupby_item", [Token("INT", "1")])]),
-                                            ],
+                                            [Token("GROUP_BY", "group\n\tby"), Tree("field_list", [Token("INT", "1")])],
                                         ),
                                         Tree(
                                             "orderby_modifier",

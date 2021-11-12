@@ -75,7 +75,7 @@ class BaseMixin(Transformer):  # type: ignore
     @staticmethod
     def _apply_black(token: CToken) -> str:
         """Apply black to token"""
-        return black.format_str(str(token), mode=black.Mode()).strip()
+        return black.format_str(str(token), mode=black.Mode()).strip()  # type: ignore
 
 
 @v_args(tree=True)
@@ -278,15 +278,11 @@ class FromModifierMixin(BaseMixin):
         output = self._apply_indent("GROUP BY", node.data.indent_level)
         return output + linesep + str(node.children[1])
 
-    def groupby_list(self, node: CTree) -> str:
-        """rollup groupby_list"""
+    def field_list(self, node: CTree) -> str:
+        """rollup field_list"""
         return self._apply_indent(
             self._rollup_comma_inline(node), node.data.indent_level
         )
-
-    def groupby_item(self, node: CTree) -> str:
-        """print groupby_item"""
-        return self._rollup_space(node)
 
     def orderby_modifier(self, node: CTree) -> str:
         """rollup orderby_modifier"""
