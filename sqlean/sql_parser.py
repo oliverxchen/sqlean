@@ -60,7 +60,7 @@ class TreeGroomer(Visitor_Recursive):
         "cross_join": -1,
         "using_clause": -1,
         "groupby_modifier": -1,
-        "groupby_list": 1,
+        "field_list": 1,
         "orderby_modifier": -1,
         "orderby_list": 1,
         "on_clause": -1,

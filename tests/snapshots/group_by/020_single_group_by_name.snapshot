@@ -44,10 +44,7 @@ Tree(
                         Tree("simple_table_name", [Token("CNAME", "table")]),
                         Tree(
                             "groupby_modifier",
-                            [
-                                Token("GROUP_BY", "group by"),
-                                Tree("groupby_list", [Tree("groupby_item", [Token("CNAME", "a")])]),
-                            ],
+                            [Token("GROUP_BY", "group by"), Tree("field_list", [Token("CNAME", "a")])],
                         ),
                     ],
                 ),

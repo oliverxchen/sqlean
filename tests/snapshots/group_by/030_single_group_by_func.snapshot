@@ -45,18 +45,13 @@ Tree(
                             [
                                 Token("GROUP_BY", "group by"),
                                 Tree(
-                                    "groupby_list",
+                                    "field_list",
                                     [
                                         Tree(
-                                            "groupby_item",
+                                            "function_expression",
                                             [
-                                                Tree(
-                                                    "function_expression",
-                                                    [
-                                                        Tree("function_name", [Token("CNAME", "round")]),
-                                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
-                                                    ],
-                                                )
+                                                Tree("function_name", [Token("CNAME", "round")]),
+                                                Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
                                             ],
                                         )
                                     ],

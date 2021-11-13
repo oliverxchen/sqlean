@@ -14,8 +14,12 @@ STAR: "*"
 table_referenced_field: CNAME "." CNAME
     | explicit_table_name "." CNAME
 function_expression: function_name "(" arg_list ")"
+    // | window_function_expression
 !function_name: CNAME
     | ["`" PROJECT_ID  "`."] CNAME "." CNAME
+// !window_function_expression: CNAME "(" [arg_list] ")" "OVER"i over_clause
+// over_clause: window_specification // or named_window
+// window_specification: "PARTITION"i WS "BY"i partition_list
 
 ?bool_expression: unary_bool_operation
     | binary_comparison_operation
@@ -91,6 +95,18 @@ NULL: "NULL"i
 TRUE: "TRUE"i
 FALSE: "FALSE"i
 
+field_list: field_item ("," field_item)*
+?field_item: base_expression | INT
+
+!groupby_modifier: GROUP_BY field_list //[having_clause]
+GROUP_BY.2: "GROUP"i WS "BY"i
+
+// !having_clause: "HAVING"i bool_list
+
+!orderby_modifier: ORDER_BY orderby_list
+ORDER_BY.2: "ORDER"i WS "BY"i
+orderby_list: orderby_item ("," orderby_item)*
+!orderby_item: field_item ["ASC"i | "DESC"i]
 
 %import common.CNAME
 %import common.INT
@@ -99,3 +115,4 @@ FALSE: "FALSE"i
 %import table.explicit_table_name
 %import table.PROJECT_ID
 %import table.DATASET_ID
+%import common.WS

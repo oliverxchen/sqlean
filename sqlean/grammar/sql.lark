@@ -40,26 +40,17 @@ right_join: "RIGHT"i ["OUTER"i] "JOIN"i
 !using_clause: "USING"i "(" using_list ")"
 using_list: CNAME ("," CNAME)*
 
-!groupby_modifier: GROUP_BY groupby_list //[having_clause]
-GROUP_BY.2: "GROUP"i WS "BY"i
-groupby_list: groupby_item ("," groupby_item)*
-groupby_item: base_expression | INT
-
-// !having_clause: "HAVING"i bool_list
-
-!orderby_modifier: ORDER_BY orderby_list
-ORDER_BY.2: "ORDER"i WS "BY"i
-orderby_list: orderby_item ("," orderby_item)*
-!orderby_item: (base_expression | INT) ["ASC"i | "DESC"i]
-
 !limit_clause: "LIMIT"i INT ["OFFSET"i INT]
 
-%import expression.select_list
-%import expression.bool_list
+
 %import expression.base_expression
-%import table.table_item
+%import expression.bool_list
+%import expression.groupby_modifier
+%import expression.orderby_modifier
+%import expression.select_list
 %import jinja.config
-%import common.WS
+%import table.table_item
 %import common.CNAME
 %import common.INT
+%import common.WS
 %ignore WS
