@@ -1,0 +1,62 @@
+SELECT a, SUM(b) OVER (partition  by a) AS total_b
+FROM table
+
+---
+
+SELECT
+    a,
+    SUM(b) OVER (PARTITION BY a) AS total_b,
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "SELECT")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "SUM")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "partition_modifier",
+                                                            [
+                                                                Token("PARTITION_BY", "partition  by"),
+                                                                Tree("field_list", [Token("CNAME", "a")]),
+                                                            ],
+                                                        )
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "total_b"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "FROM"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)

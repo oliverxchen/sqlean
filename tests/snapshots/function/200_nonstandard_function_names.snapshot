@@ -32,7 +32,7 @@ Tree(
                             "select_item_unaliased",
                             [
                                 Tree(
-                                    "function_expression",
+                                    "standard_function_expression",
                                     [
                                         Tree("function_name", [Token("CNAME", "function")]),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
@@ -44,7 +44,7 @@ Tree(
                             "select_item_unaliased",
                             [
                                 Tree(
-                                    "function_expression",
+                                    "standard_function_expression",
                                     [
                                         Tree(
                                             "function_name",
@@ -59,7 +59,7 @@ Tree(
                             "select_item_unaliased",
                             [
                                 Tree(
-                                    "function_expression",
+                                    "standard_function_expression",
                                     [
                                         Tree(
                                             "function_name",
@@ -78,7 +78,7 @@ Tree(
                             "select_item_unaliased",
                             [
                                 Tree(
-                                    "function_expression",
+                                    "standard_function_expression",
                                     [
                                         Tree(
                                             "function_name",
