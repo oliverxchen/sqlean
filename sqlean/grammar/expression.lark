@@ -2,30 +2,38 @@ select_list: select_item ("," [INLINE_COMMENT] select_item)* [","] [INLINE_COMME
 ?select_item: select_item_unaliased
     | select_item_aliased
 select_item_aliased: expression as_alias
-select_item_unaliased: expression
-    | STAR
-STAR: "*"
+!select_item_unaliased: expression
+    | "*"
 
 ?expression: base_expression
     | bool_expression
-?base_expression: function_expression
-    | table_referenced_field
+?base_expression: table_referenced_field
+    | standard_function_expression
+    | window_function_expression
+    | case_expression
     | CNAME
+
 table_referenced_field: CNAME "." CNAME
     | explicit_table_name "." CNAME
-// !function_expression: function_name "(" [arg_list] ")" ["OVER"i over_clause]
-!?function_expression: standard_function_expression
-    | window_function_expression
+
 standard_function_expression: function_name "(" arg_list ")"
 window_function_expression: function_name "(" [arg_list] ")" "OVER"i over_clause
-
 !function_name: CNAME
     | ["`" PROJECT_ID  "`."] CNAME "." CNAME
+
 over_clause: "(" window_specification  ")" // or named_window
 window_specification: [partition_modifier] [window_orderby_modifier] // [window_frame_clause] TODO
 partition_modifier: PARTITION_BY field_list
 PARTITION_BY: "PARTITION"i WS "BY"i
 window_orderby_modifier: ORDER_BY orderby_list
+
+?case_expression: common_case_expression
+    | separate_case_expression
+!common_case_expression: "CASE"i base_expression when_list [else_clause] "END"i
+!separate_case_expression: "CASE"i when_list [else_clause] "END"i
+when_list: when_item+
+!when_item: "WHEN"i (base_expression | bool_list) "THEN"i base_expression
+!else_clause: "ELSE"i base_expression
 
 ?bool_expression: unary_bool_operation
     | binary_comparison_operation

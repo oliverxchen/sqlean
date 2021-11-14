@@ -194,6 +194,35 @@ class SelectMixin(BaseMixin):
         """print table_referenced_field"""
         return self._rollup_dot(node)
 
+    def when_item(self, node: CTree) -> str:
+        """print when_item"""
+        # turn multi-line bool_list into single line
+        bool_list = str(node.children[1]).split("\n")
+        bool_list = [item.lstrip() for item in bool_list]
+        item = f'WHEN {" ".join(bool_list)} THEN {node.children[3]}'
+        # indent 1 relatvie to case header and end footer
+        return self._apply_indent(item, 1)
+
+    def when_list(self, node: CTree) -> str:
+        """print when_list"""
+        return self._rollup_linesep(node)
+
+    @staticmethod
+    def common_case_expression(node: CTree) -> str:
+        """print common_case_expression"""
+        case_line = f"CASE {node.children[1]}\n"
+        other_lines = linesep.join([str(item) for item in node.children[2:]])
+        return case_line + other_lines
+
+    def else_clause(self, node: CTree) -> str:
+        """print else_clause"""
+        # indent 1 relative to case header and end footer
+        return self._apply_indent(self._rollup_space(node), 1)
+
+    def separate_case_expression(self, node: CTree) -> str:
+        """print separate_case_expression"""
+        return self._rollup_linesep(node)
+
 
 @v_args(tree=True)
 class FromMixin(BaseMixin):
