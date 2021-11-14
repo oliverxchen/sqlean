@@ -1,0 +1,60 @@
+SELECT a, SUM(b) OVER () AS total_b, avg(b) over ()
+FROM table
+
+---
+
+SELECT
+    a,
+    SUM(b) OVER () AS total_b,
+    AVG(b) OVER (),
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "SELECT")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "SUM")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                        Tree("over_clause", [Tree("window_specification", [])]),
+                                    ],
+                                ),
+                                Token("CNAME", "total_b"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "avg")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                        Tree("over_clause", [Tree("window_specification", [])]),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "FROM"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)

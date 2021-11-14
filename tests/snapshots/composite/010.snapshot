@@ -133,7 +133,7 @@ Tree(
                                             "select_item_aliased",
                                             [
                                                 Tree(
-                                                    "function_expression",
+                                                    "standard_function_expression",
                                                     [
                                                         Tree("function_name", [Token("CNAME", "sum")]),
                                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
@@ -146,7 +146,7 @@ Tree(
                                             "select_item_aliased",
                                             [
                                                 Tree(
-                                                    "function_expression",
+                                                    "standard_function_expression",
                                                     [
                                                         Tree("function_name", [Token("CNAME", "stddev")]),
                                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "c")])]),
@@ -212,7 +212,7 @@ Tree(
                                                             "select_item_aliased",
                                                             [
                                                                 Tree(
-                                                                    "function_expression",
+                                                                    "standard_function_expression",
                                                                     [
                                                                         Tree(
                                                                             "function_name",
@@ -225,7 +225,7 @@ Tree(
                                                                                     "arg_item",
                                                                                     [
                                                                                         Tree(
-                                                                                            "function_expression",
+                                                                                            "standard_function_expression",
                                                                                             [
                                                                                                 Tree(
                                                                                                     "function_name",
@@ -395,7 +395,7 @@ Tree(
                                                             "select_item_aliased",
                                                             [
                                                                 Tree(
-                                                                    "function_expression",
+                                                                    "standard_function_expression",
                                                                     [
                                                                         Tree(
                                                                             "function_name",
@@ -408,7 +408,7 @@ Tree(
                                                                                     "arg_item",
                                                                                     [
                                                                                         Tree(
-                                                                                            "function_expression",
+                                                                                            "standard_function_expression",
                                                                                             [
                                                                                                 Tree(
                                                                                                     "function_name",
@@ -496,7 +496,7 @@ Tree(
                                                     "select_item_aliased",
                                                     [
                                                         Tree(
-                                                            "function_expression",
+                                                            "standard_function_expression",
                                                             [
                                                                 Tree("function_name", [Token("CNAME", "coalesce")]),
                                                                 Tree(

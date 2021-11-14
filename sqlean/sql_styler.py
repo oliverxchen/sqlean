@@ -309,8 +309,8 @@ class FunctionMixin(BaseMixin):
     """Mixin for function related nodes"""
 
     @staticmethod
-    def function_expression(node: CTree) -> str:
-        """print function_expression"""
+    def standard_function_expression(node: CTree) -> str:
+        """print standard_function_expression"""
         return f"{str(node.children[0])}({node.children[1]})"
 
     @staticmethod
@@ -341,6 +341,35 @@ class FunctionMixin(BaseMixin):
     def data_type(self, node: CTree) -> str:
         """print data_type"""
         return self._rollup(node)
+
+    def window_specification(self, node: CTree) -> str:
+        """print window_specification"""
+        return self._rollup_space(node)
+
+    def over_clause(self, node: CTree) -> str:
+        """print over_clause"""
+        return f"OVER ({self._rollup(node)})"
+
+    @staticmethod
+    def window_function_expression(node: CTree) -> str:
+        """print window_function_expression"""
+        if len(node.children) == 3:
+            output = f"{node.children[0]}({node.children[1]}) {node.children[2]}"
+        elif len(node.children) == 2:
+            output = f"{str(node.children[0])}() {node.children[1]}"
+        else:
+            raise NotImplementedError
+        return output
+
+    @staticmethod
+    def window_orderby_modifier(node: CTree) -> str:
+        """print window_orderby_modifier"""
+        return f"ORDER BY {str(node.children[1]).lstrip()}"
+
+    @staticmethod
+    def partition_modifier(node: CTree) -> str:
+        """print partition_modifier"""
+        return f"PARTITION BY {str(node.children[1]).lstrip()}"
 
 
 @v_args(tree=True)

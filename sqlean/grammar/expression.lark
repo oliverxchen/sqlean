@@ -13,13 +13,19 @@ STAR: "*"
     | CNAME
 table_referenced_field: CNAME "." CNAME
     | explicit_table_name "." CNAME
-function_expression: function_name "(" arg_list ")"
-    // | window_function_expression
+// !function_expression: function_name "(" [arg_list] ")" ["OVER"i over_clause]
+!?function_expression: standard_function_expression
+    | window_function_expression
+standard_function_expression: function_name "(" arg_list ")"
+window_function_expression: function_name "(" [arg_list] ")" "OVER"i over_clause
+
 !function_name: CNAME
     | ["`" PROJECT_ID  "`."] CNAME "." CNAME
-// !window_function_expression: CNAME "(" [arg_list] ")" "OVER"i over_clause
-// over_clause: window_specification // or named_window
-// window_specification: "PARTITION"i WS "BY"i partition_list
+over_clause: "(" window_specification  ")" // or named_window
+window_specification: [partition_modifier] [window_orderby_modifier] // [window_frame_clause] TODO
+partition_modifier: PARTITION_BY field_list
+PARTITION_BY: "PARTITION"i WS "BY"i
+window_orderby_modifier: ORDER_BY orderby_list
 
 ?bool_expression: unary_bool_operation
     | binary_comparison_operation

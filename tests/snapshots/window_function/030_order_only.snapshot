@@ -1,0 +1,65 @@
+SELECT a, last(b) OVER (order  by a) AS last_b
+FROM table
+
+---
+
+SELECT
+    a,
+    LAST(b) OVER (ORDER BY a) AS last_b,
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "SELECT")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "last")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "window_orderby_modifier",
+                                                            [
+                                                                Token("ORDER_BY", "order  by"),
+                                                                Tree(
+                                                                    "orderby_list",
+                                                                    [Tree("orderby_item", [Token("CNAME", "a")])],
+                                                                ),
+                                                            ],
+                                                        )
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "last_b"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "FROM"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)

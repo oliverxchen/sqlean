@@ -23,7 +23,7 @@ Tree(
                             "select_item_unaliased",
                             [
                                 Tree(
-                                    "function_expression",
+                                    "standard_function_expression",
                                     [
                                         Tree("function_name", [Token("CNAME", "date_trunc")]),
                                         Tree(

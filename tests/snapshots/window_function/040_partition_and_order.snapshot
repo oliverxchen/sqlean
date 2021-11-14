@@ -1,0 +1,87 @@
+SELECT a, row_number() OVER (partition  by a, b order by c ASC, d, e DESC) AS row
+FROM table
+
+---
+
+SELECT
+    a,
+    ROW_NUMBER() OVER (PARTITION BY a, b ORDER BY c ASC, d, e DESC) AS row,
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "SELECT")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "row_number")]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "partition_modifier",
+                                                            [
+                                                                Token("PARTITION_BY", "partition  by"),
+                                                                Tree(
+                                                                    "field_list",
+                                                                    [Token("CNAME", "a"), Token("CNAME", "b")],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_orderby_modifier",
+                                                            [
+                                                                Token("ORDER_BY", "order by"),
+                                                                Tree(
+                                                                    "orderby_list",
+                                                                    [
+                                                                        Tree(
+                                                                            "orderby_item",
+                                                                            [Token("CNAME", "c"), Token("ASC", "ASC")],
+                                                                        ),
+                                                                        Tree("orderby_item", [Token("CNAME", "d")]),
+                                                                        Tree(
+                                                                            "orderby_item",
+                                                                            [
+                                                                                Token("CNAME", "e"),
+                                                                                Token("DESC", "DESC"),
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "row"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "FROM"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)
