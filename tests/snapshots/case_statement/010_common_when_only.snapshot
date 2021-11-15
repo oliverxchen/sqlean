@@ -1,0 +1,105 @@
+select
+    case a
+        when b then c
+	end,
+    case a when b then c when d then e
+    end as f
+from table
+
+---
+
+SELECT
+    CASE a
+        WHEN b THEN c
+    END,
+    CASE a
+        WHEN b THEN c
+        WHEN d THEN e
+    END AS f,
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "common_case_expression",
+                                    [
+                                        Token("CASE", "case"),
+                                        Token("CNAME", "a"),
+                                        Tree(
+                                            "when_list",
+                                            [
+                                                Tree(
+                                                    "when_item",
+                                                    [
+                                                        Token("WHEN", "when"),
+                                                        Token("CNAME", "b"),
+                                                        Token("THEN", "then"),
+                                                        Token("CNAME", "c"),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                        Token("END", "end"),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "common_case_expression",
+                                    [
+                                        Token("CASE", "case"),
+                                        Token("CNAME", "a"),
+                                        Tree(
+                                            "when_list",
+                                            [
+                                                Tree(
+                                                    "when_item",
+                                                    [
+                                                        Token("WHEN", "when"),
+                                                        Token("CNAME", "b"),
+                                                        Token("THEN", "then"),
+                                                        Token("CNAME", "c"),
+                                                    ],
+                                                ),
+                                                Tree(
+                                                    "when_item",
+                                                    [
+                                                        Token("WHEN", "when"),
+                                                        Token("CNAME", "d"),
+                                                        Token("THEN", "then"),
+                                                        Token("CNAME", "e"),
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("END", "end"),
+                                    ],
+                                ),
+                                Token("CNAME", "f"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)

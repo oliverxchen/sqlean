@@ -1,0 +1,146 @@
+select
+    case
+        when b = c OR b < d then c
+        else d
+	end,
+    case
+        when b then c
+        when d then e
+        else f
+    end as g
+from table
+
+---
+
+SELECT
+    CASE
+        WHEN b = c OR b < d THEN c
+        ELSE d
+    END,
+    CASE
+        WHEN b THEN c
+        WHEN d THEN e
+        ELSE f
+    END AS g,
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "separate_case_expression",
+                                    [
+                                        Token("CASE", "case"),
+                                        Tree(
+                                            "when_list",
+                                            [
+                                                Tree(
+                                                    "when_item",
+                                                    [
+                                                        Token("WHEN", "when"),
+                                                        Tree(
+                                                            "bool_list",
+                                                            [
+                                                                Tree(
+                                                                    "first_bool_item",
+                                                                    [
+                                                                        Tree(
+                                                                            "binary_comparison_operation",
+                                                                            [
+                                                                                Token("CNAME", "b"),
+                                                                                Token(
+                                                                                    "BINARY_COMPARISON_OPERATOR", "="
+                                                                                ),
+                                                                                Token("CNAME", "c"),
+                                                                            ],
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                                Tree(
+                                                                    "after_bool_item",
+                                                                    [
+                                                                        Token("BINARY_BOOL_OPERATOR", "OR"),
+                                                                        Tree(
+                                                                            "binary_comparison_operation",
+                                                                            [
+                                                                                Token("CNAME", "b"),
+                                                                                Token(
+                                                                                    "BINARY_COMPARISON_OPERATOR", "<"
+                                                                                ),
+                                                                                Token("CNAME", "d"),
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Token("THEN", "then"),
+                                                        Token("CNAME", "c"),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                        Tree("else_clause", [Token("ELSE", "else"), Token("CNAME", "d")]),
+                                        Token("END", "end"),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "separate_case_expression",
+                                    [
+                                        Token("CASE", "case"),
+                                        Tree(
+                                            "when_list",
+                                            [
+                                                Tree(
+                                                    "when_item",
+                                                    [
+                                                        Token("WHEN", "when"),
+                                                        Token("CNAME", "b"),
+                                                        Token("THEN", "then"),
+                                                        Token("CNAME", "c"),
+                                                    ],
+                                                ),
+                                                Tree(
+                                                    "when_item",
+                                                    [
+                                                        Token("WHEN", "when"),
+                                                        Token("CNAME", "d"),
+                                                        Token("THEN", "then"),
+                                                        Token("CNAME", "e"),
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Tree("else_clause", [Token("ELSE", "else"), Token("CNAME", "f")]),
+                                        Token("END", "end"),
+                                    ],
+                                ),
+                                Token("CNAME", "g"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)
