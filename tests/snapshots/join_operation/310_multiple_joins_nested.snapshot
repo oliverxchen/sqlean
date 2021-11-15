@@ -1,0 +1,150 @@
+with t as (select * from
+	table_a join table_b using(id)
+	cross join table_c
+	right join table_d on table_c.id = table_d.id
+)
+select * from t
+
+---
+
+WITH
+
+t AS (
+    SELECT
+        *,
+    FROM
+        table_a
+    INNER JOIN
+        table_b
+    USING (id)
+    CROSS JOIN
+        table_c
+    RIGHT OUTER JOIN
+        table_d
+    ON
+        table_c.id = table_d.id
+)
+
+SELECT
+    *,
+FROM
+    t
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "with"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "t"),
+                        Token("AS", "as"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                                Token("FROM", "from"),
+                                Tree(
+                                    "from_clause",
+                                    [
+                                        Tree(
+                                            "cross_join_operation",
+                                            [
+                                                Tree(
+                                                    "join_operation_with_condition",
+                                                    [
+                                                        Tree("simple_table_name", [Token("CNAME", "table_a")]),
+                                                        Tree("inner_join", []),
+                                                        Tree("simple_table_name", [Token("CNAME", "table_b")]),
+                                                        Tree(
+                                                            "using_clause",
+                                                            [
+                                                                Token("USING", "using"),
+                                                                Token("LPAR", "("),
+                                                                Tree("using_list", [Token("CNAME", "id")]),
+                                                                Token("RPAR", ")"),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Tree("cross_join", []),
+                                                Tree(
+                                                    "join_operation_with_condition",
+                                                    [
+                                                        Tree("simple_table_name", [Token("CNAME", "table_c")]),
+                                                        Tree("right_join", []),
+                                                        Tree("simple_table_name", [Token("CNAME", "table_d")]),
+                                                        Tree(
+                                                            "on_clause",
+                                                            [
+                                                                Token("ON", "on"),
+                                                                Tree(
+                                                                    "bool_list",
+                                                                    [
+                                                                        Tree(
+                                                                            "first_bool_item",
+                                                                            [
+                                                                                Tree(
+                                                                                    "binary_comparison_operation",
+                                                                                    [
+                                                                                        Tree(
+                                                                                            "table_referenced_field",
+                                                                                            [
+                                                                                                Token(
+                                                                                                    "CNAME", "table_c"
+                                                                                                ),
+                                                                                                Token("CNAME", "id"),
+                                                                                            ],
+                                                                                        ),
+                                                                                        Token(
+                                                                                            "BINARY_COMPARISON_OPERATOR",
+                                                                                            "=",
+                                                                                        ),
+                                                                                        Tree(
+                                                                                            "table_referenced_field",
+                                                                                            [
+                                                                                                Token(
+                                                                                                    "CNAME", "table_d"
+                                                                                                ),
+                                                                                                Token("CNAME", "id"),
+                                                                                            ],
+                                                                                        ),
+                                                                                    ],
+                                                                                )
+                                                                            ],
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                            ],
+                                        )
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "select")]),
+                        Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                        Token("FROM", "from"),
+                        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "t")])]),
+                    ],
+                ),
+            ],
+        )
+    ],
+)
