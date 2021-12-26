@@ -19,7 +19,6 @@ from sqlean.sql_parser import Parser
 app = typer.Typer(add_completion=False)
 
 
-# pylint: disable=too-many-arguments
 @app.command()
 def main(
     target: Path = typer.Argument("."),
@@ -46,12 +45,6 @@ def main(
         help="Force parsing of all files, even if they have a first line of "
         "`# sqlean ignore`.",
     ),
-    size_indent: int = typer.Option(
-        4,
-        "--size-indent/",
-        "-s/",
-        help="Number of spaces in a single indent.",
-    ),
 ) -> None:
     """🧹Clean your SQL queries!🧹"""
     code = 0
@@ -66,9 +59,6 @@ def main(
         code = 1
     if force:
         typer.echo("--force not implemented yet.")
-        code = 1
-    if size_indent != 4:
-        typer.echo("non-default --size-indent not implemented yet.")
         code = 1
     stats = Stats()
     sql_parser = Parser()

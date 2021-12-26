@@ -1,5 +1,3 @@
-from typing import List
-
 import pytest
 from typer.testing import CliRunner
 
@@ -42,13 +40,6 @@ def test_force(flag: str) -> None:
     assert "--force not implemented yet." in result.stdout
 
 
-@pytest.mark.parametrize("size", [["--size-indent", "2"], ["-s", "5"]])
-def test_size_indent(size: List[str]) -> None:
-    result = runner.invoke(app, size)
-    assert result.exit_code == 1
-    assert "non-default --size-indent not implemented yet." in result.stdout
-
-
 def test_target_file() -> None:
     result = runner.invoke(app, ["tests/fixtures/pass/dir_1/ok_1.sql"])
     assert result.exit_code == 0
@@ -73,7 +64,6 @@ def test_noreplace_pass() -> None:
 
 def test_noreplace_fail() -> None:
     result = runner.invoke(app, ["tests/fixtures/fail"])
-    print(result.stdout)
     assert result.exit_code == 1
     assert "+++ with sqlean" in result.stdout
     assert "--- tests/fixtures/fail/dir_1/fail_1.sql" in result.stdout
