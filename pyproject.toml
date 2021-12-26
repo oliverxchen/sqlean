@@ -5,7 +5,7 @@ description = "Clean your SQL queries"
 authors = ["Oliver Chen <oliver.chen@traveloka.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6.2"
+python = "^3.7"
 lark = "^0.12"
 rich = "^10.0"
 
