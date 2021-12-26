@@ -1,0 +1,4 @@
+SELECT
+    field,
+FROM
+    table

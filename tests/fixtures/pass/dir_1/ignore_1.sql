@@ -1,0 +1,2 @@
+# sqlean ignore
+select *
