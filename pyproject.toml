@@ -34,6 +34,10 @@ testpaths = ["sqlean", "tests"]
 flake8-max-line-length = 88
 markers = ["generate_snapshots"]
 
+[tool.mypy]
+strict = "True"
+warn_unused_ignores = "False"
+
 [tool.coverage.run]
 omit = ["tests/*", "sqlean/parsetab.py"]
 

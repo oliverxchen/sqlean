@@ -44,7 +44,7 @@ def main(
         "been updated and the set of parseable queries has grown.",
     ),
 ) -> None:
-    """🧹Clean your SQL queries!🧹"""
+    """🧹 Clean your SQL queries! 🧹"""
     options = set_options(
         target=target, diff_only=diff_only, write_ignore=write_ignore, force=force
     )
