@@ -1,3 +1,5 @@
+import tempfile
+
 import pytest
 from typer.testing import CliRunner
 
@@ -57,3 +59,10 @@ def test_diffonly_fail() -> None:
     assert "│ +FROM" in result.stdout
     assert "Summary" in result.stdout
     assert "Some files failed" in result.stdout
+
+
+def test_replace_pass() -> None:
+    result = runner.invoke(app, ["tests/fixtures/pass"])
+    assert result.exit_code == 0
+    assert "Summary" in result.stdout
+    assert "All files passed" in result.stdout

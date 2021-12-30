@@ -54,9 +54,11 @@ class Stats:
             dirty_style = "[bold white on red]"
         if self.num_unparsable > 0:
             unparseable_style = "[bold white on red]"
-        table.add_row(
-            "Dirty files", f"{dirty_style}{100 * self.num_dirty / self.num_files:.1f}%"
-        )
+        if options.diff_only is True:
+            table.add_row(
+                "Dirty files",
+                f"{dirty_style}{100 * self.num_dirty / self.num_files:.1f}%",
+            )
         table.add_row(
             "Unparseable files",
             f"{unparseable_style}{100 * self.num_unparsable / self.num_files:.1f}%",
