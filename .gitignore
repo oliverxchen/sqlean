@@ -1,10 +1,5 @@
 .vscode/
 
-# ply outputs
-sqlean/parser.out
-sqlean/parsetab.py
-
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
