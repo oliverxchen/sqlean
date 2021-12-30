@@ -1,2 +1,2 @@
 # sqlean ignore
-select *
+invalid_sql_to_ignore

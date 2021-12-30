@@ -2,7 +2,6 @@ from pathlib import Path
 import shutil
 import tempfile
 
-import pytest
 from typer.testing import CliRunner
 
 from sqlean.main import app
@@ -15,20 +14,6 @@ def test_diff_only() -> None:
     result = runner.invoke(app, ["-d"])
     assert result.exit_code == 1
     assert "Some files failed" in result.stdout
-
-
-@pytest.mark.parametrize("flag", ["--write-ignore", "-i"])
-def test_ignore_write(flag: str) -> None:
-    result = runner.invoke(app, ["-d", flag])
-    assert result.exit_code == 1
-    assert "--write-ignore not implemented yet." in result.stdout
-
-
-@pytest.mark.parametrize("flag", ["--force", "-f"])
-def test_force(flag: str) -> None:
-    result = runner.invoke(app, ["-d", flag])
-    assert result.exit_code == 1
-    assert "--force not implemented yet." in result.stdout
 
 
 def test_target_file() -> None:
@@ -85,3 +70,60 @@ def test_replace_fail() -> None:
         assert result.exit_code == 1
         assert "Clean files │ 66.7%" in result.stdout
         assert "Changed/sqleaned files │ 0.0%" in result.stdout
+
+
+def test_write_ignore() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Copy the files to a temporary directory so that they're not changed in git
+        dest = Path(tmpdir) / "ignore"
+        shutil.copytree("tests/fixtures/fail", dest)
+        unparseable_file = dest / "dir_1/unparseable.sql"
+
+        # start with diff-only as a baseline
+        result = runner.invoke(app, ["-d", tmpdir])
+        assert result.exit_code == 1
+        assert "Ignored files │ 16.7%" in result.stdout
+        assert "Unparseable files │ 16.7%" in result.stdout
+        with open(unparseable_file, "rt", encoding="utf-8") as reader:
+            assert reader.read() == "foo\n"
+
+        # run write-ignore once
+        result = runner.invoke(app, ["--write-ignore", tmpdir])
+        assert result.exit_code == 0
+        assert "Ignored files │ 33.3%" in result.stdout
+        assert "Unparseable files │ 0.0%" in result.stdout
+        with open(unparseable_file, "rt", encoding="utf-8") as reader:
+            assert reader.read() == "# sqlean ignore\nfoo\n"
+
+        # run write-ignore a second time to make sure everything is the same
+        result = runner.invoke(app, ["--write-ignore", tmpdir])
+        assert result.exit_code == 0
+        assert "Ignored files │ 33.3%" in result.stdout
+        assert "Unparseable files │ 0.0%" in result.stdout
+        with open(unparseable_file, "rt", encoding="utf-8") as reader:
+            assert reader.read() == "# sqlean ignore\nfoo\n"
+
+
+def test_force() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Copy the files to a temporary directory so that they're not changed in git
+        dest = Path(tmpdir) / "force"
+        shutil.copytree("tests/fixtures/fail", dest)
+        ignored_file = dest / "dir_1/ignored.sql"
+
+        # start with diff-only as a baseline
+        result = runner.invoke(app, ["-d", tmpdir])
+        assert result.exit_code == 1
+        assert "Ignored files │ 16.7%" in result.stdout
+        assert "Unparseable files │ 16.7%" in result.stdout
+        with open(ignored_file, "rt", encoding="utf-8") as reader:
+            assert reader.read() == "# sqlean ignore\ninvalid_sql_to_ignore\n"
+
+        # run force
+        result = runner.invoke(app, ["--force", tmpdir])
+        assert result.exit_code == 1
+        assert "Ignored files │ 0.0%" in result.stdout
+        assert "Unparseable files │ 33.3%" in result.stdout
+        with open(ignored_file, "rt", encoding="utf-8") as reader:
+            content = reader.read()
+            assert content == "invalid_sql_to_ignore\n"
