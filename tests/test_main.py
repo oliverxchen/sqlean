@@ -1,43 +1,38 @@
-from _pytest.capture import CaptureFixture
+from pathlib import Path
+import shutil
+import tempfile
+
 import pytest
 from typer.testing import CliRunner
 
-from sqlean.main import app, Stats
-from sqlean.settings import Settings
+from sqlean.main import app
 
 
 runner = CliRunner()
 
 
-def test_default() -> None:
-    result = runner.invoke(app, [])
+def test_diff_only() -> None:
+    result = runner.invoke(app, ["-d"])
     assert result.exit_code == 1
     assert "Some files failed" in result.stdout
 
 
-@pytest.mark.parametrize("flag", ["--diff-only", "-d"])
-def test_diff_only(flag: str) -> None:
-    result = runner.invoke(app, flag)
-    assert result.exit_code == 1
-    assert "--diff-only not implemented yet." in result.stdout
-
-
 @pytest.mark.parametrize("flag", ["--write-ignore", "-i"])
 def test_ignore_write(flag: str) -> None:
-    result = runner.invoke(app, flag)
+    result = runner.invoke(app, ["-d", flag])
     assert result.exit_code == 1
     assert "--write-ignore not implemented yet." in result.stdout
 
 
 @pytest.mark.parametrize("flag", ["--force", "-f"])
 def test_force(flag: str) -> None:
-    result = runner.invoke(app, flag)
+    result = runner.invoke(app, ["-d", flag])
     assert result.exit_code == 1
     assert "--force not implemented yet." in result.stdout
 
 
 def test_target_file() -> None:
-    result = runner.invoke(app, ["tests/fixtures/pass/dir_1/clean.sql"])
+    result = runner.invoke(app, ["-d", "tests/fixtures/pass/dir_1/clean.sql"])
     assert result.exit_code == 0
     assert "Summary" in result.stdout
     assert "All files passed" in result.stdout
@@ -49,15 +44,15 @@ def test_target_invalid() -> None:
     assert "No files found" in result.stdout
 
 
-def test_noreplace_pass() -> None:
-    result = runner.invoke(app, ["tests/fixtures/pass"])
+def test_diffonly_pass() -> None:
+    result = runner.invoke(app, ["-d", "tests/fixtures/pass"])
     assert result.exit_code == 0
     assert "Summary" in result.stdout
     assert "All files passed" in result.stdout
 
 
-def test_noreplace_fail() -> None:
-    result = runner.invoke(app, ["tests/fixtures/fail"])
+def test_diffonly_fail() -> None:
+    result = runner.invoke(app, ["-d", "tests/fixtures/fail"])
     assert result.exit_code == 1
     assert "+++ with sqlean" in result.stdout
     assert "--- tests/fixtures/fail/dir_1/dirty.sql" in result.stdout
@@ -68,37 +63,25 @@ def test_noreplace_fail() -> None:
     assert "Some files failed" in result.stdout
 
 
-def test_stats__is_passed() -> None:
-    stats = Stats()
-    assert stats.is_passed() is None
-    stats.num_files = 2
-    assert not stats.is_passed()
-    stats.num_clean = 2
-    assert stats.is_passed()
-    stats.num_clean = 1
-    stats.num_ignored = 1
-    assert stats.is_passed()
+def test_replace_pass() -> None:
+    result = runner.invoke(app, ["tests/fixtures/pass"])
+    assert result.exit_code == 0
+    assert "Summary" in result.stdout
+    assert "All files passed" in result.stdout
 
 
-def test_stats__print_summary__no_files(capsys: CaptureFixture[str]) -> None:
-    stats = Stats()
-    stats.print_summary(options=Settings())
-    captured = capsys.readouterr()
-    assert captured.out == ""
+def test_replace_fail() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Copy the files to a temporary directory so that they're not changed in git
+        dest = Path(tmpdir) / "fail"
+        shutil.copytree("tests/fixtures/fail", dest)
+        result = runner.invoke(app, [tmpdir])
+        assert result.exit_code == 1
+        assert "Clean files │ 33.3%" in result.stdout
+        assert "Changed/sqleaned files │ 33.3%" in result.stdout
 
-
-def test_stats__print_summary__generic(capsys: CaptureFixture[str]) -> None:
-    stats = Stats()
-    stats.num_files = 10
-    stats.num_clean = 4
-    stats.num_ignored = 1
-    stats.num_dirty = 2
-    stats.num_unparsable = 3
-    stats.print_summary(options=Settings())
-    captured = capsys.readouterr()
-    assert "Number of SQL files │ 10" in captured.out
-    assert "Clean files │ 40.0%" in captured.out
-    assert "Ignored files │ 10.0%" in captured.out
-    assert "Dirty files │ 20.0%" in captured.out
-    assert "Unparseable files │ 30.0%" in captured.out
-    assert "Time elapsed" in captured.out
+        # run sqlean again to check that files were changed
+        result = runner.invoke(app, [tmpdir])
+        assert result.exit_code == 1
+        assert "Clean files │ 66.7%" in result.stdout
+        assert "Changed/sqleaned files │ 0.0%" in result.stdout
