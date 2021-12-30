@@ -92,8 +92,6 @@ def sqlean_file(
     target: Path, stats: Stats, sql_parser: Parser, options: Settings
 ) -> Stats:
     """sqleans an individual file."""
-    print("Currently only implementeted for options.diff_only == True")
-    print(f"actual value: {options.diff_only}")
     if target.suffix == ".sql":
         stats.num_files += 1
         raw_list = read_file(target)
@@ -101,15 +99,33 @@ def sqlean_file(
         if should_ignore(raw_list):
             stats.num_ignored += 1
         else:
-            try:
-                styled = sql_parser.print(raw)
-                if styled == raw:
-                    stats.num_clean += 1
-                else:
-                    print_diff(raw, styled, target)
-                    stats.num_dirty += 1
-            except ParseError:
-                stats.num_unparsable += 1
+            sqlean_unignored_file(
+                raw=raw,
+                target=target,
+                stats=stats,
+                sql_parser=sql_parser,
+                options=options,
+            )
+    return stats
+
+
+def sqlean_unignored_file(
+    raw: str, target: Path, stats: Stats, sql_parser: Parser, options: Settings
+) -> Stats:
+    """sqleans unignored file (or with option --force)."""
+    try:
+        styled = sql_parser.print(raw)
+        if styled == raw:
+            stats.num_clean += 1
+        else:
+            if options.diff_only:
+                print_diff(raw, styled, target)
+                stats.num_dirty += 1
+            else:
+                write_file(styled, target)
+                stats.num_changed += 1
+    except ParseError:
+        stats.num_unparsable += 1
     return stats
 
 
@@ -147,3 +163,9 @@ def process_diffs(diff: Iterator[str]) -> str:
     """Vertically space the diff out better"""
     diff_list = [pattern.sub("\n@@", item).rstrip("\n") for item in list(diff)]
     return "\n".join(diff_list)
+
+
+def write_file(styled: str, target: Path) -> None:
+    """Writes the sqleaned file."""
+    with open(target, "wt", encoding="utf-8") as writer:
+        writer.write(styled)
