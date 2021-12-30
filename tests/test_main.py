@@ -1,3 +1,5 @@
+from pathlib import Path
+import shutil
 import tempfile
 
 import pytest
@@ -66,3 +68,20 @@ def test_replace_pass() -> None:
     assert result.exit_code == 0
     assert "Summary" in result.stdout
     assert "All files passed" in result.stdout
+
+
+def test_replace_fail() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Copy the files to a temporary directory so that they're not changed in git
+        dest = Path(tmpdir) / "fail"
+        shutil.copytree("tests/fixtures/fail", dest)
+        result = runner.invoke(app, [tmpdir])
+        assert result.exit_code == 1
+        assert "Clean files │ 33.3%" in result.stdout
+        assert "Changed/sqleaned files │ 33.3%" in result.stdout
+
+        # run sqlean again to check that files were changed
+        result = runner.invoke(app, [tmpdir])
+        assert result.exit_code == 1
+        assert "Clean files │ 66.7%" in result.stdout
+        assert "Changed/sqleaned files │ 0.0%" in result.stdout
