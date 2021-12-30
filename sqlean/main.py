@@ -1,20 +1,18 @@
 """CLI commands"""
-from dataclasses import dataclass
 import difflib
 from os import linesep
 from pathlib import Path
 import re
-import time
 from typing import Iterator, List, Optional
 
 from lark import ParseError
 from rich import print as rprint
 from rich.markdown import Markdown
-from rich.table import Table
 import typer
 
 from sqlean.settings import set_options, Settings
 from sqlean.sql_parser import Parser
+from sqlean.stats import Stats
 
 
 app = typer.Typer(add_completion=False)
@@ -41,14 +39,12 @@ def main(
         "--force/",
         "-f/",
         help="Force parsing of all files, even if they have a first line of "
-        "`# sqlean ignore`.",
+        "`# sqlean ignore`. This should be run when sqlean has been updated"
+        " and more the set of parseable queries has grown.",
     ),
 ) -> None:
     """🧹Clean your SQL queries!🧹"""
     code = 0
-    if diff_only:
-        typer.echo("--diff-only not implemented yet.")
-        code = 1
     if write_ignore:
         typer.echo("--write-ignore not implemented yet.")
         code = 1
@@ -78,63 +74,6 @@ def main(
         code = 1
     if code == 1:
         raise typer.Exit(code=code)
-
-
-@dataclass
-class Stats:
-    """Stats for applying sqlean to a directory recursively"""
-
-    num_files: int = 0
-    num_ignored: int = 0
-    num_clean: int = 0
-    num_changed: int = 0
-    num_dirty: int = 0
-    num_unparsable: int = 0
-    start_time: float = time.time()
-
-    def get_time_elapsed(self) -> str:
-        """Return the time elapsed since the start"""
-        return f"{round(time.time() - self.start_time, 3)}s"
-
-    def is_passed(self) -> Optional[bool]:
-        """Return True if all files passed"""
-        if self.num_files == 0:
-            return None
-        return self.num_clean + self.num_ignored == self.num_files
-
-    def print_summary(self, options: Settings) -> None:
-        """Prints a summary of the stats."""
-        if self.num_files == 0:
-            return
-        table = Table(title="Summary")
-        table.add_column("Metric", justify="right", style="cyan")
-        table.add_column("Value", justify="left", style="white")
-        table.add_row("Number of SQL files", f"{self.num_files:,}")
-        table.add_row("Clean files", f"{100 * self.num_clean / self.num_files:.1f}%")
-        if options.diff_only is False:
-            table.add_row(
-                "Changed/sqleaned files",
-                f"{100 * self.num_changed / self.num_files:.1f}%",
-            )
-        table.add_row(
-            "Ignored files", f"{100 * self.num_ignored / self.num_files:.1f}%"
-        )
-
-        dirty_style = unparseable_style = ""
-        if self.num_dirty > 0:
-            dirty_style = "[bold white on red]"
-        if self.num_unparsable > 0:
-            unparseable_style = "[bold white on red]"
-        table.add_row(
-            "Dirty files", f"{dirty_style}{100 * self.num_dirty / self.num_files:.1f}%"
-        )
-        table.add_row(
-            "Unparseable files",
-            f"{unparseable_style}{100 * self.num_unparsable / self.num_files:.1f}%",
-        )
-        table.add_row("Time elapsed", self.get_time_elapsed())
-        rprint("\n")
-        rprint(table)
 
 
 def sqlean_recursive(

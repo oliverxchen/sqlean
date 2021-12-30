@@ -1,9 +1,7 @@
-from _pytest.capture import CaptureFixture
 import pytest
 from typer.testing import CliRunner
 
-from sqlean.main import app, Stats
-from sqlean.settings import Settings
+from sqlean.main import app
 
 
 runner = CliRunner()
@@ -13,13 +11,6 @@ def test_default() -> None:
     result = runner.invoke(app, [])
     assert result.exit_code == 1
     assert "Some files failed" in result.stdout
-
-
-@pytest.mark.parametrize("flag", ["--diff-only", "-d"])
-def test_diff_only(flag: str) -> None:
-    result = runner.invoke(app, flag)
-    assert result.exit_code == 1
-    assert "--diff-only not implemented yet." in result.stdout
 
 
 @pytest.mark.parametrize("flag", ["--write-ignore", "-i"])
@@ -66,39 +57,3 @@ def test_noreplace_fail() -> None:
     assert "│ +FROM" in result.stdout
     assert "Summary" in result.stdout
     assert "Some files failed" in result.stdout
-
-
-def test_stats__is_passed() -> None:
-    stats = Stats()
-    assert stats.is_passed() is None
-    stats.num_files = 2
-    assert not stats.is_passed()
-    stats.num_clean = 2
-    assert stats.is_passed()
-    stats.num_clean = 1
-    stats.num_ignored = 1
-    assert stats.is_passed()
-
-
-def test_stats__print_summary__no_files(capsys: CaptureFixture[str]) -> None:
-    stats = Stats()
-    stats.print_summary(options=Settings())
-    captured = capsys.readouterr()
-    assert captured.out == ""
-
-
-def test_stats__print_summary__generic(capsys: CaptureFixture[str]) -> None:
-    stats = Stats()
-    stats.num_files = 10
-    stats.num_clean = 4
-    stats.num_ignored = 1
-    stats.num_dirty = 2
-    stats.num_unparsable = 3
-    stats.print_summary(options=Settings())
-    captured = capsys.readouterr()
-    assert "Number of SQL files │ 10" in captured.out
-    assert "Clean files │ 40.0%" in captured.out
-    assert "Ignored files │ 10.0%" in captured.out
-    assert "Dirty files │ 20.0%" in captured.out
-    assert "Unparseable files │ 30.0%" in captured.out
-    assert "Time elapsed" in captured.out
