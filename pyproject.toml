@@ -7,9 +7,12 @@ authors = ["Oliver Chen <oliver.chen@traveloka.com>"]
 [tool.poetry.dependencies]
 python = "^3.7"
 lark = "^0.12"
+pydantic = "^1.8.2"
 rich = "^10.0"
+tomli = "^1"
 typer = "^0.4.0"
 types-click = "^7.1.7"
+pytest-mock = "^3.6.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
@@ -18,6 +21,9 @@ pytest-cov = "^3.0"
 pytest-flake8 = "^1.0"
 pytest-mypy = "^0.8"
 pytest-pylint = "^0.18"
+
+[tool.poetry.scripts]
+sqlean = "sqlean.main:app"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -30,6 +36,3 @@ markers = ["generate_snapshots"]
 
 [tool.coverage.run]
 omit = ["tests/*", "sqlean/parsetab.py"]
-
-[tool.poetry.scripts]
-sqlean = "sqlean.main:app"
