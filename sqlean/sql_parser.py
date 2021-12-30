@@ -4,29 +4,29 @@ from typing import Union
 from lark import Lark, Token
 from lark.tree import Tree
 from lark.visitors import Visitor_Recursive
-from rich import print as rich_print
+from rich import print as rprint
 from rich.panel import Panel
-from rich.traceback import install
 
 from sqlean.custom_classes import CData, CToken, CTree
 from sqlean.definitions import IMPORT_PATH
 from sqlean.sql_styler import Styler
-
-
-install()
+from sqlean.settings import Settings
 
 
 class Parser:
     """SQL parser class"""
 
-    def __init__(self, num_spaces_per_indent: int = 4):
+    def __init__(self, options: Settings = Settings()):
         self.__parser = Lark.open(
             "grammar/sql.lark",
             rel_to=__file__,
             import_paths=[IMPORT_PATH],
             parser="lalr",
         )
-        self.indent = num_spaces_per_indent * " "
+        self.indent = options.indent_size * " "
+        self.whisper = options.whisper
+        self.max_line_length = options.max_line_length
+        self.dialect = options.dialect
 
     def get_tree(self, raw_query: str) -> Tree:
         """Generate a tree for a given query provided as a string"""
@@ -40,7 +40,7 @@ class Parser:
         if is_debug:
             debug = Debugger()
             debug.visit_topdown(tree)
-            rich_print(Panel(debug.get_logs(), title=file_path))
+            rprint(Panel(debug.get_logs(), title=file_path))
         output = Styler(self.indent).transform(tree)
         return str(output)
 

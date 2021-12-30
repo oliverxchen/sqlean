@@ -1,0 +1,7 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+
+[tool.sqlean]
+whisper = "y"
+indent_size = "3"
+dialect = "BIGQUERY"

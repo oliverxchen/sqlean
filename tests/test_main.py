@@ -3,6 +3,8 @@ import pytest
 from typer.testing import CliRunner
 
 from sqlean.main import app, Stats
+from sqlean.settings import Settings
+
 
 runner = CliRunner()
 
@@ -13,25 +15,18 @@ def test_default() -> None:
     assert "Some files failed" in result.stdout
 
 
-@pytest.mark.parametrize("flag", ["--replace", "-r"])
-def test_replace(flag: str) -> None:
+@pytest.mark.parametrize("flag", ["--diff-only", "-d"])
+def test_diff_only(flag: str) -> None:
     result = runner.invoke(app, flag)
     assert result.exit_code == 1
-    assert "--replace not implemented yet." in result.stdout
+    assert "--diff-only not implemented yet." in result.stdout
 
 
-@pytest.mark.parametrize("flag", ["--whisper", "-w"])
-def test_whisper(flag: str) -> None:
-    result = runner.invoke(app, flag)
-    assert result.exit_code == 1
-    assert "--whisper not implemented yet." in result.stdout
-
-
-@pytest.mark.parametrize("flag", ["--ignore-write", "-i"])
+@pytest.mark.parametrize("flag", ["--write-ignore", "-i"])
 def test_ignore_write(flag: str) -> None:
     result = runner.invoke(app, flag)
     assert result.exit_code == 1
-    assert "--ignore-write not implemented yet." in result.stdout
+    assert "--write-ignore not implemented yet." in result.stdout
 
 
 @pytest.mark.parametrize("flag", ["--force", "-f"])
@@ -87,7 +82,7 @@ def test_stats__is_passed() -> None:
 
 def test_stats__print_summary__no_files(capsys: CaptureFixture[str]) -> None:
     stats = Stats()
-    stats.print_summary()
+    stats.print_summary(options=Settings())
     captured = capsys.readouterr()
     assert captured.out == ""
 
@@ -99,7 +94,7 @@ def test_stats__print_summary__generic(capsys: CaptureFixture[str]) -> None:
     stats.num_ignored = 1
     stats.num_dirty = 2
     stats.num_unparsable = 3
-    stats.print_summary()
+    stats.print_summary(options=Settings())
     captured = capsys.readouterr()
     assert "Number of SQL files │ 10" in captured.out
     assert "Clean files │ 40.0%" in captured.out

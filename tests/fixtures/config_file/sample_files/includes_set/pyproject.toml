@@ -1,0 +1,5 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+
+[tool.sqlean]
+includes = "path_from_config_file"

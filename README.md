@@ -18,6 +18,21 @@ should be. In other words, you shouldn't need to look to the parent. This means
 that anything that should be printed in full on it's own line needs to be a tree
 and not a token.
 
+#### CLI options vs configuration file
+
+CLI options are for options that can change from one run of `sqlean` to another.
+Project level configuration will not change from one run to another, and must be
+set in `pyproject.toml`.
+[`pyproject.toml`](https://snarky.ca/what-the-heck-is-pyproject-toml/) is
+becoming the standard configuration for Python tooling, and no other
+configuration files will be accepted by `sqlean`.
+
+The `target` directory or file can be both a project level setting and also change
+from one run to another, so it can appear in both `pyproject.toml` or as a CLI
+argument. If it is in `pyproject.toml` and it is supplied as a CLI argument, then
+CLI argument will be used. If it applies in neither, then the current directory
+is used as a default.
+
 ### Constraints
 
 * Transformers are leaf to root, so cannot determine indent levels
