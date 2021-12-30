@@ -38,20 +38,13 @@ def main(
         False,
         "--force/",
         "-f/",
-        help="Force parsing of all files, even if they have a first line of "
-        "`# sqlean ignore`. This should be run when sqlean has been updated"
-        " and more the set of parseable queries has grown.",
+        help="Force parsing of all files, even if they have a first line that starts "
+        "with `# sqlean ignore`. If that header is there, the whole first line will "
+        "be removed and the file will be parsed. This should be run when sqlean has "
+        "been updated and the set of parseable queries has grown.",
     ),
 ) -> None:
     """🧹Clean your SQL queries!🧹"""
-    code = 0
-    if write_ignore:
-        typer.echo("--write-ignore not implemented yet.")
-        code = 1
-    if force:
-        typer.echo("--force not implemented yet.")
-        code = 1
-
     options = set_options(
         target=target, diff_only=diff_only, write_ignore=write_ignore, force=force
     )
@@ -68,12 +61,10 @@ def main(
         rprint("🧘 [bold white on green]All files passed[/bold white on green] 🧘")
     elif is_passed is False:
         rprint("🙀 [bold white on red]Some files failed[/bold white on red] 🙀")
-        code = 1
+        raise typer.Exit(code=1)
     elif is_passed is None:
         typer.echo("🤷 No files found 🤷")
-        code = 1
-    if code == 1:
-        raise typer.Exit(code=code)
+        raise typer.Exit(code=1)
 
 
 def sqlean_recursive(
@@ -95,10 +86,12 @@ def sqlean_file(
     if target.suffix == ".sql":
         stats.num_files += 1
         raw_list = read_file(target)
-        raw = "".join(raw_list)[:-1]  # remove newline (might not be correct)
-        if should_ignore(raw_list):
+        raw = "".join(raw_list)[:-1]  # remove ending newline
+        if not options.force and should_ignore(raw_list):
             stats.num_ignored += 1
         else:
+            if options.force and should_ignore(raw_list):
+                raw = remove_ignore_header(target, raw_list)
             sqlean_unignored_file(
                 raw=raw,
                 target=target,
@@ -125,7 +118,11 @@ def sqlean_unignored_file(
                 write_file(styled, target)
                 stats.num_changed += 1
     except ParseError:
-        stats.num_unparsable += 1
+        if options.write_ignore:
+            write_ignore_header(target)
+            stats.num_ignored += 1
+        else:
+            stats.num_unparsable += 1
     return stats
 
 
@@ -169,3 +166,20 @@ def write_file(styled: str, target: Path) -> None:
     """Writes the sqleaned file."""
     with open(target, "wt", encoding="utf-8") as writer:
         writer.write(styled)
+
+
+def write_ignore_header(target: Path) -> None:
+    """Writes the `# sqlean ignore` header."""
+    with open(target, "rt", encoding="utf-8") as reader:
+        content = reader.read()
+    with open(target, "wt", encoding="utf-8") as writer:
+        writer.write(f"# sqlean ignore{linesep}{content}")
+
+
+def remove_ignore_header(target: Path, raw_list: List[str]) -> str:
+    """Removes the `# sqlean ignore` header."""
+    raw_list.pop(0)
+    raw = "".join(raw_list)
+    with open(target, "wt", encoding="utf-8") as writer:
+        writer.write(raw)
+    return raw

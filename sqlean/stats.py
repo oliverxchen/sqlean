@@ -26,10 +26,10 @@ class Stats:
         return f"{round(time.time() - self.start_time, 3)}s"
 
     def is_passed(self) -> Optional[bool]:
-        """Return True if all files passed"""
+        """Return True if all files are now ok"""
         if self.num_files == 0:
             return None
-        return self.num_clean + self.num_ignored == self.num_files
+        return self.num_clean + self.num_changed + self.num_ignored == self.num_files
 
     def print_summary(self, options: Settings) -> None:
         """Prints a summary of the stats."""
