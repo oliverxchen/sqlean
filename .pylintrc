@@ -1,6 +1,0 @@
-[MASTER]
-ignore = tests
-min-public-methods = 1
-
-[MISCELLANEOUS]
-notes = FIXME

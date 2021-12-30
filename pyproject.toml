@@ -36,3 +36,13 @@ markers = ["generate_snapshots"]
 
 [tool.coverage.run]
 omit = ["tests/*", "sqlean/parsetab.py"]
+
+[tool.pylint.master]
+ignore-paths = "tests/"
+min-public-methods = 1
+
+[tool.pylint.miscellaneous]
+notes = "FIXME"
+
+[tool.pylint.messages_control]
+extension-pkg-whitelist = "pydantic"
