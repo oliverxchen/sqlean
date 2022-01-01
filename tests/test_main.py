@@ -2,21 +2,37 @@ from pathlib import Path
 import shutil
 import tempfile
 
+from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
 from sqlean.main import app
+import sqlean.main as main
 
 
 runner = CliRunner()
 
 
-def test_diff_only() -> None:
+def test_diff_only__runs_on_directory() -> None:
     result = runner.invoke(app, ["-d"])
     assert result.exit_code == 1
     assert "Some files failed" in result.stdout
 
 
-def test_target_file() -> None:
+def test_diff_only__recursive(mocker: MockerFixture) -> None:
+    # validate that recursive run works and calls the sub function the
+    # correct number of times
+    spy = mocker.spy(main, "sqlean_file")
+    runner.invoke(app, ["-d", "tests/fixtures/fail"])
+    assert spy.call_count == 7  # still needs to be called for non-sql files
+    assert spy.spy_return.num_files == 6
+    assert spy.spy_return.num_ignored == 1
+    assert spy.spy_return.num_clean == 2
+    assert spy.spy_return.num_changed == 0
+    assert spy.spy_return.num_dirty == 2
+    assert spy.spy_return.num_unparsable == 1
+
+
+def test_diff_only__runs_on_target_file() -> None:
     result = runner.invoke(app, ["-d", "tests/fixtures/pass/dir_1/clean.sql"])
     assert result.exit_code == 0
     assert "Summary" in result.stdout
