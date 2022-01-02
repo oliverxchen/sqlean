@@ -21,9 +21,9 @@ app = typer.Typer(add_completion=False)
 @app.command()
 def main(
     target: Optional[Path] = typer.Argument(None),
-    diff_only: bool = typer.Option(
+    dry_run: bool = typer.Option(
         False,
-        "--diff-only/",
+        "--dry-run/",
         "-d/",
         help="Include this flag to only show diffs and not replace files in-place.",
     ),
@@ -41,20 +41,22 @@ def main(
         help="Force parsing of all files, even if they have a first line that starts "
         "with `# sqlean ignore`. If that header is there, the whole first line will "
         "be removed and the file will be parsed. This should be run when sqlean has "
-        "been updated and the set of parseable queries has grown.",
+        "been updated and the set of parsable queries has grown.",
     ),
 ) -> None:
-    """🧹 Clean your SQL queries! 🧹"""
+    """🧹 Clean your SQL queries! 🧹\n
+    WARNING: running with no options will change your files in-place."""
+
     options = set_options(
-        target=target, diff_only=diff_only, write_ignore=write_ignore, force=force
+        target=target, dry_run=dry_run, write_ignore=write_ignore, force=force
     )
     stats = Stats()
     sql_parser = Parser(options)
     for path in options.target:
         if path.is_dir():
-            stats = sqlean_recursive(path, stats, sql_parser, options)
+            sqlean_recursive(path, stats, sql_parser, options)
         elif path.is_file():
-            stats = sqlean_file(path, stats, sql_parser, options)
+            sqlean_file(path, stats, sql_parser, options)
     stats.print_summary(options)
     is_passed = stats.is_passed()
     if is_passed:
@@ -69,14 +71,13 @@ def main(
 
 def sqlean_recursive(
     target: Path, stats: Stats, sql_parser: Parser, options: Settings
-) -> Stats:
+) -> None:
     """Recursively walks a directory and applies sqlean."""
     for path in target.iterdir():
         if path.is_dir():
-            stats = sqlean_recursive(path, stats, sql_parser, options)
+            sqlean_recursive(path, stats, sql_parser, options)
         elif path.is_file():
-            stats = sqlean_file(path, stats, sql_parser, options)
-    return stats
+            sqlean_file(path, stats, sql_parser, options)
 
 
 def sqlean_file(
@@ -99,31 +100,33 @@ def sqlean_file(
                 sql_parser=sql_parser,
                 options=options,
             )
-    return stats
+    return stats  # return needed for testing
 
 
 def sqlean_unignored_file(
     raw: str, target: Path, stats: Stats, sql_parser: Parser, options: Settings
-) -> Stats:
+) -> None:
     """sqleans unignored file (or with option --force)."""
     try:
         styled = sql_parser.print(raw)
         if styled == raw:
             stats.num_clean += 1
         else:
-            if options.diff_only:
+            if options.dry_run:
                 print_diff(raw, styled, target)
                 stats.num_dirty += 1
             else:
                 write_file(styled, target)
                 stats.num_changed += 1
+                stats.changed_files.append(target)
     except ParseError:
         if options.write_ignore:
             write_ignore_header(target)
             stats.num_ignored += 1
+            stats.newly_ignored_files.append(target)
         else:
             stats.num_unparsable += 1
-    return stats
+            stats.unparsable_files.append(target)
 
 
 def read_file(target: Path) -> List[str]:

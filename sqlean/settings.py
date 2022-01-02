@@ -24,7 +24,7 @@ class Settings(BaseModel, allow_mutation=False):
     """Data class for storing settings."""
 
     target: List[Path] = [Path.cwd()]
-    diff_only: bool = False
+    dry_run: bool = False
     write_ignore: bool = False
     force: bool = False
     whisper: bool = False
@@ -41,10 +41,10 @@ class Settings(BaseModel, allow_mutation=False):
             return False
         return value
 
-    @validator("diff_only", always=True)
+    @validator("dry_run", always=True)
     @classmethod
-    def diff_only_default(cls, value: Optional[bool]) -> bool:
-        """Fills in default value for diff_only if not provided."""
+    def dry_run_default(cls, value: Optional[bool]) -> bool:
+        """Fills in default value for dry_run if not provided."""
         return cls._default_as_false(value)
 
     @validator("write_ignore", always=True)
@@ -62,7 +62,7 @@ class Settings(BaseModel, allow_mutation=False):
 
 def set_options(
     target: Optional[Path],
-    diff_only: Optional[bool],
+    dry_run: Optional[bool],
     write_ignore: Optional[bool],
     force: Optional[bool],
 ) -> Settings:
@@ -79,7 +79,7 @@ def set_options(
         actual_target = [target]
     return Settings(
         target=actual_target,
-        diff_only=diff_only,
+        dry_run=dry_run,
         write_ignore=write_ignore,
         force=force,
         **config.dict(),
