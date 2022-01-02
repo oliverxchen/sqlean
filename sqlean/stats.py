@@ -1,14 +1,17 @@
 """Stats for sqlean runs"""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from pathlib import Path
 import time
-from typing import Optional
+from typing import List, Optional
 
 from rich import print as rprint
+from rich.panel import Panel
 from rich.table import Table
 
 from sqlean.settings import Settings
 
 
+# pylint: disable=too-many-instance-attributes
 @dataclass
 class Stats:
     """Stats for applying sqlean to a directory recursively"""
@@ -20,6 +23,9 @@ class Stats:
     num_dirty: int = 0
     num_unparsable: int = 0
     start_time: float = time.time()
+    changed_files: List[Path] = field(default_factory=list)
+    newly_ignored_files: List[Path] = field(default_factory=list)
+    unparsable_files: List[Path] = field(default_factory=list)
 
     def get_time_elapsed(self) -> str:
         """Return the time elapsed since the start"""
@@ -35,6 +41,9 @@ class Stats:
         """Prints a summary of the stats."""
         if self.num_files == 0:
             return
+        self.print_changed_files()
+        self.print_unparsable_files()
+        self.print_newly_ignored_files()
         table = Table(title="Summary")
         table.add_column("Metric", justify="right", style="cyan")
         table.add_column("Value", justify="left", style="white")
@@ -49,20 +58,41 @@ class Stats:
             "Ignored files", f"{100 * self.num_ignored / self.num_files:.1f}%"
         )
 
-        dirty_style = unparseable_style = ""
+        dirty_style = unparsable_style = ""
         if self.num_dirty > 0:
             dirty_style = "[bold white on red]"
         if self.num_unparsable > 0:
-            unparseable_style = "[bold white on red]"
+            unparsable_style = "[bold white on red]"
         if options.diff_only is True:
             table.add_row(
                 "Dirty files",
                 f"{dirty_style}{100 * self.num_dirty / self.num_files:.1f}%",
             )
         table.add_row(
-            "Unparseable files",
-            f"{unparseable_style}{100 * self.num_unparsable / self.num_files:.1f}%",
+            "Unparsable files",
+            f"{unparsable_style}{100 * self.num_unparsable / self.num_files:.1f}%",
         )
         table.add_row("Time elapsed", self.get_time_elapsed())
         rprint("\n")
         rprint(table)
+
+    def print_changed_files(self) -> None:
+        """Prints a list of changed files"""
+        if len(self.changed_files) == 0:
+            return
+        changed = "\n".join([str(f) for f in self.changed_files])
+        rprint(Panel.fit(changed, title="Changed files"))
+
+    def print_unparsable_files(self) -> None:
+        """Prints a list of unparsable files"""
+        if len(self.unparsable_files) == 0:
+            return
+        unparsable = "\n".join([str(f) for f in self.unparsable_files])
+        rprint(Panel.fit(unparsable, title="Unparsable files"))
+
+    def print_newly_ignored_files(self) -> None:
+        """Prints a list of newly ignored files"""
+        if len(self.newly_ignored_files) == 0:
+            return
+        newly_ignored = "\n".join([str(f) for f in self.newly_ignored_files])
+        rprint(Panel.fit(newly_ignored, title="Newly ignored files"))
