@@ -10,7 +10,7 @@ import sqlean.settings as settings
 def test_Settings__defaults() -> None:
     options = settings.Settings()
     assert options.target == [Path.cwd()]
-    assert options.diff_only is False
+    assert options.dry_run is False
     assert options.write_ignore is False
     assert options.force is False
 
@@ -18,7 +18,7 @@ def test_Settings__defaults() -> None:
 def test_Settings__immutability() -> None:
     options = settings.Settings()
     with pytest.raises(TypeError):
-        options.diff_only = True
+        options.dry_run = True
     with pytest.raises(TypeError):
         options.write_ignore = True
     with pytest.raises(TypeError):
@@ -143,7 +143,7 @@ def includes_not_set_path() -> Path:
 def test_set_options__with_cli_target_config_set(includes_set_path: Path) -> None:
     options = settings.set_options(
         target=includes_set_path,
-        diff_only=True,
+        dry_run=True,
         write_ignore=True,
         force=True,
     )
@@ -155,7 +155,7 @@ def test_set_options__with_cli_target_config_not_set(
 ) -> None:
     options = settings.set_options(
         target=includes_not_set_path,
-        diff_only=True,
+        dry_run=True,
         write_ignore=True,
         force=True,
     )
@@ -167,13 +167,13 @@ def test_set_options__with_config_file_target(
 ) -> None:
     mocker.patch("pathlib.Path.cwd", return_value=includes_set_path)
     options = settings.set_options(
-        target=None, diff_only=True, write_ignore=True, force=True
+        target=None, dry_run=True, write_ignore=True, force=True
     )
     assert options.target == [Path("path_from_config_file")]
 
 
 def test_set_options__with_no_target() -> None:
     options = settings.set_options(
-        target=None, diff_only=True, write_ignore=True, force=True
+        target=None, dry_run=True, write_ignore=True, force=True
     )
     assert options.target == [Path.cwd()]

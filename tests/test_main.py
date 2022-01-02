@@ -18,13 +18,13 @@ def test_target__invalid() -> None:
     assert "No files found" in result.stdout
 
 
-def test_diffonly__runs_on_directory() -> None:
+def test_dryrun__runs_on_directory() -> None:
     result = runner.invoke(app, ["-d"])
     assert result.exit_code == 1
     assert "Some files failed" in result.stdout
 
 
-def test_diffonly__recursive(mocker: MockerFixture) -> None:
+def test_dryrun__recursive(mocker: MockerFixture) -> None:
     # validate that recursive run works and calls the sub function the
     # correct number of times
     spy = mocker.spy(main, "sqlean_file")
@@ -38,21 +38,21 @@ def test_diffonly__recursive(mocker: MockerFixture) -> None:
     assert spy.spy_return.num_unparsable == 1
 
 
-def test_diffonly__runs_on_target_file() -> None:
+def test_dryrun__runs_on_target_file() -> None:
     result = runner.invoke(app, ["-d", "tests/fixtures/pass/dir_1/clean.sql"])
     assert result.exit_code == 0
     assert "Summary" in result.stdout
     assert "All files passed" in result.stdout
 
 
-def test_diffonly__pass() -> None:
+def test_dryrun__pass() -> None:
     result = runner.invoke(app, ["-d", "tests/fixtures/pass"])
     assert result.exit_code == 0
     assert "Summary" in result.stdout
     assert "All files passed" in result.stdout
 
 
-def test_diffonly__fail() -> None:
+def test_dryrun__fail() -> None:
     result = runner.invoke(app, ["-d", "tests/fixtures/fail"])
     assert result.exit_code == 1
     assert "+++ with sqlean" in result.stdout
@@ -102,7 +102,7 @@ def test_write_ignore() -> None:
         shutil.copytree("tests/fixtures/fail", dest)
         unparsable_file = dest / "dir_1/unparsable.sql"
 
-        # start with diff-only as a baseline
+        # start with dry-run as a baseline
         result = runner.invoke(app, ["-d", tmpdir])
         assert result.exit_code == 1
         assert "Ignored files │ 16.7%" in result.stdout
@@ -135,7 +135,7 @@ def test_force() -> None:
         shutil.copytree("tests/fixtures/fail", dest)
         ignored_file = dest / "dir_1/ignored.sql"
 
-        # start with diff-only as a baseline
+        # start with dry-run as a baseline
         result = runner.invoke(app, ["-d", tmpdir])
         assert result.exit_code == 1
         assert "Ignored files │ 16.7%" in result.stdout

@@ -21,9 +21,9 @@ app = typer.Typer(add_completion=False)
 @app.command()
 def main(
     target: Optional[Path] = typer.Argument(None),
-    diff_only: bool = typer.Option(
+    dry_run: bool = typer.Option(
         False,
-        "--diff-only/",
+        "--dry-run/",
         "-d/",
         help="Include this flag to only show diffs and not replace files in-place.",
     ),
@@ -44,9 +44,11 @@ def main(
         "been updated and the set of parsable queries has grown.",
     ),
 ) -> None:
-    """🧹 Clean your SQL queries! 🧹"""
+    """🧹 Clean your SQL queries! 🧹\n
+    WARNING: running with no options will change your files in-place."""
+
     options = set_options(
-        target=target, diff_only=diff_only, write_ignore=write_ignore, force=force
+        target=target, dry_run=dry_run, write_ignore=write_ignore, force=force
     )
     stats = Stats()
     sql_parser = Parser(options)
@@ -110,7 +112,7 @@ def sqlean_unignored_file(
         if styled == raw:
             stats.num_clean += 1
         else:
-            if options.diff_only:
+            if options.dry_run:
                 print_diff(raw, styled, target)
                 stats.num_dirty += 1
             else:

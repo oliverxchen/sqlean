@@ -41,8 +41,8 @@ def test_stats__print_summary__replace(capsys: CaptureFixture[str]) -> None:
     assert "Dirty files" not in captured.out
 
 
-def test_stats__print_summary__diffonly(capsys: CaptureFixture[str]) -> None:
-    options = Settings(diff_only=True)
+def test_stats__print_summary__dryrun(capsys: CaptureFixture[str]) -> None:
+    options = Settings(dry_run=True)
     stats = Stats()
     stats.num_files = 10
     stats.num_clean = 4

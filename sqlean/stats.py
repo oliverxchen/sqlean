@@ -49,7 +49,7 @@ class Stats:
         table.add_column("Value", justify="left", style="white")
         table.add_row("Number of SQL files", f"{self.num_files:,}")
         table.add_row("Clean files", f"{100 * self.num_clean / self.num_files:.1f}%")
-        if options.diff_only is False:
+        if options.dry_run is False:
             table.add_row(
                 "Changed/sqleaned files",
                 f"{100 * self.num_changed / self.num_files:.1f}%",
@@ -63,7 +63,7 @@ class Stats:
             dirty_style = "[bold white on red]"
         if self.num_unparsable > 0:
             unparsable_style = "[bold white on red]"
-        if options.diff_only is True:
+        if options.dry_run is True:
             table.add_row(
                 "Dirty files",
                 f"{dirty_style}{100 * self.num_dirty / self.num_files:.1f}%",
