@@ -267,7 +267,6 @@ def write_snapshot(
     except (LarkError) as error:
         parse_error = str(error)
         tree_repr = f"!!! {parse_error} !!!"
-    # The type: ignore is because mypy fails this line in python 3.6 for some reason.
     parse_needs_rewrite = all_snapshot_results.parse.needs_rewrite(
         normalise_string(tree_repr),
         normalise_string(snapshot_tree),

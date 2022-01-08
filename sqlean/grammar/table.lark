@@ -3,6 +3,8 @@
 
 ?table_name: simple_table_name
     | explicit_table_name
+	| dbt_table_name
+
 table_item_aliased: table_name as_alias
 
 simple_table_name: CNAME
@@ -15,3 +17,4 @@ TABLE_ID: CNAME
 
 %import common.CNAME
 %import alias.as_alias
+%import jinja.dbt_table_name
