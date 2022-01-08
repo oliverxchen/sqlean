@@ -447,6 +447,20 @@ class JinjaMixin(BaseMixin):
         """print config"""
         return self._rollup_linesep(node)
 
+    @staticmethod
+    def dbt_source(node: CTree) -> str:
+        """print dbt_source"""
+        return f'source("{node.children[3]}", "{node.children[7]}")'
+
+    @staticmethod
+    def dbt_ref(node: CTree) -> str:
+        """print dbt_ref"""
+        return f'ref("{node.children[1]}")'
+
+    def dbt_table_name(self, node: CTree) -> str:
+        """print dbt_table_name"""
+        return self._apply_indent(self._rollup_space(node), node.data.indent_level)
+
 
 @v_args(tree=True)
 class Styler(  # pylint: disable=too-many-ancestors

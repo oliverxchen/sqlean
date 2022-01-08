@@ -1,0 +1,46 @@
+select field from {{ ref("b") }} AS table
+
+---
+
+SELECT
+    field,
+FROM
+    {{ ref("b") }} AS table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [
+                        Tree(
+                            "table_item_aliased",
+                            [
+                                Tree(
+                                    "dbt_table_name",
+                                    [
+                                        Token("VARIABLE_START", "{{"),
+                                        Tree(
+                                            "dbt_ref",
+                                            [Token("QUOTE", '"'), Token("REF_NAME", "b"), Token("QUOTE", '"')],
+                                        ),
+                                        Token("VARIABLE_END", "}}"),
+                                    ],
+                                ),
+                                Token("CNAME", "table"),
+                            ],
+                        )
+                    ],
+                ),
+            ],
+        )
+    ],
+)
