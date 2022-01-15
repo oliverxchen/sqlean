@@ -1,11 +1,12 @@
 ?start: query_file
 
-query_file: [config] query_expr
+query_file: [CONFIG] query_expr
 
 !?query_expr: "WITH"i with_clause ("," with_clause)* select_expr
     | select_expr
 
 !with_clause: CNAME "AS"i "(" query_expr ")"
+    | MACRO
 
 !select_expr: select_type select_list ["FROM"i from_clause] [limit_clause]
 
@@ -48,7 +49,8 @@ using_list: CNAME ("," CNAME)*
 %import expression.groupby_modifier
 %import expression.orderby_modifier
 %import expression.select_list
-%import jinja.config
+%import jinja.CONFIG
+%import jinja.MACRO
 %import table.table_item
 %import common.CNAME
 %import common.INT

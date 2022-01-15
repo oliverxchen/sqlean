@@ -1,19 +1,8 @@
-VARIABLE_START: "{{"
-VARIABLE_END: "}}"
-
-!config: VARIABLE_START CONFIG_EXPR VARIABLE_END
-CONFIG_EXPR: /config\(.*\)/s
-
-dbt_table_name: VARIABLE_START dbt_source VARIABLE_END
-    | VARIABLE_START dbt_ref VARIABLE_END
-
-!dbt_source: "source" "(" QUOTE SOURCE_NAME QUOTE "," QUOTE TABLE_NAME QUOTE ")"
-dbt_ref: "ref" "(" QUOTE REF_NAME QUOTE ")"
-
-SOURCE_NAME: CNAME
-TABLE_NAME: CNAME
-REF_NAME: CNAME
-QUOTE: "\""
-    | "'"
+CONFIG: /{{\s*?config\(.*\)\s*?}}/s
+MACRO: /{{.*?\(.*\)\s*?}}/s
+DBT_REF: /{{\s*?ref\(.*\)\s*?}}/s
+DBT_SOURCE: /{{\s*?source\(.*\)\s*?}}/s
+dbt_table_name: DBT_SOURCE
+    | DBT_REF
 
 %import common.CNAME

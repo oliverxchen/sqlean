@@ -1,0 +1,70 @@
+with
+
+cte as (
+	select * from table_a
+),
+
+{{ macro_cte() }}
+
+select * from macro_cte
+
+---
+
+WITH
+
+cte AS (
+    SELECT
+        *,
+    FROM
+        table_a
+),
+
+{{ macro_cte() }}
+
+SELECT
+    *,
+FROM
+    macro_cte
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "with"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte"),
+                        Token("AS", "as"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table_a")])]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Tree("with_clause", [Token("MACRO", "{{ macro_cte() }}")]),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "select")]),
+                        Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                        Token("FROM", "from"),
+                        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "macro_cte")])]),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

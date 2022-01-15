@@ -22,14 +22,7 @@ FROM
 Tree(
     "query_file",
     [
-        Tree(
-            "config",
-            [
-                Token("VARIABLE_START", "{{"),
-                Token("CONFIG_EXPR", 'config(\n        materialized = "table",\n        sort = "event_time")'),
-                Token("VARIABLE_END", "}}"),
-            ],
-        ),
+        Token("CONFIG", '{{\n\tconfig(\n        materialized = "table",\n        sort = "event_time")\n}}'),
         Tree(
             "select_expr",
             [
