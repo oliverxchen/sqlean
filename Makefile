@@ -8,7 +8,7 @@ test:
 		--black \
 		--flake8 \
 		--pylint \
-		--cov=sqlean --cov-fail-under=90 --cov-report html \
+		--cov=sqlean --cov-fail-under=95 --cov-report html \
 		--mypy
 
 # Create snapshots for testing

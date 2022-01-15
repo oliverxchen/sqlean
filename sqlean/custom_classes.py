@@ -25,10 +25,12 @@ class CData(str):
 class CToken(Token):
     """Custom structure for tokens"""
 
-    def __init__(self, type_: CData, value: str) -> None:
+    def __init__(  # pylint: disable=super-init-not-called
+        self, type_: CData, value: str
+    ) -> None:
         """Initialize the CToken object"""
-        super().__init__(type_, value)
         self.type: CData = type_
+        self.value = value
 
 
 class CTree(Tree):
@@ -40,3 +42,4 @@ class CTree(Tree):
         """Initialize the CTree object"""
         self.data: CData = data
         self.children: Sequence[Union["CTree", CToken]] = children  # type: ignore
+        self._meta = None
