@@ -24,28 +24,7 @@ Tree(
                         Tree(
                             "table_item_aliased",
                             [
-                                Tree(
-                                    "dbt_table_name",
-                                    [
-                                        Token("VARIABLE_START", "{{"),
-                                        Tree(
-                                            "dbt_source",
-                                            [
-                                                Token("SOURCE", "source"),
-                                                Token("LPAR", "("),
-                                                Token("QUOTE", '"'),
-                                                Token("SOURCE_NAME", "a"),
-                                                Token("QUOTE", '"'),
-                                                Token("COMMA", ","),
-                                                Token("QUOTE", '"'),
-                                                Token("TABLE_NAME", "b"),
-                                                Token("QUOTE", '"'),
-                                                Token("RPAR", ")"),
-                                            ],
-                                        ),
-                                        Token("VARIABLE_END", "}}"),
-                                    ],
-                                ),
+                                Tree("dbt_table_name", [Token("DBT_SOURCE", '{{source("a", "b")}}')]),
                                 Token("CNAME", "table"),
                             ],
                         )

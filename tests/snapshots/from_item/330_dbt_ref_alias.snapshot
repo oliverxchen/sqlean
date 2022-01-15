@@ -23,20 +23,7 @@ Tree(
                     [
                         Tree(
                             "table_item_aliased",
-                            [
-                                Tree(
-                                    "dbt_table_name",
-                                    [
-                                        Token("VARIABLE_START", "{{"),
-                                        Tree(
-                                            "dbt_ref",
-                                            [Token("QUOTE", '"'), Token("REF_NAME", "b"), Token("QUOTE", '"')],
-                                        ),
-                                        Token("VARIABLE_END", "}}"),
-                                    ],
-                                ),
-                                Token("CNAME", "table"),
-                            ],
+                            [Tree("dbt_table_name", [Token("DBT_REF", '{{ ref("b") }}')]), Token("CNAME", "table")],
                         )
                     ],
                 ),

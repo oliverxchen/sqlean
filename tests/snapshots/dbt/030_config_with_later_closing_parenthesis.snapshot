@@ -1,0 +1,50 @@
+{{
+	config(materialized="table")
+}}
+
+select sum(a) from table
+
+---
+
+{{
+    config(materialized="table")
+}}
+
+SELECT
+    SUM(a),
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Token("CONFIG", '{{\n\tconfig(materialized="table")\n}}'),
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "sum")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                    ],
+                                )
+                            ],
+                        )
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        ),
+    ],
+)

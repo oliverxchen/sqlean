@@ -73,9 +73,9 @@ class BaseMixin(Transformer):  # type: ignore
         return f",{linesep}".join(self._stringify_children(node))
 
     @staticmethod
-    def _apply_black(token: CToken) -> str:
+    def _apply_black(input_str: str) -> str:
         """Apply black to token"""
-        return black.format_str(str(token), mode=black.Mode()).strip()  # type: ignore
+        return black.format_str(input_str, mode=black.Mode()).strip()  # type: ignore
 
 
 @v_args(tree=True)
@@ -90,10 +90,35 @@ class TerminalMixin(BaseMixin):
         """print WHERE"""
         return self._token_indent(token)
 
-    def CONFIG_EXPR(self, token: CToken) -> str:  # pylint: disable=invalid-name
-        """print CONFIG_EXPR"""
-        blacked = self._apply_black(token)
-        return self._apply_indent(blacked, 1)
+    def CONFIG(self, token: CToken) -> str:  # pylint: disable=invalid-name
+        """print CONFIG"""
+        blacked = self._apply_black(token[2:-2])
+        return "{{\n" + self._apply_indent(blacked, 1) + "\n}}"
+
+    def __format_macro_expr(self, token: CToken) -> str:
+        """form single line macro expressions"""
+        blacked = self._apply_black(token[2:-2])
+        # single line print when black returns one line
+        if len(blacked.splitlines()) == 1:
+            return self._apply_indent("{{ " + blacked + " }}", token.type.indent_level)
+
+        # multi line print
+        return self._apply_indent(
+            "{{\n" + self._apply_indent(blacked, 1) + "\n}}",
+            token.type.indent_level,
+        )
+
+    def DBT_SOURCE(self, token: CToken) -> str:  # pylint: disable=invalid-name
+        """print DBT_SOURCE"""
+        return self.__format_macro_expr(token)
+
+    def DBT_REF(self, token: CToken) -> str:  # pylint: disable=invalid-name
+        """print DBT_REF"""
+        return self.__format_macro_expr(token)
+
+    def MACRO(self, token: CToken) -> str:  # pylint: disable=invalid-name
+        """print MACRO"""
+        return self.__format_macro_expr(token)
 
     @staticmethod
     def INLINE_COMMENT(token: Token) -> Token:  # pylint: disable=invalid-name
@@ -138,6 +163,9 @@ class QueryMixin(BaseMixin):
 
     def with_clause(self, node: CTree) -> str:
         """print with_clause"""
+        if len(node.children) == 1:
+            return self._simple_indent(node)
+
         return (
             self._apply_indent(f"{node.children[0]} AS (", node.data.indent_level)
             + linesep
@@ -442,20 +470,6 @@ class ComparisonMixin(BaseMixin):
 @v_args(tree=True)
 class JinjaMixin(BaseMixin):
     """Mixin for Jinja related nodes"""
-
-    def config(self, node: CTree) -> str:
-        """print config"""
-        return self._rollup_linesep(node)
-
-    @staticmethod
-    def dbt_source(node: CTree) -> str:
-        """print dbt_source"""
-        return f'source("{node.children[3]}", "{node.children[7]}")'
-
-    @staticmethod
-    def dbt_ref(node: CTree) -> str:
-        """print dbt_ref"""
-        return f'ref("{node.children[1]}")'
 
     def dbt_table_name(self, node: CTree) -> str:
         """print dbt_table_name"""

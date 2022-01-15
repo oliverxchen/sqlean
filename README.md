@@ -17,12 +17,11 @@ more and more elements of valid SQL can be parsed.
 
 #### Snapshot files
 
-Each snapshot file is divided into 3 parts, with each part separated by:
+Each snapshot file is divided into 3 parts, with each part separated by a line
+with three dashes:
 
 ```text
-
 ---
-
 ```
 
 The first part is minimal working example (MWE) for the SQL query. This is the
