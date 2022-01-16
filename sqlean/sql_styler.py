@@ -68,10 +68,6 @@ class BaseMixin(Transformer):  # type: ignore
         """Join list with comma space"""
         return ", ".join(self._stringify_children(node))
 
-    def _rollup_comma_newline(self, node: CTree) -> str:
-        """Join list with comma newline"""
-        return f",{linesep}".join(self._stringify_children(node))
-
     @staticmethod
     def _apply_black(input_str: str) -> str:
         """Apply black to token"""
@@ -326,10 +322,6 @@ class FromModifierMixin(BaseMixin):
     """Mixin for FROM modifier related nodes.
     Eg GROUP BY/ORDER BY/LIMIT"""
 
-    def where_clause(self, node: CTree) -> str:
-        """rollup where_clause"""
-        return self._rollup_linesep(node)
-
     def groupby_modifier(self, node: CTree) -> str:
         """rollup groupby_modifier"""
         output = self._apply_indent("GROUP BY", node.data.indent_level)
@@ -415,7 +407,10 @@ class FunctionMixin(BaseMixin):
         elif len(node.children) == 2:
             output = f"{str(node.children[0])}() {node.children[1]}"
         else:
-            raise NotImplementedError
+            raise NotImplementedError(
+                "window_function_expression: "
+                f"not implemented for {len(node.children)} children"
+            )
         return output
 
     @staticmethod

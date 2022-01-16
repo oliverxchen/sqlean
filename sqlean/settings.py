@@ -32,33 +32,6 @@ class Settings(BaseModel, allow_mutation=False):
     max_line_length: int = -1
     dialect: DialectEnum = DialectEnum.BIGQUERY
 
-    # Validators: these are needed because the attributes are input with value None
-    # if they are not in the command line options or config file.
-    @staticmethod
-    def _default_as_false(value: Optional[bool]) -> bool:
-        """Returns False if value is None."""
-        if value is None:
-            return False
-        return value
-
-    @validator("dry_run", always=True)
-    @classmethod
-    def dry_run_default(cls, value: Optional[bool]) -> bool:
-        """Fills in default value for dry_run if not provided."""
-        return cls._default_as_false(value)
-
-    @validator("write_ignore", always=True)
-    @classmethod
-    def write_ignore_default(cls, value: Optional[bool]) -> bool:
-        """Fills in default value for write_ignore if not provided."""
-        return cls._default_as_false(value)
-
-    @validator("force", always=True)
-    @classmethod
-    def force_default(cls, value: Optional[bool]) -> bool:
-        """Fills in default value for force if not provided."""
-        return cls._default_as_false(value)
-
 
 def set_options(
     target: Optional[Path],
