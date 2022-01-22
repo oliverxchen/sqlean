@@ -1,0 +1,59 @@
+select
+    {{ macro_1('arg1', 'arg2') }},
+    {{ macro_2("arg1", "arg2") }} as field_2,
+    {{macro_3("arg1", "arg2")}} field_3,
+    DATE({{macro_4()}}) as field_4
+from table
+
+---
+
+SELECT
+    {{ macro_1("arg1", "arg2") }},
+    {{ macro_2("arg1", "arg2") }} AS field_2,
+    {{ macro_3("arg1", "arg2") }} AS field_3,
+    DATE({{ macro_4() }}) AS field_4,
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree("select_item_unaliased", [Token("MACRO", "{{ macro_1('arg1', 'arg2') }}")]),
+                        Tree(
+                            "select_item_aliased",
+                            [Token("MACRO", '{{ macro_2("arg1", "arg2") }}'), Token("CNAME", "field_2")],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [Token("MACRO", '{{macro_3("arg1", "arg2")}}'), Token("CNAME", "field_3")],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "DATE")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("MACRO", "{{macro_4()}}")])]),
+                                    ],
+                                ),
+                                Token("CNAME", "field_4"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)

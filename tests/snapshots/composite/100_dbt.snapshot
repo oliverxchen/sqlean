@@ -1,0 +1,111 @@
+{{
+    config(materialized = "incremental", sort = "event_time", sql_header = set_start_date(incremental_days_ago = 1))
+}}
+
+select
+    field_1 as a,
+    {{ macro_1('arg1') }} b,
+    DATE({{ macro_2('arg1', 'arg2')}}) as c
+FROM
+    {{ source("dataset", "table")}}
+INNER JOIN
+    {{ ref("table")}}
+USING (field_1)
+WHERE
+    {{ macro_3('arg1', 'arg2') }}
+    AND b
+
+---
+
+{{
+    config(
+        materialized="incremental",
+        sort="event_time",
+        sql_header=set_start_date(incremental_days_ago=1),
+    )
+}}
+
+SELECT
+    field_1 AS a,
+    {{ macro_1("arg1") }} AS b,
+    DATE({{ macro_2("arg1", "arg2") }}) AS c,
+FROM
+    {{ source("dataset", "table") }}
+INNER JOIN
+    {{ ref("table") }}
+USING (field_1)
+WHERE
+    {{ macro_3("arg1", "arg2") }}
+    AND b
+
+---
+
+Tree(
+    "query_file",
+    [
+        Token(
+            "CONFIG",
+            '{{\n    config(materialized = "incremental", sort = "event_time", sql_header = set_start_date(incremental_days_ago = 1))\n}}',
+        ),
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree("select_item_aliased", [Token("CNAME", "field_1"), Token("CNAME", "a")]),
+                        Tree("select_item_aliased", [Token("MACRO", "{{ macro_1('arg1') }}"), Token("CNAME", "b")]),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "DATE")]),
+                                        Tree(
+                                            "arg_list",
+                                            [Tree("arg_item", [Token("MACRO", "{{ macro_2('arg1', 'arg2')}}")])],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "c"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "FROM"),
+                Tree(
+                    "from_clause",
+                    [
+                        Tree(
+                            "join_operation_with_condition",
+                            [
+                                Tree("dbt_table_name", [Token("DBT_SOURCE", '{{ source("dataset", "table")}}')]),
+                                Tree("inner_join", []),
+                                Tree("dbt_table_name", [Token("DBT_REF", '{{ ref("table")}}')]),
+                                Tree(
+                                    "using_clause",
+                                    [
+                                        Token("USING", "USING"),
+                                        Token("LPAR", "("),
+                                        Tree("using_list", [Token("CNAME", "field_1")]),
+                                        Token("RPAR", ")"),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("WHERE", "WHERE"),
+                        Tree(
+                            "bool_list",
+                            [
+                                Tree("first_bool_item", [Token("MACRO", "{{ macro_3('arg1', 'arg2') }}")]),
+                                Tree("after_bool_item", [Token("BINARY_BOOL_OPERATOR", "AND"), Token("CNAME", "b")]),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+)

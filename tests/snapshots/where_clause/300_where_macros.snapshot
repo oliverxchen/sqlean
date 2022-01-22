@@ -1,0 +1,43 @@
+select field from table where {{ macro_1('arg1', 'arg2')}} or b and c
+
+---
+
+SELECT
+    field,
+FROM
+    table
+WHERE
+    {{ macro_1("arg1", "arg2") }}
+    OR b
+    AND c
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [
+                        Tree("simple_table_name", [Token("CNAME", "table")]),
+                        Token("WHERE", "where"),
+                        Tree(
+                            "bool_list",
+                            [
+                                Tree("first_bool_item", [Token("MACRO", "{{ macro_1('arg1', 'arg2')}}")]),
+                                Tree("after_bool_item", [Token("BINARY_BOOL_OPERATOR", "or"), Token("CNAME", "b")]),
+                                Tree("after_bool_item", [Token("BINARY_BOOL_OPERATOR", "and"), Token("CNAME", "c")]),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ],
+)
