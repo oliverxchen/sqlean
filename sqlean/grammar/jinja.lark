@@ -1,7 +1,7 @@
-CONFIG: /{{\s*?config\(.*\)\s*?}}/s
-MACRO: /{{.*?\(.*\)\s*?}}/s
-DBT_REF: /{{\s*?ref\(.*\)\s*?}}/s
-DBT_SOURCE: /{{\s*?source\(.*\)\s*?}}/s
+CONFIG: /{{\s*?config\([^}]*\)\s*?}}/s
+MACRO: /{{.*?\([^}]*\)\s*?}}/s
+DBT_REF: /{{\s*?ref\([^}]*\)\s*?}}/s
+DBT_SOURCE: /{{\s*?source\([^}]*\)\s*?}}/s
 dbt_table_name: DBT_SOURCE
     | DBT_REF
 

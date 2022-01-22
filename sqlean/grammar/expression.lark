@@ -11,6 +11,7 @@ select_item_aliased: expression as_alias
     | standard_function_expression
     | window_function_expression
     | case_expression
+    | MACRO
     | CNAME
 
 table_referenced_field: CNAME "." CNAME
@@ -130,3 +131,4 @@ orderby_list: orderby_item ("," orderby_item)*
 %import table.PROJECT_ID
 %import table.DATASET_ID
 %import common.WS
+%import jinja.MACRO
