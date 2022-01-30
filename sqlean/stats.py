@@ -5,10 +5,17 @@ import time
 from typing import List, Optional
 
 from rich import print as rprint
+from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+from rich.theme import Theme
 
 from sqlean.settings import Settings
+
+
+# This is needed to make the number in the "elapsed time" line to
+# appear without bold on the integer part.
+console = Console(theme=Theme({"repr.number": "cyan italic"}))
 
 
 # pylint: disable=too-many-instance-attributes
@@ -44,9 +51,16 @@ class Stats:
         self.print_changed_files()
         self.print_unparsable_files()
         self.print_newly_ignored_files()
-        table = Table(title="Summary")
-        table.add_column("Metric", justify="right", style="cyan")
-        table.add_column("Value", justify="left", style="white")
+        table = Table(
+            title="Summary\n",
+            show_header=False,
+            box=None,
+            title_style="bold italic bright_yellow",
+            title_justify="left",
+            row_styles=["on navy_blue", ""],
+        )
+        table.add_column("Metric", justify="right", style="spring_green2")
+        table.add_column("Value", justify="right", style="white")
         table.add_row("Number of SQL files", f"{self.num_files:,}")
         table.add_row("Clean files", f"{100 * self.num_clean / self.num_files:.1f}%")
         if options.dry_run is False:
@@ -72,9 +86,10 @@ class Stats:
             "Unparsable files",
             f"{unparsable_style}{100 * self.num_unparsable / self.num_files:.1f}%",
         )
-        table.add_row("Time elapsed", self.get_time_elapsed())
+
         rprint("\n")
         rprint(table)
+        console.print(f"\nTime elapsed: [cyan italic]{self.get_time_elapsed()}\n")
 
     def print_changed_files(self) -> None:
         """Prints a list of changed files"""

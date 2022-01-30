@@ -84,15 +84,15 @@ def test_replace__fail() -> None:
         # are too long and breaking in the panel is inconsistent
         assert "── Changed files ──" in result.stdout
         assert "── Unparsable files ──" in result.stdout
-        assert "Clean files │ 33.3%" in result.stdout
-        assert "Changed/sqleaned files │ 33.3%" in result.stdout
+        assert "Clean files  33.3%" in result.stdout
+        assert "Changed/sqleaned files  33.3%" in result.stdout
 
         # run sqlean again to check that files were changed
         result = runner.invoke(app, [tmpdir])
         assert result.exit_code == 1
         assert "── Unparsable files ──" in result.stdout
-        assert "Clean files │ 66.7%" in result.stdout
-        assert "Changed/sqleaned files │ 0.0%" in result.stdout
+        assert "Clean files  66.7%" in result.stdout
+        assert "Changed/sqleaned files   0.0%" in result.stdout
 
 
 def test_write_ignore() -> None:
@@ -105,8 +105,8 @@ def test_write_ignore() -> None:
         # start with dry-run as a baseline
         result = runner.invoke(app, ["-d", tmpdir])
         assert result.exit_code == 1
-        assert "Ignored files │ 16.7%" in result.stdout
-        assert "Unparsable files │ 16.7%" in result.stdout
+        assert "Ignored files  16.7%" in result.stdout
+        assert "Unparsable files  16.7%" in result.stdout
         with open(unparsable_file, "rt", encoding="utf-8") as reader:
             assert reader.read() == "foo\n"
 
@@ -114,16 +114,16 @@ def test_write_ignore() -> None:
         result = runner.invoke(app, ["--write-ignore", tmpdir])
         assert result.exit_code == 0
         assert "── Newly ignored files ──" in result.stdout
-        assert "Ignored files │ 33.3%" in result.stdout
-        assert "Unparsable files │ 0.0%" in result.stdout
+        assert "Ignored files  33.3%" in result.stdout
+        assert "Unparsable files   0.0%" in result.stdout
         with open(unparsable_file, "rt", encoding="utf-8") as reader:
             assert reader.read() == "# sqlean ignore\nfoo\n"
 
         # run write-ignore a second time to make sure everything is the same
         result = runner.invoke(app, ["--write-ignore", tmpdir])
         assert result.exit_code == 0
-        assert "Ignored files │ 33.3%" in result.stdout
-        assert "Unparsable files │ 0.0%" in result.stdout
+        assert "Ignored files  33.3%" in result.stdout
+        assert "Unparsable files   0.0%" in result.stdout
         with open(unparsable_file, "rt", encoding="utf-8") as reader:
             assert reader.read() == "# sqlean ignore\nfoo\n"
 
@@ -138,16 +138,16 @@ def test_force() -> None:
         # start with dry-run as a baseline
         result = runner.invoke(app, ["-d", tmpdir])
         assert result.exit_code == 1
-        assert "Ignored files │ 16.7%" in result.stdout
-        assert "Unparsable files │ 16.7%" in result.stdout
+        assert "Ignored files  16.7%" in result.stdout
+        assert "Unparsable files  16.7%" in result.stdout
         with open(ignored_file, "rt", encoding="utf-8") as reader:
             assert reader.read() == "# sqlean ignore\ninvalid_sql_to_ignore\n"
 
         # run force
         result = runner.invoke(app, ["--force", tmpdir])
         assert result.exit_code == 1
-        assert "Ignored files │ 0.0%" in result.stdout
-        assert "Unparsable files │ 33.3%" in result.stdout
+        assert "Ignored files   0.0%" in result.stdout
+        assert "Unparsable files  33.3%" in result.stdout
         with open(ignored_file, "rt", encoding="utf-8") as reader:
             content = reader.read()
             assert content == "invalid_sql_to_ignore\n"

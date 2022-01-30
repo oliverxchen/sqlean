@@ -1,3 +1,5 @@
+// This should be parsed for real instead of using regex so that we can
+// know the contents of these jinja bits.
 CONFIG: /{{\s*?config\([^}]*\)\s*?}}/s
 MACRO: /{{.*?\([^}]*\)\s*?}}/s
 DBT_REF: /{{\s*?ref\([^}]*\)\s*?}}/s
