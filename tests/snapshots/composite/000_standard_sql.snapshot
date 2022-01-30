@@ -164,7 +164,10 @@ Tree(
                                         Tree("simple_table_name", [Token("CNAME", "table_a")]),
                                         Tree(
                                             "groupby_modifier",
-                                            [Token("GROUP_BY", "group\n\tby"), Tree("field_list", [Token("INT", "1")])],
+                                            [
+                                                Token("GROUP_BY", "group\n\tby"),
+                                                Tree("field_list", [Token("SIGNED_NUMBER", "1")]),
+                                            ],
                                         ),
                                         Tree(
                                             "orderby_modifier",
@@ -172,7 +175,12 @@ Tree(
                                                 Token("ORDER_BY", "order by"),
                                                 Tree(
                                                     "orderby_list",
-                                                    [Tree("orderby_item", [Token("INT", "2"), Token("DESC", "desc")])],
+                                                    [
+                                                        Tree(
+                                                            "orderby_item",
+                                                            [Token("SIGNED_NUMBER", "2"), Token("DESC", "desc")],
+                                                        )
+                                                    ],
                                                 ),
                                             ],
                                         ),
@@ -644,7 +652,7 @@ Tree(
                                     "orderby_modifier",
                                     [
                                         Token("ORDER_BY", "order by"),
-                                        Tree("orderby_list", [Tree("orderby_item", [Token("INT", "1")])]),
+                                        Tree("orderby_list", [Tree("orderby_item", [Token("SIGNED_NUMBER", "1")])]),
                                     ],
                                 ),
                             ],

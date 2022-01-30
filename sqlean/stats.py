@@ -55,7 +55,7 @@ class Stats:
             title="Summary\n",
             show_header=False,
             box=None,
-            title_style="bold italic bright_yellow",
+            title_style="bold italic #f6cc61",  # this is the neutral emoji skin tone
             title_justify="left",
             row_styles=["on navy_blue", ""],
         )

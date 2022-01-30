@@ -13,6 +13,20 @@ select_item_aliased: expression as_alias
     | case_expression
     | MACRO
     | CNAME
+    | constant
+
+?constant: SIGNED_NUMBER
+    | string
+    | NULL
+    | boolean
+
+?string: DOUBLE_QUOTED_STRING
+    | SINGLE_QUOTED_STRING
+DOUBLE_QUOTED_STRING: "\"" _STRING_ESC_INNER "\""
+SINGLE_QUOTED_STRING: "'" _STRING_ESC_INNER "'"
+
+?boolean: TRUE
+    | FALSE
 
 table_referenced_field: CNAME "." CNAME
     | explicit_table_name "." CNAME
@@ -110,8 +124,7 @@ NULL: "NULL"i
 TRUE: "TRUE"i
 FALSE: "FALSE"i
 
-field_list: field_item ("," field_item)*
-?field_item: base_expression | INT
+field_list: base_expression ("," base_expression)*
 
 !groupby_modifier: GROUP_BY field_list //[having_clause]
 GROUP_BY.2: "GROUP"i WS "BY"i
@@ -121,10 +134,12 @@ GROUP_BY.2: "GROUP"i WS "BY"i
 !orderby_modifier: ORDER_BY orderby_list
 ORDER_BY.2: "ORDER"i WS "BY"i
 orderby_list: orderby_item ("," orderby_item)*
-!orderby_item: field_item ["ASC"i | "DESC"i]
+!orderby_item: base_expression ["ASC"i | "DESC"i]
 
 %import common.CNAME
 %import common.INT
+%import common.SIGNED_NUMBER
+%import common._STRING_ESC_INNER
 %import alias.as_alias
 %import comment.INLINE_COMMENT
 %import table.explicit_table_name

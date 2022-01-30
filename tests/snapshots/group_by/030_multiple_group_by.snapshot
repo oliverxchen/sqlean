@@ -55,7 +55,7 @@ Tree(
                                             ],
                                         ),
                                         Token("CNAME", "a"),
-                                        Token("INT", "1"),
+                                        Token("SIGNED_NUMBER", "1"),
                                     ],
                                 ),
                             ],

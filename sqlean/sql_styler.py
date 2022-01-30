@@ -501,4 +501,5 @@ class Styler(  # pylint: disable=too-many-ancestors
             token.type.endswith("NAME")
             or token.type.endswith("_EXPR")
             or token.type.endswith("_ID")
+            or token.type.endswith("_STRING")
         )
