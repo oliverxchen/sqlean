@@ -1,0 +1,121 @@
+select
+    "foo" AS field_1,
+    "\"foo\"" AS field_1,
+    'foo' as field_3,
+    1 AS field_4,
+    3.2 AS field_5,
+    -2.3 AS field_6,
+    1e30 AS field_7,
+    True AS field_8,
+    False AS field_9,
+    null AS field_10,
+    date('2022-02-11T00:00:00') AS field_11,
+    case when 1 then 2 else 3 end AS field_12,
+from table
+
+---
+
+SELECT
+    "foo" AS field_1,
+    "\"foo\"" AS field_1,
+    'foo' AS field_3,
+    1 AS field_4,
+    3.2 AS field_5,
+    -2.3 AS field_6,
+    1E30 AS field_7,
+    TRUE AS field_8,
+    FALSE AS field_9,
+    NULL AS field_10,
+    DATE('2022-02-11T00:00:00') AS field_11,
+    CASE
+        WHEN 1 THEN 2
+        ELSE 3
+    END AS field_12,
+FROM
+    table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_aliased", [Token("DOUBLE_QUOTED_STRING", '"foo"'), Token("CNAME", "field_1")]
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [Token("DOUBLE_QUOTED_STRING", '"\\"foo\\""'), Token("CNAME", "field_1")],
+                        ),
+                        Tree(
+                            "select_item_aliased", [Token("SINGLE_QUOTED_STRING", "'foo'"), Token("CNAME", "field_3")]
+                        ),
+                        Tree("select_item_aliased", [Token("SIGNED_NUMBER", "1"), Token("CNAME", "field_4")]),
+                        Tree("select_item_aliased", [Token("SIGNED_NUMBER", "3.2"), Token("CNAME", "field_5")]),
+                        Tree("select_item_aliased", [Token("SIGNED_NUMBER", "-2.3"), Token("CNAME", "field_6")]),
+                        Tree("select_item_aliased", [Token("SIGNED_NUMBER", "1e30"), Token("CNAME", "field_7")]),
+                        Tree("select_item_aliased", [Token("TRUE", "True"), Token("CNAME", "field_8")]),
+                        Tree("select_item_aliased", [Token("FALSE", "False"), Token("CNAME", "field_9")]),
+                        Tree("select_item_aliased", [Token("NULL", "null"), Token("CNAME", "field_10")]),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "date")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item", [Token("SINGLE_QUOTED_STRING", "'2022-02-11T00:00:00'")]
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "field_11"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "separate_case_expression",
+                                    [
+                                        Token("CASE", "case"),
+                                        Tree(
+                                            "when_list",
+                                            [
+                                                Tree(
+                                                    "when_item",
+                                                    [
+                                                        Token("WHEN", "when"),
+                                                        Token("SIGNED_NUMBER", "1"),
+                                                        Token("THEN", "then"),
+                                                        Token("SIGNED_NUMBER", "2"),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                        Tree("else_clause", [Token("ELSE", "else"), Token("SIGNED_NUMBER", "3")]),
+                                        Token("END", "end"),
+                                    ],
+                                ),
+                                Token("CNAME", "field_12"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)
