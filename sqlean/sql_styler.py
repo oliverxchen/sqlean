@@ -325,7 +325,10 @@ class FromModifierMixin(BaseMixin):
     def groupby_modifier(self, node: CTree) -> str:
         """rollup groupby_modifier"""
         output = self._apply_indent("GROUP BY", node.data.indent_level)
-        return output + linesep + str(node.children[1])
+        output += linesep + str(node.children[1])
+        if len(node.children) == 3:
+            output += linesep + str(node.children[2])
+        return output
 
     def field_list(self, node: CTree) -> str:
         """rollup field_list"""
@@ -347,6 +350,11 @@ class FromModifierMixin(BaseMixin):
     def orderby_item(self, node: CTree) -> str:
         """print orderby_item"""
         return self._rollup_space(node)
+
+    def having_clause(self, node: CTree) -> str:
+        """print having_clause"""
+        output = self._apply_indent("HAVING", node.data.indent_level)
+        return output + linesep + str(node.children[1])
 
     def limit_clause(self, node: CTree) -> str:
         """rollup limit_clause"""

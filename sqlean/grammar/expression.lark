@@ -126,10 +126,10 @@ FALSE: "FALSE"i
 
 field_list: base_expression ("," base_expression)*
 
-!groupby_modifier: GROUP_BY field_list //[having_clause]
+!groupby_modifier: GROUP_BY field_list [having_clause]
 GROUP_BY.2: "GROUP"i WS "BY"i
 
-// !having_clause: "HAVING"i bool_list
+!having_clause: "HAVING"i bool_list
 
 !orderby_modifier: ORDER_BY orderby_list
 ORDER_BY.2: "ORDER"i WS "BY"i

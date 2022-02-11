@@ -49,6 +49,10 @@ class TreeGroomer(Visitor_Recursive):
     """Grooms the trees of ugly branches and leaves, sets indentation."""
 
     root = "query_file"
+
+    # These nodes will be incremented by the value with respect to the
+    # node's parent's indent level. Otherwise, the node's indent level will
+    # be the same as its parent's.
     node_indent_map = {
         "from_clause": 1,
         "select_list": 1,
@@ -65,8 +69,20 @@ class TreeGroomer(Visitor_Recursive):
         "orderby_list": 1,
         "on_clause": -1,
     }
+
+    # These tokens will be incremented by the value with respect to the
+    # token's parent's indent level. Otherwise, the token's indent level will
+    # not be set.
     token_indent_map = {"FROM": 0, "WHERE": -1}
-    parents_to_indent = {"sub_query_expr", "on_clause", "with_clause"}
+
+    # If a node has one of these as a parent, it will be indented by one more
+    # than its parent.
+    parents_to_indent = {
+        "sub_query_expr",
+        "on_clause",
+        "with_clause",
+        "having_clause",
+    }
 
     def __default__(self, tree: CTree) -> None:
         """Executed on each node of the tree"""
