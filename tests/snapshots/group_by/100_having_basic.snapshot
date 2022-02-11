@@ -1,0 +1,103 @@
+select count(b) from table group by round(a) having round(a) > 1
+
+---
+
+SELECT
+    COUNT(b),
+FROM
+    table
+GROUP BY
+    ROUND(a)
+HAVING
+    ROUND(a) > 1
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "count")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                    ],
+                                )
+                            ],
+                        )
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [
+                        Tree("simple_table_name", [Token("CNAME", "table")]),
+                        Tree(
+                            "groupby_modifier",
+                            [
+                                Token("GROUP_BY", "group by"),
+                                Tree(
+                                    "field_list",
+                                    [
+                                        Tree(
+                                            "standard_function_expression",
+                                            [
+                                                Tree("function_name", [Token("CNAME", "round")]),
+                                                Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                            ],
+                                        )
+                                    ],
+                                ),
+                                Tree(
+                                    "having_clause",
+                                    [
+                                        Token("HAVING", "having"),
+                                        Tree(
+                                            "bool_list",
+                                            [
+                                                Tree(
+                                                    "first_bool_item",
+                                                    [
+                                                        Tree(
+                                                            "binary_comparison_operation",
+                                                            [
+                                                                Tree(
+                                                                    "standard_function_expression",
+                                                                    [
+                                                                        Tree(
+                                                                            "function_name", [Token("CNAME", "round")]
+                                                                        ),
+                                                                        Tree(
+                                                                            "arg_list",
+                                                                            [Tree("arg_item", [Token("CNAME", "a")])],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                Token("BINARY_COMPARISON_OPERATOR", ">"),
+                                                                Token("SIGNED_NUMBER", "1"),
+                                                            ],
+                                                        )
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ],
+)
