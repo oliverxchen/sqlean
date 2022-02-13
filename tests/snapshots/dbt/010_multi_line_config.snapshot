@@ -9,13 +9,13 @@ select * from table
 ---
 
 {{
-    config(materialized="table", sort="event_time")
+  config(materialized="table", sort="event_time")
 }}
 
 SELECT
-    *,
+  *,
 FROM
-    table
+  table
 
 ---
 

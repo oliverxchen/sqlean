@@ -3,9 +3,9 @@ select SUM(x) from c
 ---
 
 SELECT
-    SUM(x),
+  SUM(x),
 FROM
-    c
+  c
 
 ---
 

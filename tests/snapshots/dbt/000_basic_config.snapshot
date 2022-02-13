@@ -7,13 +7,13 @@ select * from table
 ---
 
 {{
-    config(materialized="table")
+  config(materialized="table")
 }}
 
 SELECT
-    *,
+  *,
 FROM
-    table
+  table
 
 ---
 

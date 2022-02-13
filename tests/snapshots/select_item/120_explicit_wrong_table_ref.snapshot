@@ -3,9 +3,9 @@ select `a`.`b`.`c`.field from `a`.`b`.`c`
 ---
 
 SELECT
-    `a.b.c`.field,
+  `a.b.c`.field,
 FROM
-    `a.b.c`
+  `a.b.c`
 
 ---
 

@@ -33,36 +33,36 @@ FROM cte_1
 WITH
 
 cte_1 AS (
-    SELECT
-        a,  -- comment on why to include a
-        b,  -- comment on why to include b
-        c,  -- comment on why to include c
-    FROM
-        table
+  SELECT
+    a,  -- comment on why to include a
+    b,  -- comment on why to include b
+    c,  -- comment on why to include c
+  FROM
+    table
 ),
 
 cte_2 AS (
-    SELECT
-        a,
-        b,  -- another comment on b
-        c,
-    FROM
-        table_2
+  SELECT
+    a,
+    b,  -- another comment on b
+    c,
+  FROM
+    table_2
 ),
 
 cte_3 AS (
-    SELECT
-        a,  -- another comment on a
-        b,
-        c,  -- another comment on c
-    FROM
-        table_3
+  SELECT
+    a,  -- another comment on a
+    b,
+    c,  -- another comment on c
+  FROM
+    table_3
 )
 
 SELECT
-    a,  -- comment on a
+  a,  -- comment on a
 FROM
-    cte_1
+  cte_1
 
 ---
 

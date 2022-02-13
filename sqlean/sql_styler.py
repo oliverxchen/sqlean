@@ -17,6 +17,7 @@ class BaseMixin(Transformer):  # type: ignore
 
     def __init__(self, indent: str) -> None:
         self.__indent = indent
+        self.__indent_size = len(indent)
         super().__init__()
 
     @property
@@ -68,10 +69,22 @@ class BaseMixin(Transformer):  # type: ignore
         """Join list with comma space"""
         return ", ".join(self._stringify_children(node))
 
-    @staticmethod
-    def _apply_black(input_str: str) -> str:
+    def _apply_black(self, input_str: str) -> str:
         """Apply black to token"""
-        return black.format_str(input_str, mode=black.Mode()).strip()  # type: ignore
+        return self._change_indent_size(
+            black.format_str(input_str, mode=black.Mode()).strip(),  # type: ignore
+            self.__indent_size,
+        )
+
+    @staticmethod
+    def _change_indent_size(input_str: str, indent_size: int) -> str:
+        """Change the default indent size of 4 used by black to the specified
+        indent size"""
+        lines = input_str.split(linesep)
+        for i, line in enumerate(lines):
+            if line.startswith(" " * 4):
+                lines[i] = line.replace(" " * 4, " " * indent_size)
+        return linesep.join(lines)
 
 
 @v_args(tree=True)

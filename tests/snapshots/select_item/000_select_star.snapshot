@@ -3,9 +3,9 @@ select * from table
 ---
 
 SELECT
-    *,
+  *,
 FROM
-    table
+  table
 
 ---
 

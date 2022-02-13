@@ -3,12 +3,12 @@ select a, count(b) from table group by a
 ---
 
 SELECT
-    a,
-    COUNT(b),
+  a,
+  COUNT(b),
 FROM
-    table
+  table
 GROUP BY
-    a
+  a
 
 ---
 

@@ -44,66 +44,66 @@ order by 1  limit 10
 WITH
 
 cte_a AS (
-    SELECT
-        a,
-        SUM(b) AS total_b,
-        STDDEV(c) AS standard_deviation_c,
-    FROM
-        table_a
-    GROUP BY
-        1
-    ORDER BY
-        2 DESC
+  SELECT
+    a,
+    SUM(b) AS total_b,
+    STDDEV(c) AS standard_deviation_c,
+  FROM
+    table_a
+  GROUP BY
+    1
+  ORDER BY
+    2 DESC
 ),
 
 cte_b AS (
-    WITH
+  WITH
 
-    cte_c AS (
-        SELECT
-            a,
-            DATE_TRUNC(DATE(timestamp), MONTH) AS month,
-        FROM
-            (
-                SELECT
-                    *,
-                FROM
-                    `project.dataset.table_b` AS table_b
-                WHERE
-                    table_b.timestamp > placeholder
-            )
-    ),
-
-    cte_d AS (
-        SELECT
-            table_c.a,
-            DATE_TRUNC(DATE(table_c.timestamp), MONTH) AS month,
-        FROM
-            `project.dataset.table_c` AS table_c
-    )
-
+  cte_c AS (
     SELECT
-        a,
-        COALESCE(table_b.month, table_c.month) AS month,
+      a,
+      DATE_TRUNC(DATE(timestamp), MONTH) AS month,
     FROM
-        cte_c
-    FULL OUTER JOIN
-        cte_d
-    ON
-        cte_c.a = cte_d.a
+      (
+        SELECT
+          *,
+        FROM
+          `project.dataset.table_b` AS table_b
+        WHERE
+          table_b.timestamp > placeholder
+      )
+  ),
+
+  cte_d AS (
+    SELECT
+      table_c.a,
+      DATE_TRUNC(DATE(table_c.timestamp), MONTH) AS month,
+    FROM
+      `project.dataset.table_c` AS table_c
+  )
+
+  SELECT
+    a,
+    COALESCE(table_b.month, table_c.month) AS month,
+  FROM
+    cte_c
+  FULL OUTER JOIN
+    cte_d
+  ON
+    cte_c.a = cte_d.a
 )
 
 SELECT
-    *,
+  *,
 FROM
-    cte_a
+  cte_a
 LEFT OUTER JOIN
-    cte_b
+  cte_b
 USING (a)
 WHERE
-    total_b > b
+  total_b > b
 ORDER BY
-    1
+  1
 LIMIT 10
 
 ---

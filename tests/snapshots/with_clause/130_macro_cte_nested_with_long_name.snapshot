@@ -18,42 +18,42 @@ select * from cte
 WITH
 
 cte AS (
-    WITH
+  WITH
 
-    cte_1 AS (
-        SELECT
-            *,
-        FROM
-            table_a
-    ),
-
-    {{
-        really_long_named_macro_cte(
-            "with",
-            "many",
-            "arguments",
-            "so",
-            "that",
-            "black",
-            "goes",
-            "over",
-            "the",
-            "line",
-            "length",
-            "limit",
-        )
-    }}
-
+  cte_1 AS (
     SELECT
-        *,
+      *,
     FROM
-        macro_cte
+      table_a
+  ),
+
+  {{
+    really_long_named_macro_cte(
+      "with",
+      "many",
+      "arguments",
+      "so",
+      "that",
+      "black",
+      "goes",
+      "over",
+      "the",
+      "line",
+      "length",
+      "limit",
+    )
+  }}
+
+  SELECT
+    *,
+  FROM
+    macro_cte
 )
 
 SELECT
-    *,
+  *,
 FROM
-    cte
+  cte
 
 ---
 

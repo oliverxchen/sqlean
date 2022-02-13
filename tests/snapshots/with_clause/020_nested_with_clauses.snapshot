@@ -11,25 +11,25 @@ select * from cte_1
 WITH
 
 cte_1 AS (
-    WITH
+  WITH
 
-    cte_2 AS (
-        SELECT
-            *,
-        FROM
-            table_sub
-    )
-
+  cte_2 AS (
     SELECT
-        *,
+      *,
     FROM
-        cte_2
+      table_sub
+  )
+
+  SELECT
+    *,
+  FROM
+    cte_2
 )
 
 SELECT
-    *,
+  *,
 FROM
-    cte_1
+  cte_1
 
 ---
 

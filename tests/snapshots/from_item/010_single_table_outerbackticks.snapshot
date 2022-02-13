@@ -3,9 +3,9 @@ select field from `project.dataset.table`
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    `project.dataset.table`
+  `project.dataset.table`
 
 ---
 

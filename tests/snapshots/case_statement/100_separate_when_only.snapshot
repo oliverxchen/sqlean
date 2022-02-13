@@ -11,15 +11,15 @@ from table
 ---
 
 SELECT
-    CASE
-        WHEN a != b THEN c
-    END,
-    CASE
-        WHEN b > d AND d = e THEN c
-        WHEN d THEN e
-    END AS f,
+  CASE
+    WHEN a != b THEN c
+  END,
+  CASE
+    WHEN b > d AND d = e THEN c
+    WHEN d THEN e
+  END AS f,
 FROM
-    table
+  table
 
 ---
 

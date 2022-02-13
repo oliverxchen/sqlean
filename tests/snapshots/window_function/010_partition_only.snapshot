@@ -4,10 +4,10 @@ FROM table
 ---
 
 SELECT
-    a,
-    SUM(b) OVER (PARTITION BY a) AS total_b,
+  a,
+  SUM(b) OVER (PARTITION BY a) AS total_b,
 FROM
-    table
+  table
 
 ---
 

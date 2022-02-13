@@ -9,15 +9,15 @@ from table
 ---
 
 SELECT
-    CASE a
-        WHEN b THEN c
-    END,
-    CASE a
-        WHEN b THEN c
-        WHEN d THEN e
-    END AS f,
+  CASE a
+    WHEN b THEN c
+  END,
+  CASE a
+    WHEN b THEN c
+    WHEN d THEN e
+  END AS f,
 FROM
-    table
+  table
 
 ---
 

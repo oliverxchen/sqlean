@@ -3,9 +3,9 @@ select field from {{source("a", "b")}} as table
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    {{ source("a", "b") }} AS table
+  {{ source("a", "b") }} AS table
 
 ---
 

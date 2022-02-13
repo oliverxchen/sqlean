@@ -3,12 +3,12 @@ select a, count(b) from table order by 1
 ---
 
 SELECT
-    a,
-    COUNT(b),
+  a,
+  COUNT(b),
 FROM
-    table
+  table
 ORDER BY
-    1
+  1
 
 ---
 

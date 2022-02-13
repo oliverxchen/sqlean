@@ -3,13 +3,13 @@ select count(b) from table group by round(a) having round(a) > 1
 ---
 
 SELECT
-    COUNT(b),
+  COUNT(b),
 FROM
-    table
+  table
 GROUP BY
-    ROUND(a)
+  ROUND(a)
 HAVING
-    ROUND(a) > 1
+  ROUND(a) > 1
 
 ---
 

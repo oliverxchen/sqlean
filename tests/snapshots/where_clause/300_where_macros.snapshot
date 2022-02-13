@@ -3,13 +3,13 @@ select field from table where {{ macro_1('arg1', 'arg2')}} or b and c
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    table
+  table
 WHERE
-    {{ macro_1("arg1", "arg2") }}
-    OR b
-    AND c
+  {{ macro_1("arg1", "arg2") }}
+  OR b
+  AND c
 
 ---
 

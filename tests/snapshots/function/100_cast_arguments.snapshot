@@ -12,16 +12,16 @@ from table
 ---
 
 SELECT
-    CAST(a AS INT) AS alias,
-    CAST(b AS INT64) AS alias_2,
-    CAST(c AS STRING),
-    CAST(d AS NUMERIC),
-    CAST(e AS BYTES),
-    CAST(f AS BYTES(3)),
-    CAST(g AS DECIMAL),
-    CAST(h AS FLOAT64),
+  CAST(a AS INT) AS alias,
+  CAST(b AS INT64) AS alias_2,
+  CAST(c AS STRING),
+  CAST(d AS NUMERIC),
+  CAST(e AS BYTES),
+  CAST(f AS BYTES(3)),
+  CAST(g AS DECIMAL),
+  CAST(h AS FLOAT64),
 FROM
-    table
+  table
 
 ---
 

@@ -3,13 +3,13 @@ select field from table where a or b and c
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    table
+  table
 WHERE
-    a
-    OR b
-    AND c
+  a
+  OR b
+  AND c
 
 ---
 

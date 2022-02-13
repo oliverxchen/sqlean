@@ -4,10 +4,10 @@ FROM table
 ---
 
 SELECT
-    a,
-    ROW_NUMBER() OVER (PARTITION BY a, b ORDER BY c ASC, d, e DESC) AS row,
+  a,
+  ROW_NUMBER() OVER (PARTITION BY a, b ORDER BY c ASC, d, e DESC) AS row,
 FROM
-    table
+  table
 
 ---
 

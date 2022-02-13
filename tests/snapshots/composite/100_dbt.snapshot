@@ -18,25 +18,25 @@ WHERE
 ---
 
 {{
-    config(
-        materialized="incremental",
-        sort="event_time",
-        sql_header=set_start_date(incremental_days_ago=1),
-    )
+  config(
+    materialized="incremental",
+    sort="event_time",
+    sql_header=set_start_date(incremental_days_ago=1),
+  )
 }}
 
 SELECT
-    field_1 AS a,
-    {{ macro_1("arg1") }} AS b,
-    DATE({{ macro_2("arg1", "arg2") }}) AS c,
+  field_1 AS a,
+  {{ macro_1("arg1") }} AS b,
+  DATE({{ macro_2("arg1", "arg2") }}) AS c,
 FROM
-    {{ source("dataset", "table") }}
+  {{ source("dataset", "table") }}
 INNER JOIN
-    {{ ref("table") }}
+  {{ ref("table") }}
 USING (field_1)
 WHERE
-    {{ macro_3("arg1", "arg2") }}
-    AND b
+  {{ macro_3("arg1", "arg2") }}
+  AND b
 
 ---
 

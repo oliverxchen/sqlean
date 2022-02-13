@@ -4,11 +4,11 @@ using (field_a)
 ---
 
 SELECT
-    *,
+  *,
 FROM
-    table1
+  table1
 FULL OUTER JOIN
-    table2
+  table2
 USING (field_a)
 
 ---

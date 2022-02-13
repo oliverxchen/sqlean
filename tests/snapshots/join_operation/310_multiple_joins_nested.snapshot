@@ -10,25 +10,25 @@ select * from t
 WITH
 
 t AS (
-    SELECT
-        *,
-    FROM
-        table_a
-    INNER JOIN
-        table_b
-    USING (id)
-    CROSS JOIN
-        table_c
-    RIGHT OUTER JOIN
-        table_d
-    ON
-        table_c.id = table_d.id
+  SELECT
+    *,
+  FROM
+    table_a
+  INNER JOIN
+    table_b
+  USING (id)
+  CROSS JOIN
+    table_c
+  RIGHT OUTER JOIN
+    table_d
+  ON
+    table_c.id = table_d.id
 )
 
 SELECT
-    *,
+  *,
 FROM
-    t
+  t
 
 ---
 

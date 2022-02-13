@@ -3,9 +3,9 @@ select * from table limit 100
 ---
 
 SELECT
-    *,
+  *,
 FROM
-    table
+  table
 LIMIT 100
 
 ---

@@ -6,18 +6,18 @@ select * from
 ---
 
 SELECT
-    *,
+  *,
 FROM
-    table_a
+  table_a
 INNER JOIN
-    table_b
+  table_b
 USING (id)
 CROSS JOIN
-    table_c
+  table_c
 RIGHT OUTER JOIN
-    table_d
+  table_d
 ON
-    table_c.id = table_d.id
+  table_c.id = table_d.id
 
 ---
 
