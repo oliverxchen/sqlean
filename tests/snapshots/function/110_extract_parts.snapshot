@@ -8,12 +8,12 @@ from table
 ---
 
 SELECT
-    EXTRACT(DAY FROM a) AS alias,
-    EXTRACT(ISOWEEK FROM b) AS alias_2,
-    EXTRACT(SECOND FROM c),
-    EXTRACT(HOUR FROM d),
+  EXTRACT(DAY FROM a) AS alias,
+  EXTRACT(ISOWEEK FROM b) AS alias_2,
+  EXTRACT(SECOND FROM c),
+  EXTRACT(HOUR FROM d),
 FROM
-    table
+  table
 
 ---
 

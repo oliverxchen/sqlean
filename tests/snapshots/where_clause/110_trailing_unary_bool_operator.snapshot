@@ -3,11 +3,11 @@ select field from table where a is not null
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    table
+  table
 WHERE
-    a IS NOT NULL
+  a IS NOT NULL
 
 ---
 

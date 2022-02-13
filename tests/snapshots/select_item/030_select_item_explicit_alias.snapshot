@@ -3,9 +3,9 @@ select field as new_field_name from table
 ---
 
 SELECT
-    field AS new_field_name,
+  field AS new_field_name,
 FROM
-    table
+  table
 
 ---
 

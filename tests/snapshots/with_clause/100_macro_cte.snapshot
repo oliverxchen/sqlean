@@ -13,18 +13,18 @@ select * from macro_cte
 WITH
 
 cte AS (
-    SELECT
-        *,
-    FROM
-        table_a
+  SELECT
+    *,
+  FROM
+    table_a
 ),
 
 {{ macro_cte() }}
 
 SELECT
-    *,
+  *,
 FROM
-    macro_cte
+  macro_cte
 
 ---
 

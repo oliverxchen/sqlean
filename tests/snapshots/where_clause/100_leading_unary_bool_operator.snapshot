@@ -3,11 +3,11 @@ select field from table where NOT a
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    table
+  table
 WHERE
-    NOT a
+  NOT a
 
 ---
 

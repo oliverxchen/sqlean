@@ -8,16 +8,16 @@ select * from cte
 WITH
 
 cte AS (
-    SELECT
-        *,
-    FROM
-        table_a
+  SELECT
+    *,
+  FROM
+    table_a
 )
 
 SELECT
-    *,
+  *,
 FROM
-    cte
+  cte
 
 ---
 

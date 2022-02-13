@@ -3,11 +3,11 @@ select count(b) from table group by round(a)
 ---
 
 SELECT
-    COUNT(b),
+  COUNT(b),
 FROM
-    table
+  table
 GROUP BY
-    ROUND(a)
+  ROUND(a)
 
 ---
 

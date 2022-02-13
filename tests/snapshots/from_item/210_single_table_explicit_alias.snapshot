@@ -3,9 +3,9 @@ select field from table as t
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    table AS t
+  table AS t
 
 ---
 

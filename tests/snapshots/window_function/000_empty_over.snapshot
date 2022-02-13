@@ -4,11 +4,11 @@ FROM table
 ---
 
 SELECT
-    a,
-    SUM(b) OVER () AS total_b,
-    AVG(b) OVER (),
+  a,
+  SUM(b) OVER () AS total_b,
+  AVG(b) OVER (),
 FROM
-    table
+  table
 
 ---
 

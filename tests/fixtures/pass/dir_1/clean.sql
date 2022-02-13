@@ -1,4 +1,4 @@
 SELECT
-    field,
+  field,
 FROM
-    table
+  table

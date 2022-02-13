@@ -4,10 +4,10 @@ FROM table
 ---
 
 SELECT
-    a,
-    LAST(b) OVER (ORDER BY a) AS last_b,
+  a,
+  LAST(b) OVER (ORDER BY a) AS last_b,
 FROM
-    table
+  table
 
 ---
 

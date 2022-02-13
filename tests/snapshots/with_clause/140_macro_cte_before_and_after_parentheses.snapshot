@@ -13,19 +13,19 @@ select *, sum(a) from macro_cte
 WITH
 
 cte AS (
-    SELECT
-        *,
-    FROM
-        table_a
+  SELECT
+    *,
+  FROM
+    table_a
 ),
 
 {{ macro_cte(inner_function(), "arg") }}
 
 SELECT
-    *,
-    SUM(a),
+  *,
+  SUM(a),
 FROM
-    macro_cte
+  macro_cte
 
 ---
 

@@ -3,9 +3,9 @@ select table.field from table
 ---
 
 SELECT
-    table.field,
+  table.field,
 FROM
-    table
+  table
 
 ---
 

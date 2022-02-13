@@ -11,17 +11,17 @@ select * from table
 ---
 
 {{
-    config(
-        materialized="table",
-        sort="event_time",
-        sql_header=set_start_date(),
-    )
+  config(
+    materialized="table",
+    sort="event_time",
+    sql_header=set_start_date(),
+  )
 }}
 
 SELECT
-    *,
+  *,
 FROM
-    table
+  table
 
 ---
 

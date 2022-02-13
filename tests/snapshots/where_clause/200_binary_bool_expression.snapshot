@@ -3,12 +3,12 @@ select field from table where a AND b
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    table
+  table
 WHERE
-    a
-    AND b
+  a
+  AND b
 
 ---
 

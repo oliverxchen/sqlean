@@ -13,25 +13,25 @@ select * from cte_1 inner join cte_2 using(field_a)
 WITH
 
 cte_1 AS (
-    SELECT
-        *,
-    FROM
-        table_a
+  SELECT
+    *,
+  FROM
+    table_a
 ),
 
 cte_2 AS (
-    SELECT
-        *,
-    FROM
-        table_b
+  SELECT
+    *,
+  FROM
+    table_b
 )
 
 SELECT
-    *,
+  *,
 FROM
-    cte_1
+  cte_1
 INNER JOIN
-    cte_2
+  cte_2
 USING (field_a)
 
 ---

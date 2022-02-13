@@ -3,9 +3,9 @@ select field from {{ref("b")}}
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    {{ ref("b") }}
+  {{ ref("b") }}
 
 ---
 

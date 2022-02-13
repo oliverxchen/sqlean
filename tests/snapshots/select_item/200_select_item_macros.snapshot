@@ -8,12 +8,12 @@ from table
 ---
 
 SELECT
-    {{ macro_1("arg1", "arg2") }},
-    {{ macro_2("arg1", "arg2") }} AS field_2,
-    {{ macro_3("arg1", "arg2") }} AS field_3,
-    DATE({{ macro_4() }}) AS field_4,
+  {{ macro_1("arg1", "arg2") }},
+  {{ macro_2("arg1", "arg2") }} AS field_2,
+  {{ macro_3("arg1", "arg2") }} AS field_3,
+  DATE({{ macro_4() }}) AS field_4,
 FROM
-    table
+  table
 
 ---
 

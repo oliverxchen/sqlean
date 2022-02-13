@@ -13,33 +13,33 @@ select * from macro_cte
 WITH
 
 cte AS (
-    SELECT
-        *,
-    FROM
-        table_a
+  SELECT
+    *,
+  FROM
+    table_a
 ),
 
 {{
-    really_long_named_macro_cte(
-        "with",
-        "many",
-        "arguments",
-        "so",
-        "that",
-        "black",
-        "goes",
-        "over",
-        "the",
-        "line",
-        "length",
-        "limit",
-    )
+  really_long_named_macro_cte(
+    "with",
+    "many",
+    "arguments",
+    "so",
+    "that",
+    "black",
+    "goes",
+    "over",
+    "the",
+    "line",
+    "length",
+    "limit",
+  )
 }}
 
 SELECT
-    *,
+  *,
 FROM
-    macro_cte
+  macro_cte
 
 ---
 

@@ -28,7 +28,7 @@ class Settings(BaseModel, allow_mutation=False):
     write_ignore: bool = False
     force: bool = False
     whisper: bool = False
-    indent_size: int = 4
+    indent_size: int = 2
     max_line_length: int = -1
     dialect: DialectEnum = DialectEnum.BIGQUERY
 
@@ -81,7 +81,7 @@ class ConfigFileOptions(BaseModel, extra=Extra.forbid):
 
     includes: Optional[Union[List[Path], Path]] = None
     whisper: Optional[bool] = False
-    indent_size: Optional[int] = 4
+    indent_size: Optional[int] = 2
     max_line_length: Optional[int] = -1
     dialect: Optional[DialectEnum] = DialectEnum.BIGQUERY
     # future options —

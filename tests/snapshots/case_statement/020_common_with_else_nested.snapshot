@@ -19,24 +19,24 @@ select * from t
 WITH
 
 t AS (
-    SELECT
-        CASE a
-            WHEN b THEN c
-            ELSE d
-        END,
-        CASE a
-            WHEN b THEN c
-            WHEN d THEN e
-            ELSE f
-        END AS g,
-    FROM
-        table
+  SELECT
+    CASE a
+      WHEN b THEN c
+      ELSE d
+    END,
+    CASE a
+      WHEN b THEN c
+      WHEN d THEN e
+      ELSE f
+    END AS g,
+  FROM
+    table
 )
 
 SELECT
-    *,
+  *,
 FROM
-    t
+  t
 
 ---
 

@@ -3,11 +3,11 @@ select field from table where a
 ---
 
 SELECT
-    field,
+  field,
 FROM
-    table
+  table
 WHERE
-    a
+  a
 
 ---
 

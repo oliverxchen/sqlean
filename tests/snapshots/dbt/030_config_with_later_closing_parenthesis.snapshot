@@ -7,13 +7,13 @@ select sum(a) from table
 ---
 
 {{
-    config(materialized="table")
+  config(materialized="table")
 }}
 
 SELECT
-    SUM(a),
+  SUM(a),
 FROM
-    table
+  table
 
 ---
 

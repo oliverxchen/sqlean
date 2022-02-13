@@ -13,17 +13,17 @@ from table
 ---
 
 SELECT
-    CASE
-        WHEN b = c OR b < d THEN c
-        ELSE d
-    END,
-    CASE
-        WHEN b THEN c
-        WHEN d THEN e
-        ELSE f
-    END AS g,
+  CASE
+    WHEN b = c OR b < d THEN c
+    ELSE d
+  END,
+  CASE
+    WHEN b THEN c
+    WHEN d THEN e
+    ELSE f
+  END AS g,
 FROM
-    table
+  table
 
 ---
 

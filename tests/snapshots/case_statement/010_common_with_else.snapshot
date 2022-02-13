@@ -13,17 +13,17 @@ from table
 ---
 
 SELECT
-    CASE a
-        WHEN b THEN c
-        ELSE d
-    END,
-    CASE a
-        WHEN b THEN c
-        WHEN d THEN e
-        ELSE f
-    END AS g,
+  CASE a
+    WHEN b THEN c
+    ELSE d
+  END,
+  CASE a
+    WHEN b THEN c
+    WHEN d THEN e
+    ELSE f
+  END AS g,
 FROM
-    table
+  table
 
 ---
 

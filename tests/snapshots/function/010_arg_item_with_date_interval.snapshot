@@ -3,9 +3,9 @@ select date_trunc(a, month) from c
 ---
 
 SELECT
-    DATE_TRUNC(a, MONTH),
+  DATE_TRUNC(a, MONTH),
 FROM
-    c
+  c
 
 ---
 

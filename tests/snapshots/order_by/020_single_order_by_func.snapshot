@@ -3,11 +3,11 @@ select count(b) from table order by round(a)
 ---
 
 SELECT
-    COUNT(b),
+  COUNT(b),
 FROM
-    table
+  table
 ORDER BY
-    ROUND(a)
+  ROUND(a)
 
 ---
 

@@ -10,20 +10,20 @@ SELECT * from cte
 WITH
 
 cte AS (
-    SELECT
-        COUNT(b),
-    FROM
-        table
-    GROUP BY
-        ROUND(a)
-    HAVING
-        ROUND(a) > 1
+  SELECT
+    COUNT(b),
+  FROM
+    table
+  GROUP BY
+    ROUND(a)
+  HAVING
+    ROUND(a) > 1
 )
 
 SELECT
-    *,
+  *,
 FROM
-    cte
+  cte
 
 ---
 

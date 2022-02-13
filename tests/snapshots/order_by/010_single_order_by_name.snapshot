@@ -3,12 +3,12 @@ select a, count(b) from table order by a
 ---
 
 SELECT
-    a,
-    COUNT(b),
+  a,
+  COUNT(b),
 FROM
-    table
+  table
 ORDER BY
-    a
+  a
 
 ---
 
