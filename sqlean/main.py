@@ -87,7 +87,7 @@ def sqlean_file(
     if target.suffix == ".sql":
         stats.num_files += 1
         raw_list = read_file(target)
-        raw = "".join(raw_list)[:-1]  # remove ending newline
+        raw = "".join(raw_list).strip()
         if not options.force and should_ignore(raw_list):
             stats.num_ignored += 1
         else:
@@ -167,6 +167,9 @@ def process_diffs(diff: Iterator[str]) -> str:
 
 def write_file(styled: str, target: Path) -> None:
     """Writes the sqleaned file."""
+    # Ensure the file ends with a new line
+    if styled[-1] != linesep:
+        styled += linesep
     with open(target, "wt", encoding="utf-8") as writer:
         writer.write(styled)
 
@@ -175,14 +178,12 @@ def write_ignore_header(target: Path) -> None:
     """Writes the `# sqlean ignore` header."""
     with open(target, "rt", encoding="utf-8") as reader:
         content = reader.read()
-    with open(target, "wt", encoding="utf-8") as writer:
-        writer.write(f"# sqlean ignore{linesep}{content}")
+    write_file(f"# sqlean ignore{linesep}{content}", target)
 
 
 def remove_ignore_header(target: Path, raw_list: List[str]) -> str:
     """Removes the `# sqlean ignore` header."""
     raw_list.pop(0)
     raw = "".join(raw_list)
-    with open(target, "wt", encoding="utf-8") as writer:
-        writer.write(raw)
+    write_file(raw, target)
     return raw
