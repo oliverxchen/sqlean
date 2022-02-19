@@ -12,6 +12,12 @@
 queries. We've setup the testing to make it easier to add to the grammar so that
 more and more elements of valid SQL can be parsed.
 
+## Installing
+
+## Usage
+
+### Configuration
+
 ### Snapshot tests
 
 
