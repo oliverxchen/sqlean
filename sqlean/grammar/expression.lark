@@ -52,6 +52,8 @@ when_list: when_item+
 
 ?bool_expression: unary_bool_operation
     | binary_comparison_operation
+    | like_comparison_operation
+    | in_comparison_operation
 binary_bool_operation: bool_expression (BINARY_BOOL_OPERATOR bool_expression)+
 
 bool_list: first_bool_item (after_bool_item)*
@@ -109,6 +111,13 @@ BINARY_COMPARISON_OPERATOR: "="
     | NOT_EQUAL
 NOT_EQUAL: "!="
     | "<>"
+
+like_comparison_operation: base_expression [NOT] LIKE string
+LIKE: "LIKE"i
+
+in_comparison_operation: base_expression [NOT] IN in_list
+IN: "IN"i
+in_list: "(" constant ("," constant)* ")"
 
 ?unary_bool_operation: leading_unary_bool_operation
     | trailing_unary_bool_operation

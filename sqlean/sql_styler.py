@@ -482,6 +482,18 @@ class ComparisonMixin(BaseMixin):
         """rollup binary_comparison_operation"""
         return self._rollup_space(node)
 
+    def like_comparison_operation(self, node: CTree) -> str:
+        """rollup like_comparison_operation"""
+        return self._rollup_space(node)
+
+    def in_comparison_operation(self, node: CTree) -> str:
+        """rollup in_comparison_operation"""
+        return self._rollup_space(node)
+
+    def in_list(self, node: CTree) -> str:
+        """rollup in_list"""
+        return f"({self._rollup_comma_inline(node)})"
+
 
 @v_args(tree=True)
 class JinjaMixin(BaseMixin):
