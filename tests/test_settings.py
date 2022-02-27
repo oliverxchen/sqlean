@@ -4,6 +4,7 @@ from pydantic.error_wrappers import ValidationError
 import pytest
 from pytest_mock import MockerFixture
 
+import click
 import sqlean.settings as settings
 
 
@@ -173,7 +174,5 @@ def test_set_options__with_config_file_target(
 
 
 def test_set_options__with_no_target() -> None:
-    options = settings.set_options(
-        target=None, dry_run=True, write_ignore=True, force=True
-    )
-    assert options.target == [Path.cwd()]
+    with pytest.raises(click.exceptions.Exit):
+        settings.set_options(target=None, dry_run=True, write_ignore=True, force=True)
