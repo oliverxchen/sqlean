@@ -19,9 +19,15 @@ def test_target__invalid() -> None:
 
 
 def test_dryrun__runs_on_directory() -> None:
-    result = runner.invoke(app, ["-d"])
+    result = runner.invoke(app, ["-d", "."])
     assert result.exit_code == 1
     assert "Some files failed" in result.stdout
+
+
+def test_dryrun__missing_target() -> None:
+    result = runner.invoke(app, ["-d"])
+    assert result.exit_code == 1
+    assert "No target specified" in result.stdout
 
 
 def test_dryrun__recursive(mocker: MockerFixture) -> None:

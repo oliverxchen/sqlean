@@ -7,6 +7,7 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, validator, Extra
 from pydantic.error_wrappers import ValidationError
 import tomli
+import typer
 from rich import print as rprint
 from rich.console import Console
 
@@ -47,7 +48,10 @@ def set_options(
         if config.includes is not None:
             actual_target = config.includes
         else:
-            actual_target = [Path.cwd()]
+            rprint(
+                "[red] No target specified in command line or pyproject.toml. Exiting."
+            )
+            raise typer.Exit(code=1)
     else:
         actual_target = [target]
     return Settings(
