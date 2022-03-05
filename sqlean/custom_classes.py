@@ -1,7 +1,7 @@
 """Parse sql strings"""
 from typing import List, Sequence, Union
 
-from lark import Token
+from lark.lexer import Token
 from lark.tree import Tree
 
 
@@ -33,7 +33,7 @@ class CToken(Token):
         self.value = value
 
 
-class CTree(Tree):
+class CTree(Tree[Token]):
     """Custom structure for trees"""
 
     def __init__(  # pylint: disable=super-init-not-called

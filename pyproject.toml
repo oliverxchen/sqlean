@@ -7,7 +7,7 @@ authors = ["Oliver Chen <oliver.chen@traveloka.com>"]
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 black = ">=21.4b"
-lark = "^0.12"
+lark = ">=1.1.0"
 pydantic = ">=1.8.2"
 rich = ">=10.0"
 tomli = ">=1.0.0"

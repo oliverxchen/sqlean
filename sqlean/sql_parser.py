@@ -1,7 +1,8 @@
 """Parse sql strings"""
 from typing import Union
 
-from lark import Lark, Token
+from lark.lark import Lark
+from lark.lexer import Token
 from lark.tree import Tree
 from lark.visitors import Visitor_Recursive
 from rich import print as rprint
@@ -22,13 +23,14 @@ class Parser:
             rel_to=__file__,
             import_paths=[IMPORT_PATH],
             parser="lalr",
+            maybe_placeholders=False,
         )
         self.indent = options.indent_size * " "
         self.whisper = options.whisper
         self.max_line_length = options.max_line_length
         self.dialect = options.dialect
 
-    def get_tree(self, raw_query: str) -> Tree:
+    def get_tree(self, raw_query: str) -> Tree[Token]:
         """Generate a tree for a given query provided as a string"""
         tree = self.__parser.parse(raw_query)
         TreeGroomer().visit_topdown(tree)
@@ -45,7 +47,7 @@ class Parser:
         return str(output)
 
 
-class TreeGroomer(Visitor_Recursive):
+class TreeGroomer(Visitor_Recursive[Token]):
     """Grooms the trees of ugly branches and leaves, sets indentation."""
 
     root = "query_file"
@@ -130,7 +132,7 @@ class TreeGroomer(Visitor_Recursive):
         return parent_data.indent_level + increment_level
 
 
-class Debugger(Visitor_Recursive):
+class Debugger(Visitor_Recursive[Token]):
     """Print out attributes for debugging"""
 
     def __init__(self) -> None:
