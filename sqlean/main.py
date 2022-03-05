@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 from typing import Iterator, List, Optional
 
-from lark import ParseError
+from lark.exceptions import ParseError
 from rich import print as rprint
 from rich.markdown import Markdown
 import typer

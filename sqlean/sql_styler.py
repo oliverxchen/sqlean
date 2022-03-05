@@ -4,10 +4,9 @@ from os import linesep
 from typing import List
 
 import black
-from lark import Transformer
 from lark.tree import Tree
 from lark.lexer import Token
-from lark.visitors import v_args
+from lark.visitors import v_args, Transformer
 
 from sqlean.custom_classes import CToken, CTree
 
@@ -519,7 +518,7 @@ class Styler(  # pylint: disable=too-many-ancestors
 ):
     """Pretty printer: formats the lists of atoms and the overall query"""
 
-    def __default__(self, data: str, children: List[Tree], meta: str) -> str:
+    def __default__(self, data: str, children: List[Tree[Token]], meta: str) -> str:
         """default for all Trees without a callback"""
         raise NotImplementedError(f"Unsupported node: {data}")
 
