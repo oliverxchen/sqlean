@@ -48,23 +48,11 @@ Tree(
                                                     [
                                                         Token("WHEN", "when"),
                                                         Tree(
-                                                            "bool_list",
+                                                            "binary_comparison_operation",
                                                             [
-                                                                Tree(
-                                                                    "first_bool_item",
-                                                                    [
-                                                                        Tree(
-                                                                            "binary_comparison_operation",
-                                                                            [
-                                                                                Token("CNAME", "a"),
-                                                                                Token(
-                                                                                    "BINARY_COMPARISON_OPERATOR", "!="
-                                                                                ),
-                                                                                Token("CNAME", "b"),
-                                                                            ],
-                                                                        )
-                                                                    ],
-                                                                )
+                                                                Token("CNAME", "a"),
+                                                                Token("BINARY_COMPARISON_OPERATOR", "!="),
+                                                                Token("CNAME", "b"),
                                                             ],
                                                         ),
                                                         Token("THEN", "then"),
@@ -93,37 +81,23 @@ Tree(
                                                     [
                                                         Token("WHEN", "when"),
                                                         Tree(
-                                                            "bool_list",
+                                                            "binary_bool_operation",
                                                             [
                                                                 Tree(
-                                                                    "first_bool_item",
+                                                                    "binary_comparison_operation",
                                                                     [
-                                                                        Tree(
-                                                                            "binary_comparison_operation",
-                                                                            [
-                                                                                Token("CNAME", "b"),
-                                                                                Token(
-                                                                                    "BINARY_COMPARISON_OPERATOR", ">"
-                                                                                ),
-                                                                                Token("CNAME", "d"),
-                                                                            ],
-                                                                        )
+                                                                        Token("CNAME", "b"),
+                                                                        Token("BINARY_COMPARISON_OPERATOR", ">"),
+                                                                        Token("CNAME", "d"),
                                                                     ],
                                                                 ),
+                                                                Token("BINARY_BOOL_OPERATOR", "AND"),
                                                                 Tree(
-                                                                    "after_bool_item",
+                                                                    "binary_comparison_operation",
                                                                     [
-                                                                        Token("BINARY_BOOL_OPERATOR", "AND"),
-                                                                        Tree(
-                                                                            "binary_comparison_operation",
-                                                                            [
-                                                                                Token("CNAME", "d"),
-                                                                                Token(
-                                                                                    "BINARY_COMPARISON_OPERATOR", "="
-                                                                                ),
-                                                                                Token("CNAME", "e"),
-                                                                            ],
-                                                                        ),
+                                                                        Token("CNAME", "d"),
+                                                                        Token("BINARY_COMPARISON_OPERATOR", "="),
+                                                                        Token("CNAME", "e"),
                                                                     ],
                                                                 ),
                                                             ],

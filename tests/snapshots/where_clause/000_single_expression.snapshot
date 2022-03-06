@@ -25,7 +25,7 @@ Tree(
                     [
                         Tree("simple_table_name", [Token("CNAME", "table")]),
                         Token("WHERE", "where"),
-                        Tree("bool_list", [Tree("first_bool_item", [Token("CNAME", "a")])]),
+                        Tree("indented_expression", [Token("CNAME", "a")]),
                     ],
                 ),
             ],

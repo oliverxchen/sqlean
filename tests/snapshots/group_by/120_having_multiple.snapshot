@@ -64,10 +64,10 @@ Tree(
                                     [
                                         Token("HAVING", "having"),
                                         Tree(
-                                            "bool_list",
+                                            "indented_expression",
                                             [
                                                 Tree(
-                                                    "first_bool_item",
+                                                    "binary_bool_operation",
                                                     [
                                                         Tree(
                                                             "binary_comparison_operation",
@@ -87,12 +87,7 @@ Tree(
                                                                 Token("BINARY_COMPARISON_OPERATOR", ">"),
                                                                 Token("SIGNED_NUMBER", "1"),
                                                             ],
-                                                        )
-                                                    ],
-                                                ),
-                                                Tree(
-                                                    "after_bool_item",
-                                                    [
+                                                        ),
                                                         Token("BINARY_BOOL_OPERATOR", "and"),
                                                         Tree(
                                                             "binary_comparison_operation",
@@ -112,7 +107,7 @@ Tree(
                                                             ],
                                                         ),
                                                     ],
-                                                ),
+                                                )
                                             ],
                                         ),
                                     ],

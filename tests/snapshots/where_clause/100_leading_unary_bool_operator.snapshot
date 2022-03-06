@@ -26,16 +26,11 @@ Tree(
                         Tree("simple_table_name", [Token("CNAME", "table")]),
                         Token("WHERE", "where"),
                         Tree(
-                            "bool_list",
+                            "indented_expression",
                             [
                                 Tree(
-                                    "first_bool_item",
-                                    [
-                                        Tree(
-                                            "leading_unary_bool_operation",
-                                            [Token("LEADING_UNARY_BOOL_OPERATOR", "NOT"), Token("CNAME", "a")],
-                                        )
-                                    ],
+                                    "leading_unary_bool_operation",
+                                    [Token("LEADING_UNARY_BOOL_OPERATOR", "NOT"), Token("CNAME", "a")],
                                 )
                             ],
                         ),

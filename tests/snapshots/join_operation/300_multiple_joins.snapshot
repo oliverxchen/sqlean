@@ -65,31 +65,20 @@ Tree(
                                             [
                                                 Token("ON", "on"),
                                                 Tree(
-                                                    "bool_list",
+                                                    "indented_expression",
                                                     [
                                                         Tree(
-                                                            "first_bool_item",
+                                                            "binary_comparison_operation",
                                                             [
                                                                 Tree(
-                                                                    "binary_comparison_operation",
-                                                                    [
-                                                                        Tree(
-                                                                            "table_referenced_field",
-                                                                            [
-                                                                                Token("CNAME", "table_c"),
-                                                                                Token("CNAME", "id"),
-                                                                            ],
-                                                                        ),
-                                                                        Token("BINARY_COMPARISON_OPERATOR", "="),
-                                                                        Tree(
-                                                                            "table_referenced_field",
-                                                                            [
-                                                                                Token("CNAME", "table_d"),
-                                                                                Token("CNAME", "id"),
-                                                                            ],
-                                                                        ),
-                                                                    ],
-                                                                )
+                                                                    "table_referenced_field",
+                                                                    [Token("CNAME", "table_c"), Token("CNAME", "id")],
+                                                                ),
+                                                                Token("BINARY_COMPARISON_OPERATOR", "="),
+                                                                Tree(
+                                                                    "table_referenced_field",
+                                                                    [Token("CNAME", "table_d"), Token("CNAME", "id")],
+                                                                ),
                                                             ],
                                                         )
                                                     ],

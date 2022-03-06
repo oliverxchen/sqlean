@@ -5,12 +5,9 @@ select_item_aliased: expression as_alias
 !select_item_unaliased: expression
     | "*"
 
-?expression: base_expression
-    | bool_expression
 ?base_expression: table_referenced_field
     | standard_function_expression
     | window_function_expression
-    | case_expression
     | MACRO
     | CNAME
     | constant
@@ -47,21 +44,19 @@ window_orderby_modifier: ORDER_BY orderby_list
 !common_case_expression: "CASE"i base_expression when_list [else_clause] "END"i
 !separate_case_expression: "CASE"i when_list [else_clause] "END"i
 when_list: when_item+
-!when_item: "WHEN"i (base_expression | bool_list) "THEN"i base_expression
+!when_item: "WHEN"i expression "THEN"i base_expression
 !else_clause: "ELSE"i base_expression
 
-?bool_expression: unary_bool_operation
+indented_expression: expression
+!?expression: base_expression
+    | unary_bool_operation
+    | binary_bool_operation
     | binary_comparison_operation
     | like_comparison_operation
     | in_comparison_operation
-binary_bool_operation: bool_expression (BINARY_BOOL_OPERATOR bool_expression)+
-
-bool_list: first_bool_item (after_bool_item)*
-first_bool_item: bool_item
-after_bool_item: BINARY_BOOL_OPERATOR bool_item
-!?bool_item: "(" (bool_expression | binary_bool_operation | base_expression) ")"
-    | bool_expression
-    | base_expression
+    | "(" expression ")" -> parenthetical_expression
+    | case_expression
+binary_bool_operation: expression BINARY_BOOL_OPERATOR expression
 
 arg_list: arg_item ("," arg_item)*
 !arg_item: interval
@@ -101,8 +96,11 @@ TIME_INTERVAL.2: "MICROSECOND"i
     | "HOUR"i
 
 binary_comparison_operation: base_expression BINARY_COMPARISON_OPERATOR base_expression
-BINARY_BOOL_OPERATOR.2: "AND"i
-    | "OR"i
+BINARY_BOOL_OPERATOR.2: AND
+    | OR
+AND: "AND"i
+OR: "OR"i
+
 BINARY_COMPARISON_OPERATOR: "="
     | ">"
     | ">="
@@ -138,7 +136,7 @@ field_list: base_expression ("," base_expression)*
 !groupby_modifier: GROUP_BY field_list [having_clause]
 GROUP_BY.2: "GROUP"i WS "BY"i
 
-!having_clause: "HAVING"i bool_list
+!having_clause: "HAVING"i indented_expression
 
 !orderby_modifier: ORDER_BY orderby_list
 ORDER_BY.2: "ORDER"i WS "BY"i

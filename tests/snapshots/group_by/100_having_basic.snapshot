@@ -63,30 +63,23 @@ Tree(
                                     [
                                         Token("HAVING", "having"),
                                         Tree(
-                                            "bool_list",
+                                            "indented_expression",
                                             [
                                                 Tree(
-                                                    "first_bool_item",
+                                                    "binary_comparison_operation",
                                                     [
                                                         Tree(
-                                                            "binary_comparison_operation",
+                                                            "standard_function_expression",
                                                             [
+                                                                Tree("function_name", [Token("CNAME", "round")]),
                                                                 Tree(
-                                                                    "standard_function_expression",
-                                                                    [
-                                                                        Tree(
-                                                                            "function_name", [Token("CNAME", "round")]
-                                                                        ),
-                                                                        Tree(
-                                                                            "arg_list",
-                                                                            [Tree("arg_item", [Token("CNAME", "a")])],
-                                                                        ),
-                                                                    ],
+                                                                    "arg_list",
+                                                                    [Tree("arg_item", [Token("CNAME", "a")])],
                                                                 ),
-                                                                Token("BINARY_COMPARISON_OPERATOR", ">"),
-                                                                Token("SIGNED_NUMBER", "1"),
                                                             ],
-                                                        )
+                                                        ),
+                                                        Token("BINARY_COMPARISON_OPERATOR", ">"),
+                                                        Token("SIGNED_NUMBER", "1"),
                                                     ],
                                                 )
                                             ],
