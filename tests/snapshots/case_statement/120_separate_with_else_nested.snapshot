@@ -76,41 +76,29 @@ Tree(
                                                                     [
                                                                         Token("WHEN", "when"),
                                                                         Tree(
-                                                                            "bool_list",
+                                                                            "binary_bool_operation",
                                                                             [
                                                                                 Tree(
-                                                                                    "first_bool_item",
+                                                                                    "binary_comparison_operation",
                                                                                     [
-                                                                                        Tree(
-                                                                                            "binary_comparison_operation",
-                                                                                            [
-                                                                                                Token("CNAME", "b"),
-                                                                                                Token(
-                                                                                                    "BINARY_COMPARISON_OPERATOR",
-                                                                                                    "=",
-                                                                                                ),
-                                                                                                Token("CNAME", "c"),
-                                                                                            ],
-                                                                                        )
+                                                                                        Token("CNAME", "b"),
+                                                                                        Token(
+                                                                                            "BINARY_COMPARISON_OPERATOR",
+                                                                                            "=",
+                                                                                        ),
+                                                                                        Token("CNAME", "c"),
                                                                                     ],
                                                                                 ),
+                                                                                Token("BINARY_BOOL_OPERATOR", "OR"),
                                                                                 Tree(
-                                                                                    "after_bool_item",
+                                                                                    "binary_comparison_operation",
                                                                                     [
+                                                                                        Token("CNAME", "b"),
                                                                                         Token(
-                                                                                            "BINARY_BOOL_OPERATOR", "OR"
+                                                                                            "BINARY_COMPARISON_OPERATOR",
+                                                                                            "<",
                                                                                         ),
-                                                                                        Tree(
-                                                                                            "binary_comparison_operation",
-                                                                                            [
-                                                                                                Token("CNAME", "b"),
-                                                                                                Token(
-                                                                                                    "BINARY_COMPARISON_OPERATOR",
-                                                                                                    "<",
-                                                                                                ),
-                                                                                                Token("CNAME", "d"),
-                                                                                            ],
-                                                                                        ),
+                                                                                        Token("CNAME", "d"),
                                                                                     ],
                                                                                 ),
                                                                             ],

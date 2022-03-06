@@ -232,11 +232,11 @@ class SelectMixin(BaseMixin):
 
     def when_item(self, node: CTree) -> str:
         """print when_item"""
-        # turn multi-line bool_list into single line
+        # turn multi-line expression into single line
         bool_list = str(node.children[1]).split("\n")
         bool_list = [item.lstrip() for item in bool_list]
         item = f'WHEN {" ".join(bool_list)} THEN {node.children[3]}'
-        # indent 1 relatvie to case header and end footer
+        # indent 1 relative to case header and end footer
         return self._apply_indent(item, 1)
 
     def when_list(self, node: CTree) -> str:
@@ -445,8 +445,8 @@ class FunctionMixin(BaseMixin):
 
 
 @v_args(tree=True)
-class BoolMixin(BaseMixin):
-    """Mixin for bool related nodes"""
+class ExpressionMixin(BaseMixin):
+    """Mixin for expression related nodes"""
 
     def leading_unary_bool_operation(self, node: CTree) -> str:
         """rollup leading_unary_bool_operation"""
@@ -460,16 +460,22 @@ class BoolMixin(BaseMixin):
         """print trailing_unary_bool_operator"""
         return self._rollup_space(node)
 
-    def bool_list(self, node: CTree) -> str:
-        """rollup where_list"""
-        return self._rollup_linesep(node)
+    @staticmethod
+    def binary_bool_operation(node: CTree) -> str:
+        """print binary_bool_operation"""
+        return f"{node.children[0]}\n{node.children[1]} {node.children[2]}"
 
-    def first_bool_item(self, node: CTree) -> str:
-        """print first_where_item"""
-        return self._simple_indent(node)
+    @staticmethod
+    def parenthetical_expression(node: CTree) -> str:
+        """print parenthetical_expression"""
+        # remove line separators when parenthesized.
+        # TODO: Deal with long lines
+        if isinstance(node.children[1], str):
+            output = str(node.children[1]).replace(linesep, " ")
+        return f"({output})"
 
-    def after_bool_item(self, node: CTree) -> str:
-        """print subsequent_where_item"""
+    def indented_expression(self, node: CTree) -> str:
+        """rollup indented_expression"""
         return self._simple_indent(node)
 
 
@@ -505,7 +511,7 @@ class JinjaMixin(BaseMixin):
 
 @v_args(tree=True)
 class Styler(  # pylint: disable=too-many-ancestors
-    BoolMixin,
+    ExpressionMixin,
     ComparisonMixin,
     FromMixin,
     FromModifierMixin,
