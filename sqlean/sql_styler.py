@@ -466,16 +466,15 @@ class ExpressionMixin(BaseMixin):
         return f"{node.children[0]}\n{node.children[1]} {node.children[2]}"
 
     @staticmethod
-    def parenthetical_expression(node: CTree) -> str:
-        """print parenthetical_expression"""
-        # remove line separators when parenthesized.
+    def parenthetical_bool_expression(node: CTree) -> str:
+        """print parenthetical_bool_expression, removes line separators when
+        parenthesized"""
         # TODO: Deal with long lines
-        if isinstance(node.children[1], str):
-            output = str(node.children[1]).replace(linesep, " ")
+        output = str(node.children[1]).replace(linesep, " ")
         return f"({output})"
 
-    def indented_expression(self, node: CTree) -> str:
-        """rollup indented_expression"""
+    def indented_bool_expression(self, node: CTree) -> str:
+        """rollup indented_bool_expression"""
         return self._simple_indent(node)
 
 
@@ -498,6 +497,10 @@ class ComparisonMixin(BaseMixin):
     def in_list(self, node: CTree) -> str:
         """rollup in_list"""
         return f"({self._rollup_comma_inline(node)})"
+
+    def between_comparison_operation(self, node: CTree) -> str:
+        """rollup between_comparison_operation"""
+        return self._rollup_space(node)
 
 
 @v_args(tree=True)

@@ -50,7 +50,7 @@ Tree(
                                                     [
                                                         Token("CNAME", "a"),
                                                         Token("AS", "as"),
-                                                        Tree("data_type", [Token("ANON_2", "int")]),
+                                                        Tree("data_type", [Token("ANON_0", "int")]),
                                                     ],
                                                 )
                                             ],

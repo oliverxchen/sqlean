@@ -11,7 +11,7 @@ query_file: [CONFIG] query_expr
 !select_expr: select_type select_list ["FROM"i from_clause] [limit_clause]
 
 !select_type: "SELECT"i
-!from_clause: from_item ["WHERE"i indented_expression] [groupby_modifier] [orderby_modifier]
+!from_clause: from_item ["WHERE"i indented_bool_expression] [groupby_modifier] [orderby_modifier]
 
 !?from_item: join_operation
     | table_item
@@ -37,14 +37,14 @@ full_join: "FULL"i ["OUTER"i] "JOIN"i
 left_join: "LEFT"i ["OUTER"i] "JOIN"i
 right_join: "RIGHT"i ["OUTER"i] "JOIN"i
 
-!on_clause: "ON"i indented_expression
+!on_clause: "ON"i indented_bool_expression
 !using_clause: "USING"i "(" using_list ")"
 using_list: CNAME ("," CNAME)*
 
 !limit_clause: "LIMIT"i INT ["OFFSET"i INT]
 
 
-%import expression.indented_expression
+%import expression.indented_bool_expression
 %import expression.groupby_modifier
 %import expression.orderby_modifier
 %import expression.select_list

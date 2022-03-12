@@ -1,0 +1,33 @@
+!data_type: "BOOL"i
+    | "BYTES"i ["(" INT ")"]
+    | "DATE"i
+    | "DATETIME"i
+    | "INT64"i
+    | "INT"i
+    | "SMALLINT"i
+    | "INTEGER"i
+    | "BIGINT"i
+    | "TINYINT"i
+    | "BYTEINT"i
+    | "NUMERIC"i
+    | "DECIMAL"i
+    | "BIGNUMERIC"i
+    | "BIGDECIMAL"i
+    | "FLOAT64"i
+    | "STRING"i
+?interval: DATE_INTERVAL
+    | TIME_INTERVAL
+DATE_INTERVAL.2: "DAY"i
+    | "DAYOFYEAR"i
+    | "MONTH"i
+    | "WEEK"i
+    | "ISOWEEK"i
+    | "YEAR"i
+    | "ISOYEAR"i
+TIME_INTERVAL.2: "MICROSECOND"i
+    | "MILLISECOND"i
+    | "SECOND"i
+    | "MINUTE"i
+    | "HOUR"i
+
+%import common.INT

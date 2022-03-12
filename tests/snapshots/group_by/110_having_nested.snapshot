@@ -90,7 +90,7 @@ Tree(
                                                     [
                                                         Token("HAVING", "having"),
                                                         Tree(
-                                                            "indented_expression",
+                                                            "indented_bool_expression",
                                                             [
                                                                 Tree(
                                                                     "binary_comparison_operation",

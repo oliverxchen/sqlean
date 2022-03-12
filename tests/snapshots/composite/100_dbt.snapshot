@@ -97,13 +97,13 @@ Tree(
                         ),
                         Token("WHERE", "WHERE"),
                         Tree(
-                            "indented_expression",
+                            "indented_bool_expression",
                             [
                                 Tree(
                                     "binary_bool_operation",
                                     [
                                         Token("MACRO", "{{ macro_3('arg1', 'arg2') }}"),
-                                        Token("BINARY_BOOL_OPERATOR", "AND"),
+                                        Token("AND", "AND"),
                                         Token("CNAME", "b"),
                                     ],
                                 )

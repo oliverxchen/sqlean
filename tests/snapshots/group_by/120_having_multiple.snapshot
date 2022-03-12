@@ -64,7 +64,7 @@ Tree(
                                     [
                                         Token("HAVING", "having"),
                                         Tree(
-                                            "indented_expression",
+                                            "indented_bool_expression",
                                             [
                                                 Tree(
                                                     "binary_bool_operation",
@@ -88,7 +88,7 @@ Tree(
                                                                 Token("SIGNED_NUMBER", "1"),
                                                             ],
                                                         ),
-                                                        Token("BINARY_BOOL_OPERATOR", "and"),
+                                                        Token("AND", "and"),
                                                         Tree(
                                                             "binary_comparison_operation",
                                                             [

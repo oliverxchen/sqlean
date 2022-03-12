@@ -85,7 +85,7 @@ Tree(
                                             [
                                                 Token("BACKQUOTE", "`"),
                                                 Token("PROJECT_ID", "project_id"),
-                                                Token("ANON_1", "`."),
+                                                Token("ANON_2", "`."),
                                                 Token("CNAME", "dataset_id"),
                                                 Token("DOT", "."),
                                                 Token("CNAME", "function"),

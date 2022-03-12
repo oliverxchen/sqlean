@@ -28,20 +28,16 @@ Tree(
                         Tree("simple_table_name", [Token("CNAME", "table")]),
                         Token("WHERE", "where"),
                         Tree(
-                            "indented_expression",
+                            "indented_bool_expression",
                             [
                                 Tree(
                                     "binary_bool_operation",
                                     [
                                         Token("CNAME", "a"),
-                                        Token("BINARY_BOOL_OPERATOR", "or"),
+                                        Token("OR", "or"),
                                         Tree(
                                             "binary_bool_operation",
-                                            [
-                                                Token("CNAME", "b"),
-                                                Token("BINARY_BOOL_OPERATOR", "and"),
-                                                Token("CNAME", "c"),
-                                            ],
+                                            [Token("CNAME", "b"), Token("AND", "and"), Token("CNAME", "c")],
                                         ),
                                     ],
                                 )
