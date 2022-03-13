@@ -1,32 +1,41 @@
 ?start: query_file
 
+////////////////////
+// for dbt config //
+////////////////////
 query_file: [CONFIG] query_expr
 
+/////////////////////////
+// general sql queries //
+/////////////////////////
 !?query_expr: "WITH"i with_clause ("," with_clause)* select_expr
     | select_expr
-
 !with_clause: CNAME "AS"i "(" query_expr ")"
     | MACRO
 
 !select_expr: select_type select_list ["FROM"i from_clause] [limit_clause]
-
 !select_type: "SELECT"i
-!from_clause: from_item ["WHERE"i indented_bool_expression] [groupby_modifier] [orderby_modifier]
 
+//////////
+// from //
+//////////
+!from_clause: from_item ["WHERE"i indented_bool_expression] [groupby_modifier] [orderby_modifier]
 !?from_item: join_operation
     | table_item
     | sub_query_expr
 
 !sub_query_expr: "(" query_expr ")"
 
+///////////
+// joins //
+///////////
 ?join_operation: cross_join_operation
     | join_operation_with_condition
 
 cross_join_operation: from_item cross_join from_item
-join_operation_with_condition: from_item join_type from_item (on_clause | using_clause)
-
 cross_join: "CROSS"i "JOIN"i
 
+join_operation_with_condition: from_item join_type from_item (on_clause | using_clause)
 ?join_type: inner_join
     | full_join
     | left_join
@@ -41,6 +50,9 @@ right_join: "RIGHT"i ["OUTER"i] "JOIN"i
 !using_clause: "USING"i "(" using_list ")"
 using_list: CNAME ("," CNAME)*
 
+///////////
+// limit //
+///////////
 !limit_clause: "LIMIT"i INT ["OFFSET"i INT]
 
 
