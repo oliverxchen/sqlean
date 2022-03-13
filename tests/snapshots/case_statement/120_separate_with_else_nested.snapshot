@@ -89,7 +89,7 @@ Tree(
                                                                                         Token("CNAME", "c"),
                                                                                     ],
                                                                                 ),
-                                                                                Token("BINARY_BOOL_OPERATOR", "OR"),
+                                                                                Token("OR", "OR"),
                                                                                 Tree(
                                                                                     "binary_comparison_operation",
                                                                                     [

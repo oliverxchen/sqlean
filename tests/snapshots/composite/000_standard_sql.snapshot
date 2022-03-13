@@ -327,7 +327,7 @@ Tree(
                                                                                 ),
                                                                                 Token("WHERE", "where"),
                                                                                 Tree(
-                                                                                    "indented_expression",
+                                                                                    "indented_bool_expression",
                                                                                     [
                                                                                         Tree(
                                                                                             "binary_comparison_operation",
@@ -553,7 +553,7 @@ Tree(
                                                             [
                                                                 Token("ON", "on"),
                                                                 Tree(
-                                                                    "indented_expression",
+                                                                    "indented_bool_expression",
                                                                     [
                                                                         Tree(
                                                                             "binary_comparison_operation",
@@ -620,7 +620,7 @@ Tree(
                                 ),
                                 Token("WHERE", "where"),
                                 Tree(
-                                    "indented_expression",
+                                    "indented_bool_expression",
                                     [
                                         Tree(
                                             "binary_comparison_operation",

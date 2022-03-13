@@ -16,6 +16,8 @@ where
   and i not like "%foo%"
   and j in (1, 2, 3)
   and k not in ("a", "b", "c")
+  and el between 1 and 2
+  and m not between "2020-01-01" and "2022-02-22"
 
 ---
 
@@ -37,6 +39,8 @@ WHERE
   AND i NOT LIKE "%foo%"
   AND j IN (1, 2, 3)
   AND k NOT IN ("a", "b", "c")
+  AND el BETWEEN 1 AND 2
+  AND m NOT BETWEEN "2020-01-01" AND "2022-02-22"
 
 ---
 
@@ -55,7 +59,7 @@ Tree(
                         Tree("simple_table_name", [Token("CNAME", "table")]),
                         Token("WHERE", "where"),
                         Tree(
-                            "indented_expression",
+                            "indented_bool_expression",
                             [
                                 Tree(
                                     "binary_bool_operation",
@@ -68,7 +72,7 @@ Tree(
                                                 Token("DOUBLE_QUOTED_STRING", '"b"'),
                                             ],
                                         ),
-                                        Token("BINARY_BOOL_OPERATOR", "and"),
+                                        Token("AND", "and"),
                                         Tree(
                                             "binary_bool_operation",
                                             [
@@ -80,7 +84,7 @@ Tree(
                                                         Token("SIGNED_NUMBER", "1"),
                                                     ],
                                                 ),
-                                                Token("BINARY_BOOL_OPERATOR", "and"),
+                                                Token("AND", "and"),
                                                 Tree(
                                                     "binary_bool_operation",
                                                     [
@@ -92,17 +96,17 @@ Tree(
                                                                 Token("CNAME", "d"),
                                                             ],
                                                         ),
-                                                        Token("BINARY_BOOL_OPERATOR", "and"),
+                                                        Token("AND", "and"),
                                                         Tree(
                                                             "binary_bool_operation",
                                                             [
                                                                 Token("CNAME", "a"),
-                                                                Token("BINARY_BOOL_OPERATOR", "and"),
+                                                                Token("AND", "and"),
                                                                 Tree(
                                                                     "binary_bool_operation",
                                                                     [
                                                                         Tree(
-                                                                            "parenthetical_expression",
+                                                                            "parenthetical_bool_expression",
                                                                             [
                                                                                 Token("LPAR", "("),
                                                                                 Tree(
@@ -119,16 +123,14 @@ Tree(
                                                                                                 Token("CNAME", "f"),
                                                                                             ],
                                                                                         ),
-                                                                                        Token(
-                                                                                            "BINARY_BOOL_OPERATOR", "or"
-                                                                                        ),
+                                                                                        Token("OR", "or"),
                                                                                         Token("CNAME", "g"),
                                                                                     ],
                                                                                 ),
                                                                                 Token("RPAR", ")"),
                                                                             ],
                                                                         ),
-                                                                        Token("BINARY_BOOL_OPERATOR", "and"),
+                                                                        Token("AND", "and"),
                                                                         Tree(
                                                                             "binary_bool_operation",
                                                                             [
@@ -143,7 +145,7 @@ Tree(
                                                                                         Token("CNAME", "e"),
                                                                                     ],
                                                                                 ),
-                                                                                Token("BINARY_BOOL_OPERATOR", "and"),
+                                                                                Token("AND", "and"),
                                                                                 Tree(
                                                                                     "binary_bool_operation",
                                                                                     [
@@ -158,10 +160,7 @@ Tree(
                                                                                                 Token("CNAME", "f"),
                                                                                             ],
                                                                                         ),
-                                                                                        Token(
-                                                                                            "BINARY_BOOL_OPERATOR",
-                                                                                            "and",
-                                                                                        ),
+                                                                                        Token("AND", "and"),
                                                                                         Tree(
                                                                                             "binary_bool_operation",
                                                                                             [
@@ -180,10 +179,7 @@ Tree(
                                                                                                         ),
                                                                                                     ],
                                                                                                 ),
-                                                                                                Token(
-                                                                                                    "BINARY_BOOL_OPERATOR",
-                                                                                                    "and",
-                                                                                                ),
+                                                                                                Token("AND", "and"),
                                                                                                 Tree(
                                                                                                     "binary_bool_operation",
                                                                                                     [
@@ -205,8 +201,7 @@ Tree(
                                                                                                             ],
                                                                                                         ),
                                                                                                         Token(
-                                                                                                            "BINARY_BOOL_OPERATOR",
-                                                                                                            "and",
+                                                                                                            "AND", "and"
                                                                                                         ),
                                                                                                         Tree(
                                                                                                             "binary_bool_operation",
@@ -229,7 +224,7 @@ Tree(
                                                                                                                     ],
                                                                                                                 ),
                                                                                                                 Token(
-                                                                                                                    "BINARY_BOOL_OPERATOR",
+                                                                                                                    "AND",
                                                                                                                     "and",
                                                                                                                 ),
                                                                                                                 Tree(
@@ -257,7 +252,7 @@ Tree(
                                                                                                                             ],
                                                                                                                         ),
                                                                                                                         Token(
-                                                                                                                            "BINARY_BOOL_OPERATOR",
+                                                                                                                            "AND",
                                                                                                                             "and",
                                                                                                                         ),
                                                                                                                         Tree(
@@ -294,38 +289,110 @@ Tree(
                                                                                                                                     ],
                                                                                                                                 ),
                                                                                                                                 Token(
-                                                                                                                                    "BINARY_BOOL_OPERATOR",
+                                                                                                                                    "AND",
                                                                                                                                     "and",
                                                                                                                                 ),
                                                                                                                                 Tree(
-                                                                                                                                    "in_comparison_operation",
+                                                                                                                                    "binary_bool_operation",
                                                                                                                                     [
-                                                                                                                                        Token(
-                                                                                                                                            "CNAME",
-                                                                                                                                            "k",
-                                                                                                                                        ),
-                                                                                                                                        Token(
-                                                                                                                                            "NOT",
-                                                                                                                                            "not",
-                                                                                                                                        ),
-                                                                                                                                        Token(
-                                                                                                                                            "IN",
-                                                                                                                                            "in",
-                                                                                                                                        ),
                                                                                                                                         Tree(
-                                                                                                                                            "in_list",
+                                                                                                                                            "in_comparison_operation",
                                                                                                                                             [
                                                                                                                                                 Token(
-                                                                                                                                                    "DOUBLE_QUOTED_STRING",
-                                                                                                                                                    '"a"',
+                                                                                                                                                    "CNAME",
+                                                                                                                                                    "k",
                                                                                                                                                 ),
                                                                                                                                                 Token(
-                                                                                                                                                    "DOUBLE_QUOTED_STRING",
-                                                                                                                                                    '"b"',
+                                                                                                                                                    "NOT",
+                                                                                                                                                    "not",
                                                                                                                                                 ),
                                                                                                                                                 Token(
-                                                                                                                                                    "DOUBLE_QUOTED_STRING",
-                                                                                                                                                    '"c"',
+                                                                                                                                                    "IN",
+                                                                                                                                                    "in",
+                                                                                                                                                ),
+                                                                                                                                                Tree(
+                                                                                                                                                    "in_list",
+                                                                                                                                                    [
+                                                                                                                                                        Token(
+                                                                                                                                                            "DOUBLE_QUOTED_STRING",
+                                                                                                                                                            '"a"',
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "DOUBLE_QUOTED_STRING",
+                                                                                                                                                            '"b"',
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "DOUBLE_QUOTED_STRING",
+                                                                                                                                                            '"c"',
+                                                                                                                                                        ),
+                                                                                                                                                    ],
+                                                                                                                                                ),
+                                                                                                                                            ],
+                                                                                                                                        ),
+                                                                                                                                        Token(
+                                                                                                                                            "AND",
+                                                                                                                                            "and",
+                                                                                                                                        ),
+                                                                                                                                        Tree(
+                                                                                                                                            "binary_bool_operation",
+                                                                                                                                            [
+                                                                                                                                                Tree(
+                                                                                                                                                    "between_comparison_operation",
+                                                                                                                                                    [
+                                                                                                                                                        Token(
+                                                                                                                                                            "CNAME",
+                                                                                                                                                            "el",
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "BETWEEN",
+                                                                                                                                                            "between",
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "SIGNED_NUMBER",
+                                                                                                                                                            "1",
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "AND",
+                                                                                                                                                            "and",
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "SIGNED_NUMBER",
+                                                                                                                                                            "2",
+                                                                                                                                                        ),
+                                                                                                                                                    ],
+                                                                                                                                                ),
+                                                                                                                                                Token(
+                                                                                                                                                    "AND",
+                                                                                                                                                    "and",
+                                                                                                                                                ),
+                                                                                                                                                Tree(
+                                                                                                                                                    "between_comparison_operation",
+                                                                                                                                                    [
+                                                                                                                                                        Token(
+                                                                                                                                                            "CNAME",
+                                                                                                                                                            "m",
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "NOT",
+                                                                                                                                                            "not",
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "BETWEEN",
+                                                                                                                                                            "between",
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "DOUBLE_QUOTED_STRING",
+                                                                                                                                                            '"2020-01-01"',
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "AND",
+                                                                                                                                                            "and",
+                                                                                                                                                        ),
+                                                                                                                                                        Token(
+                                                                                                                                                            "DOUBLE_QUOTED_STRING",
+                                                                                                                                                            '"2022-02-22"',
+                                                                                                                                                        ),
+                                                                                                                                                    ],
                                                                                                                                                 ),
                                                                                                                                             ],
                                                                                                                                         ),
