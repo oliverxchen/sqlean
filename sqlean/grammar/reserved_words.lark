@@ -1,3 +1,4 @@
+// BigQuery data types, mainly for casting to
 !data_type: "BOOL"i
     | "BYTES"i ["(" INT ")"]
     | "DATE"i
@@ -15,6 +16,8 @@
     | "BIGDECIMAL"i
     | "FLOAT64"i
     | "STRING"i
+
+// BigQuery date/time intervals
 ?interval: DATE_INTERVAL
     | TIME_INTERVAL
 DATE_INTERVAL.2: "DAY"i

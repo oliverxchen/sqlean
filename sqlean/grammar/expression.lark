@@ -1,3 +1,6 @@
+////////////
+// select //
+////////////
 select_list: select_item ("," [INLINE_COMMENT] select_item)* [","] [INLINE_COMMENT]
 ?select_item: select_item_unaliased
     | select_item_aliased
@@ -5,13 +8,16 @@ select_item_aliased: base_expression as_alias
 !select_item_unaliased: base_expression
     | "*"
 
+/////////////////////
+// base_expression //
+/////////////////////
 ?base_expression: table_referenced_field
     | standard_function_expression
     | window_function_expression
     | case_expression
     | MACRO
     | CNAME
-    | constant
+    | literal
 
 table_referenced_field: CNAME "." CNAME
     | explicit_table_name "." CNAME
@@ -30,21 +36,16 @@ partition_modifier: PARTITION_BY field_list
 PARTITION_BY: "PARTITION"i WS "BY"i
 window_orderby_modifier: ORDER_BY orderby_list
 
-!orderby_modifier: ORDER_BY orderby_list
-ORDER_BY.2: "ORDER"i WS "BY"i
-orderby_list: orderby_item ("," orderby_item)*
-!orderby_item: base_expression ["ASC"i | "DESC"i]
-
 arg_list: arg_item ("," arg_item)*
 !arg_item: interval
     | base_expression
     | base_expression "AS"i data_type
     | interval "FROM"i base_expression
 
-///////////////
-// constants //
-///////////////
-?constant: SIGNED_NUMBER
+//////////////
+// literals //
+//////////////
+?literal: SIGNED_NUMBER
     | string
     | NULL
     | boolean
@@ -124,18 +125,24 @@ LIKE: "LIKE"i
 
 in_comparison_operation: base_expression [NOT] IN in_list
 IN: "IN"i
-in_list: "(" constant ("," constant)* ")"
+in_list: "(" literal ("," literal)* ")"
 
 between_comparison_operation: base_expression [NOT] BETWEEN base_expression AND base_expression
 BETWEEN.2: "BETWEEN"i
 
-
-field_list: base_expression ("," base_expression)*
-
+////////////////////////////////
+// group by, having, order by //
+////////////////////////////////
 !groupby_modifier: GROUP_BY field_list [having_clause]
 GROUP_BY.2: "GROUP"i WS "BY"i
+field_list: base_expression ("," base_expression)*
 
 !having_clause: "HAVING"i indented_bool_expression
+
+!orderby_modifier: ORDER_BY orderby_list
+ORDER_BY.2: "ORDER"i WS "BY"i
+orderby_list: orderby_item ("," orderby_item)*
+!orderby_item: base_expression ["ASC"i | "DESC"i]
 
 
 %import common.CNAME
