@@ -28,9 +28,13 @@ jobs:
       id: cached-poetry-dependencies
       uses: actions/cache@v2
       with:
-        path: .venv
+        path: |
+          .venv
+          poetry.lock
+          .mypy_cache
+          .pytest_cache
         # Cache the complete venv dir for a given python version and poetry.lock
-        key: venv-python-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+        key: venv-python-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}
 
     - name: Install Project
       shell: bash
