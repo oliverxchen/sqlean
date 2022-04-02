@@ -1,8 +1,14 @@
 [tool.poetry]
 name = "sqlean"
-version = "0.0.1"
+version = "0.0.2"
 description = "Clean your SQL queries"
-authors = ["Oliver Chen <oliver.chen@traveloka.com>"]
+authors = ["Oliver Chen <oliverxchen@gmail.com>"]
+keywords = ["sql", "linter"]
+readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/oliverxchen/sqlean"
+repository = "https://github.com/oliverxchen/sqlean"
+include = ["LICENSE", "README.md"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
