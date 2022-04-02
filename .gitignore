@@ -1,4 +1,5 @@
 .vscode/
+.DS_Store
 
 # This is a library so poetry.lock doesn't need to be committed
 poetry.lock
