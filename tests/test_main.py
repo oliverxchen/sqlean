@@ -72,6 +72,16 @@ def test_dryrun__fail() -> None:
     assert "Some files failed" in result.stdout
 
 
+def test_dryrun_verbose__fail() -> None:
+    result = runner.invoke(app, ["-d", "-v", "tests/fixtures/fail"])
+    assert result.exit_code == 1
+    assert (
+        "Unexpected token Token('CNAME', 'foo') at line 1, column 1." in result.stdout
+    )
+    assert "Expected one of:" in result.stdout
+    assert "Previous tokens: [None]" in result.stdout
+
+
 def test_replace__pass() -> None:
     result = runner.invoke(app, ["tests/fixtures/pass"])
     assert result.exit_code == 0
