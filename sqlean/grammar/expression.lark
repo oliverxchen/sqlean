@@ -15,7 +15,7 @@ select_item_aliased: base_expression as_alias
     | standard_function_expression
     | window_function_expression
     | case_expression
-    | MACRO
+    | macro
     | CNAME
     | literal
 
@@ -41,26 +41,6 @@ arg_list: arg_item ("," arg_item)*
     | base_expression
     | base_expression "AS"i data_type
     | interval "FROM"i base_expression
-
-//////////////
-// literals //
-//////////////
-?literal: SIGNED_NUMBER
-    | string
-    | NULL
-    | boolean
-
-?string: DOUBLE_QUOTED_STRING
-    | SINGLE_QUOTED_STRING
-DOUBLE_QUOTED_STRING: "\"" _STRING_ESC_INNER "\""
-SINGLE_QUOTED_STRING: "'" _STRING_ESC_INNER "'"
-
-?boolean: TRUE
-    | FALSE
-
-NULL: "NULL"i
-TRUE: "TRUE"i
-FALSE: "FALSE"i
 
 //////////
 // case //
@@ -96,9 +76,7 @@ OR: "OR"i
 leading_unary_bool_operation: LEADING_UNARY_BOOL_OPERATOR base_expression
 trailing_unary_bool_operation: base_expression trailing_unary_bool_operator
 LEADING_UNARY_BOOL_OPERATOR: NOT
-trailing_unary_bool_operator: IS [NOT] NULL
-    | IS [NOT] TRUE
-    | IS [NOT] FALSE
+trailing_unary_bool_operator: IS [NOT] nullable_boolean
 NOT: "NOT"i
 IS: "IS"i
 
@@ -146,14 +124,15 @@ orderby_list: orderby_item ("," orderby_item)*
 
 
 %import common.CNAME
-%import common.SIGNED_NUMBER
-%import common._STRING_ESC_INNER
 %import common.WS
 %import alias.as_alias
 %import comment.INLINE_COMMENT
-%import jinja.MACRO
+%import jinja.macro
 %import reserved_words.data_type
 %import reserved_words.interval
 %import table.explicit_table_name
 %import table.PROJECT_ID
 %import table.DATASET_ID
+%import literal.literal
+%import literal.nullable_boolean
+%import literal.string

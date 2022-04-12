@@ -33,7 +33,40 @@ Tree(
                                 Tree(
                                     "binary_bool_operation",
                                     [
-                                        Token("MACRO", "{{ macro_1('arg1', 'arg2')}}"),
+                                        Tree(
+                                            "macro",
+                                            [
+                                                Token("VAR_START_STR", "{{"),
+                                                Token("CNAME", "macro_1"),
+                                                Token("LPAR", "("),
+                                                Tree(
+                                                    "python_arg_list",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("SINGLE_QUOTED_STRING", "'arg1'")],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("SINGLE_QUOTED_STRING", "'arg2'")],
+                                                                )
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Token("RPAR", ")"),
+                                                Token("VAR_END_STR", "}}"),
+                                            ],
+                                        ),
                                         Token("OR", "or"),
                                         Tree(
                                             "binary_bool_operation",

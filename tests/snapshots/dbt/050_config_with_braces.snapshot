@@ -1,0 +1,160 @@
+{{
+  config(
+    materialized="incremental",
+    sql_header = set_start_date(),
+    partition_by={
+      "field" : "partition_field",
+      "data_type" : "date"
+    },
+    cluster_by=["cluster_field_a", "cluster_field_b"],
+  )
+}}
+
+select * from table
+
+---
+
+{{
+  config(
+    materialized="incremental",
+    sql_header=set_start_date(),
+    partition_by={"field": "partition_field", "data_type": "date"},
+    cluster_by=["cluster_field_a", "cluster_field_b"],
+  )
+}}
+
+SELECT
+  *,
+FROM
+  table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "dbt_config",
+            [
+                Token("VAR_START_STR", "{{"),
+                Token("CONFIG", "config"),
+                Token("LPAR", "("),
+                Tree(
+                    "python_arg_list",
+                    [
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "materialized"), Token("EQUAL", "=")]),
+                                Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"incremental"')]),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "sql_header"), Token("EQUAL", "=")]),
+                                Tree(
+                                    "python_arg_value",
+                                    [Token("CNAME", "set_start_date"), Token("LPAR", "("), Token("RPAR", ")")],
+                                ),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "partition_by"), Token("EQUAL", "=")]),
+                                Tree(
+                                    "python_arg_value",
+                                    [
+                                        Token("LBRACE", "{"),
+                                        Tree(
+                                            "python_dict_list",
+                                            [
+                                                Tree(
+                                                    "python_dict_item",
+                                                    [
+                                                        Token("DOUBLE_QUOTED_STRING", '"field"'),
+                                                        Token("COLON", ":"),
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"partition_field"')],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Token("COMMA", ","),
+                                                Tree(
+                                                    "python_dict_item",
+                                                    [
+                                                        Token("DOUBLE_QUOTED_STRING", '"data_type"'),
+                                                        Token("COLON", ":"),
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"date"')],
+                                                        ),
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("RBRACE", "}"),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "cluster_by"), Token("EQUAL", "=")]),
+                                Tree(
+                                    "python_arg_value",
+                                    [
+                                        Token("LSQB", "["),
+                                        Tree(
+                                            "python_arg_list",
+                                            [
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"cluster_field_a"')],
+                                                        )
+                                                    ],
+                                                ),
+                                                Token("COMMA", ","),
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"cluster_field_b"')],
+                                                        )
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("RSQB", "]"),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                    ],
+                ),
+                Token("RPAR", ")"),
+                Token("VAR_END_STR", "}}"),
+            ],
+        ),
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        ),
+    ],
+)

@@ -101,9 +101,139 @@ Tree(
                                 Tree(
                                     "with_clause",
                                     [
-                                        Token(
-                                            "MACRO",
-                                            '{{ really_long_named_macro_cte("with", "many", "arguments", "so", "that", "black", "goes", "over", "the", "line", "length", "limit") }}',
+                                        Tree(
+                                            "macro",
+                                            [
+                                                Token("VAR_START_STR", "{{"),
+                                                Token("CNAME", "really_long_named_macro_cte"),
+                                                Token("LPAR", "("),
+                                                Tree(
+                                                    "python_arg_list",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"with"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"many"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"arguments"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"so"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"that"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"black"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"goes"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"over"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"the"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"line"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"length"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("DOUBLE_QUOTED_STRING", '"limit"')],
+                                                                )
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Token("RPAR", ")"),
+                                                Token("VAR_END_STR", "}}"),
+                                            ],
                                         )
                                     ],
                                 ),

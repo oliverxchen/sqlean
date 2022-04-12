@@ -27,14 +27,124 @@ Tree(
                 Tree(
                     "select_list",
                     [
-                        Tree("select_item_unaliased", [Token("MACRO", "{{ macro_1('arg1', 'arg2') }}")]),
                         Tree(
-                            "select_item_aliased",
-                            [Token("MACRO", '{{ macro_2("arg1", "arg2") }}'), Token("CNAME", "field_2")],
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "macro",
+                                    [
+                                        Token("VAR_START_STR", "{{"),
+                                        Token("CNAME", "macro_1"),
+                                        Token("LPAR", "("),
+                                        Tree(
+                                            "python_arg_list",
+                                            [
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("SINGLE_QUOTED_STRING", "'arg1'")],
+                                                        )
+                                                    ],
+                                                ),
+                                                Token("COMMA", ","),
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("SINGLE_QUOTED_STRING", "'arg2'")],
+                                                        )
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                        Token("VAR_END_STR", "}}"),
+                                    ],
+                                )
+                            ],
                         ),
                         Tree(
                             "select_item_aliased",
-                            [Token("MACRO", '{{macro_3("arg1", "arg2")}}'), Token("CNAME", "field_3")],
+                            [
+                                Tree(
+                                    "macro",
+                                    [
+                                        Token("VAR_START_STR", "{{"),
+                                        Token("CNAME", "macro_2"),
+                                        Token("LPAR", "("),
+                                        Tree(
+                                            "python_arg_list",
+                                            [
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"arg1"')],
+                                                        )
+                                                    ],
+                                                ),
+                                                Token("COMMA", ","),
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"arg2"')],
+                                                        )
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                        Token("VAR_END_STR", "}}"),
+                                    ],
+                                ),
+                                Token("CNAME", "field_2"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "macro",
+                                    [
+                                        Token("VAR_START_STR", "{{"),
+                                        Token("CNAME", "macro_3"),
+                                        Token("LPAR", "("),
+                                        Tree(
+                                            "python_arg_list",
+                                            [
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"arg1"')],
+                                                        )
+                                                    ],
+                                                ),
+                                                Token("COMMA", ","),
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"arg2"')],
+                                                        )
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                        Token("VAR_END_STR", "}}"),
+                                    ],
+                                ),
+                                Token("CNAME", "field_3"),
+                            ],
                         ),
                         Tree(
                             "select_item_aliased",
@@ -43,7 +153,26 @@ Tree(
                                     "standard_function_expression",
                                     [
                                         Tree("function_name", [Token("CNAME", "DATE")]),
-                                        Tree("arg_list", [Tree("arg_item", [Token("MACRO", "{{macro_4()}}")])]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Tree(
+                                                            "macro",
+                                                            [
+                                                                Token("VAR_START_STR", "{{"),
+                                                                Token("CNAME", "macro_4"),
+                                                                Token("LPAR", "("),
+                                                                Token("RPAR", ")"),
+                                                                Token("VAR_END_STR", "}}"),
+                                                            ],
+                                                        )
+                                                    ],
+                                                )
+                                            ],
+                                        ),
                                     ],
                                 ),
                                 Token("CNAME", "field_4"),

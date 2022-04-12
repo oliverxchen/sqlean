@@ -43,9 +43,68 @@ WHERE
 Tree(
     "query_file",
     [
-        Token(
-            "CONFIG",
-            '{{\n    config(materialized = "incremental", sort = "event_time", sql_header = set_start_date(incremental_days_ago = 1))\n}}',
+        Tree(
+            "dbt_config",
+            [
+                Token("VAR_START_STR", "{{"),
+                Token("CONFIG", "config"),
+                Token("LPAR", "("),
+                Tree(
+                    "python_arg_list",
+                    [
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "materialized"), Token("EQUAL", "=")]),
+                                Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"incremental"')]),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "sort"), Token("EQUAL", "=")]),
+                                Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"event_time"')]),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "sql_header"), Token("EQUAL", "=")]),
+                                Tree(
+                                    "python_arg_value",
+                                    [
+                                        Token("CNAME", "set_start_date"),
+                                        Token("LPAR", "("),
+                                        Tree(
+                                            "python_arg_list",
+                                            [
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "arg_name",
+                                                            [
+                                                                Token("CNAME", "incremental_days_ago"),
+                                                                Token("EQUAL", "="),
+                                                            ],
+                                                        ),
+                                                        Tree("python_arg_value", [Token("SIGNED_NUMBER", "1")]),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("RPAR", ")"),
+                Token("VAR_END_STR", "}}"),
+            ],
         ),
         Tree(
             "select_expr",
@@ -55,7 +114,36 @@ Tree(
                     "select_list",
                     [
                         Tree("select_item_aliased", [Token("CNAME", "field_1"), Token("CNAME", "a")]),
-                        Tree("select_item_aliased", [Token("MACRO", "{{ macro_1('arg1') }}"), Token("CNAME", "b")]),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "macro",
+                                    [
+                                        Token("VAR_START_STR", "{{"),
+                                        Token("CNAME", "macro_1"),
+                                        Token("LPAR", "("),
+                                        Tree(
+                                            "python_arg_list",
+                                            [
+                                                Tree(
+                                                    "python_arg_item",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("SINGLE_QUOTED_STRING", "'arg1'")],
+                                                        )
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                        Token("VAR_END_STR", "}}"),
+                                    ],
+                                ),
+                                Token("CNAME", "b"),
+                            ],
+                        ),
                         Tree(
                             "select_item_aliased",
                             [
@@ -65,7 +153,57 @@ Tree(
                                         Tree("function_name", [Token("CNAME", "DATE")]),
                                         Tree(
                                             "arg_list",
-                                            [Tree("arg_item", [Token("MACRO", "{{ macro_2('arg1', 'arg2')}}")])],
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Tree(
+                                                            "macro",
+                                                            [
+                                                                Token("VAR_START_STR", "{{"),
+                                                                Token("CNAME", "macro_2"),
+                                                                Token("LPAR", "("),
+                                                                Tree(
+                                                                    "python_arg_list",
+                                                                    [
+                                                                        Tree(
+                                                                            "python_arg_item",
+                                                                            [
+                                                                                Tree(
+                                                                                    "python_arg_value",
+                                                                                    [
+                                                                                        Token(
+                                                                                            "SINGLE_QUOTED_STRING",
+                                                                                            "'arg1'",
+                                                                                        )
+                                                                                    ],
+                                                                                )
+                                                                            ],
+                                                                        ),
+                                                                        Token("COMMA", ","),
+                                                                        Tree(
+                                                                            "python_arg_item",
+                                                                            [
+                                                                                Tree(
+                                                                                    "python_arg_value",
+                                                                                    [
+                                                                                        Token(
+                                                                                            "SINGLE_QUOTED_STRING",
+                                                                                            "'arg2'",
+                                                                                        )
+                                                                                    ],
+                                                                                )
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                Token("RPAR", ")"),
+                                                                Token("VAR_END_STR", "}}"),
+                                                            ],
+                                                        )
+                                                    ],
+                                                )
+                                            ],
                                         ),
                                     ],
                                 ),
@@ -81,9 +219,41 @@ Tree(
                         Tree(
                             "join_operation_with_condition",
                             [
-                                Tree("dbt_table_name", [Token("DBT_SOURCE", '{{ source("dataset", "table")}}')]),
+                                Tree(
+                                    "dbt_table_name",
+                                    [
+                                        Tree(
+                                            "dbt_src",
+                                            [
+                                                Token("VAR_START_STR", "{{"),
+                                                Token("SOURCE", "source"),
+                                                Token("LPAR", "("),
+                                                Tree("dataset_id", [Token("DOUBLE_QUOTED_STRING", '"dataset"')]),
+                                                Token("COMMA", ","),
+                                                Tree("table_id", [Token("DOUBLE_QUOTED_STRING", '"table"')]),
+                                                Token("RPAR", ")"),
+                                                Token("VAR_END_STR", "}}"),
+                                            ],
+                                        )
+                                    ],
+                                ),
                                 Tree("inner_join", []),
-                                Tree("dbt_table_name", [Token("DBT_REF", '{{ ref("table")}}')]),
+                                Tree(
+                                    "dbt_table_name",
+                                    [
+                                        Tree(
+                                            "dbt_ref",
+                                            [
+                                                Token("VAR_START_STR", "{{"),
+                                                Token("REF", "ref"),
+                                                Token("LPAR", "("),
+                                                Tree("dbt_reference", [Token("DOUBLE_QUOTED_STRING", '"table"')]),
+                                                Token("RPAR", ")"),
+                                                Token("VAR_END_STR", "}}"),
+                                            ],
+                                        )
+                                    ],
+                                ),
                                 Tree(
                                     "using_clause",
                                     [
@@ -102,7 +272,40 @@ Tree(
                                 Tree(
                                     "binary_bool_operation",
                                     [
-                                        Token("MACRO", "{{ macro_3('arg1', 'arg2') }}"),
+                                        Tree(
+                                            "macro",
+                                            [
+                                                Token("VAR_START_STR", "{{"),
+                                                Token("CNAME", "macro_3"),
+                                                Token("LPAR", "("),
+                                                Tree(
+                                                    "python_arg_list",
+                                                    [
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("SINGLE_QUOTED_STRING", "'arg1'")],
+                                                                )
+                                                            ],
+                                                        ),
+                                                        Token("COMMA", ","),
+                                                        Tree(
+                                                            "python_arg_item",
+                                                            [
+                                                                Tree(
+                                                                    "python_arg_value",
+                                                                    [Token("SINGLE_QUOTED_STRING", "'arg2'")],
+                                                                )
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Token("RPAR", ")"),
+                                                Token("VAR_END_STR", "}}"),
+                                            ],
+                                        ),
                                         Token("AND", "AND"),
                                         Token("CNAME", "b"),
                                     ],

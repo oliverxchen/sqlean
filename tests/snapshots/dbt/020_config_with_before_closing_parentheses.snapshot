@@ -28,9 +28,47 @@ FROM
 Tree(
     "query_file",
     [
-        Token(
-            "CONFIG",
-            '{{\n\tconfig(\n        materialized = "table",\n        sort = "event_time",\n        sql_header = set_start_date(),\n    )\n}}',
+        Tree(
+            "dbt_config",
+            [
+                Token("VAR_START_STR", "{{"),
+                Token("CONFIG", "config"),
+                Token("LPAR", "("),
+                Tree(
+                    "python_arg_list",
+                    [
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "materialized"), Token("EQUAL", "=")]),
+                                Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"table"')]),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "sort"), Token("EQUAL", "=")]),
+                                Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"event_time"')]),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "sql_header"), Token("EQUAL", "=")]),
+                                Tree(
+                                    "python_arg_value",
+                                    [Token("CNAME", "set_start_date"), Token("LPAR", "("), Token("RPAR", ")")],
+                                ),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                    ],
+                ),
+                Token("RPAR", ")"),
+                Token("VAR_END_STR", "}}"),
+            ],
         ),
         Tree(
             "select_expr",

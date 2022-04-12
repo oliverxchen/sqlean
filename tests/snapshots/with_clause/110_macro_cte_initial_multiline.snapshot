@@ -58,7 +58,40 @@ Tree(
                     ],
                 ),
                 Token("COMMA", ","),
-                Tree("with_clause", [Token("MACRO", '{{ macro_cte(\n\t"multi",\n\t"line", "start"\n   )\n}}')]),
+                Tree(
+                    "with_clause",
+                    [
+                        Tree(
+                            "macro",
+                            [
+                                Token("VAR_START_STR", "{{"),
+                                Token("CNAME", "macro_cte"),
+                                Token("LPAR", "("),
+                                Tree(
+                                    "python_arg_list",
+                                    [
+                                        Tree(
+                                            "python_arg_item",
+                                            [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"multi"')])],
+                                        ),
+                                        Token("COMMA", ","),
+                                        Tree(
+                                            "python_arg_item",
+                                            [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"line"')])],
+                                        ),
+                                        Token("COMMA", ","),
+                                        Tree(
+                                            "python_arg_item",
+                                            [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"start"')])],
+                                        ),
+                                    ],
+                                ),
+                                Token("RPAR", ")"),
+                                Token("VAR_END_STR", "}}"),
+                            ],
+                        )
+                    ],
+                ),
                 Tree(
                     "select_expr",
                     [
