@@ -138,6 +138,7 @@ def sqlean_unignored_file(
             stats.num_unparsable += 1
             stats.unparsable_files.append(target)
         if options.verbose:
+            rprint(f"\n[red underline]{target}:")
             rprint(exception)
 
 

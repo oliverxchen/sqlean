@@ -75,6 +75,7 @@ def test_dryrun__fail() -> None:
 def test_dryrun_verbose__fail() -> None:
     result = runner.invoke(app, ["-d", "-v", "tests/fixtures/fail"])
     assert result.exit_code == 1
+    assert "tests/fixtures/fail/dir_1/unparsable.sql:" in result.stdout
     assert (
         "Unexpected token Token('CNAME', 'foo') at line 1, column 1." in result.stdout
     )

@@ -6,7 +6,7 @@ from typing import List, Tuple, Optional
 import black
 from lark.exceptions import LarkError
 import pytest
-from rich import print
+from rich import print as rprint
 from rich.panel import Panel
 
 from sqlean.definitions import SNAPSHOT_PATH
@@ -29,7 +29,7 @@ class Results:
         if len(self.fail_files) == 0:
             return
         fails = "\n".join(self.fail_files)
-        print(Panel(fails, title=f"{self.title} failures"))
+        rprint(Panel(fails, title=f"{self.title} failures"))
 
     def get_summary(self) -> str:
         return f"{self.title.ljust(11)}: {self.n_pass} / {self.n_total()} passed"
@@ -57,7 +57,7 @@ class AllResults:
             f"{self.style.get_summary()}\n"
             f"{self.idempotence.get_summary()}"
         )
-        print(Panel(summary, title="Summary"))
+        rprint(Panel(summary, title="Summary"))
 
     def assert_all_passed(self) -> None:
         assert self.parse.n_total() == self.parse.n_pass
@@ -90,7 +90,7 @@ def assert_snapshot_correct(
         styled_styled = str(sql_parser.print(actual_styled))
     except LarkError as error:
         title = "Idempotence Error: " + get_short_file_path(file_path)
-        print(Panel(str(error), title=title))
+        rprint(Panel(str(error), title=title))
         styled_styled = ""
 
     all_test_results.parse.update_test_results(
@@ -157,13 +157,13 @@ class SnapshotResults:
         if len(self.changed_files) == 0:
             return
         changed = "\n".join(self.changed_files)
-        print(Panel(changed, title=f"{self.title} changed"))
+        rprint(Panel(changed, title=f"{self.title} changed"))
 
     def print_errors(self) -> None:
         if len(self.errors) == 0:
             return
         errors = "\n".join(self.errors)
-        print(Panel(errors, title=f"{self.title} errors"))
+        rprint(Panel(errors, title=f"{self.title} errors"))
 
     def get_summary(self) -> str:
         return (
@@ -202,7 +202,7 @@ class AllSnapshotResults:
 
     def print_summary(self) -> None:
         summary = f"{self.style.get_summary()}\n" + f"{self.parse.get_summary()}"
-        print(Panel(summary, title="Summary"))
+        rprint(Panel(summary, title="Summary"))
 
     def has_errors(self) -> bool:
         return len(self.style.errors) > 0

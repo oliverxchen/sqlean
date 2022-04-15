@@ -9,10 +9,6 @@ from pydantic.error_wrappers import ValidationError
 import tomli
 import typer
 from rich import print as rprint
-from rich.console import Console
-
-
-console = Console()
 
 
 class DialectEnum(str, Enum):
