@@ -1,5 +1,7 @@
 .vscode/
-poetry.lock # This is library so doesn't need to be committed
+
+# This is a library so poetry.lock doesn't need to be committed
+poetry.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

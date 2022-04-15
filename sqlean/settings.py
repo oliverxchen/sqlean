@@ -26,6 +26,7 @@ class Settings(BaseModel, allow_mutation=False):
 
     target: List[Path] = [Path.cwd()]
     dry_run: bool = False
+    verbose: bool = False
     write_ignore: bool = False
     force: bool = False
     whisper: bool = False
@@ -37,6 +38,7 @@ class Settings(BaseModel, allow_mutation=False):
 def set_options(
     target: Optional[Path],
     dry_run: Optional[bool],
+    verbose: Optional[bool],
     write_ignore: Optional[bool],
     force: Optional[bool],
 ) -> Settings:
@@ -57,6 +59,7 @@ def set_options(
     return Settings(
         target=actual_target,
         dry_run=dry_run,
+        verbose=verbose,
         write_ignore=write_ignore,
         force=force,
         **config.dict(),

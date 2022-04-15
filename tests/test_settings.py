@@ -145,6 +145,7 @@ def test_set_options__with_cli_target_config_set(includes_set_path: Path) -> Non
     options = settings.set_options(
         target=includes_set_path,
         dry_run=True,
+        verbose=False,
         write_ignore=True,
         force=True,
     )
@@ -157,6 +158,7 @@ def test_set_options__with_cli_target_config_not_set(
     options = settings.set_options(
         target=includes_not_set_path,
         dry_run=True,
+        verbose=False,
         write_ignore=True,
         force=True,
     )
@@ -168,11 +170,13 @@ def test_set_options__with_config_file_target(
 ) -> None:
     mocker.patch("pathlib.Path.cwd", return_value=includes_set_path)
     options = settings.set_options(
-        target=None, dry_run=True, write_ignore=True, force=True
+        target=None, dry_run=True, verbose=False, write_ignore=True, force=True
     )
     assert options.target == [Path("path_from_config_file")]
 
 
 def test_set_options__with_no_target() -> None:
     with pytest.raises(click.exceptions.Exit):
-        settings.set_options(target=None, dry_run=True, write_ignore=True, force=True)
+        settings.set_options(
+            target=None, dry_run=True, verbose=False, write_ignore=True, force=True
+        )

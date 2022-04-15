@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 from typing import Iterator, List, Optional
 
-from lark.exceptions import ParseError
+from lark.exceptions import ParseError, LexError
 from rich import print as rprint
 from rich.markdown import Markdown
 import typer
@@ -26,6 +26,12 @@ def main(
         "--dry-run/",
         "-d/",
         help="Include this flag to only show diffs and not replace files in-place.",
+    ),
+    verbose: bool = typer.Option(
+        False,
+        "--verbose/",
+        "-v/",
+        help="Include this flag to show show exception messages.",
     ),
     write_ignore: bool = typer.Option(
         False,
@@ -48,7 +54,11 @@ def main(
     WARNING: running with no options will change your files in-place."""
 
     options = set_options(
-        target=target, dry_run=dry_run, write_ignore=write_ignore, force=force
+        target=target,
+        dry_run=dry_run,
+        verbose=verbose,
+        write_ignore=write_ignore,
+        force=force,
     )
     stats = Stats()
     sql_parser = Parser(options)
@@ -119,7 +129,7 @@ def sqlean_unignored_file(
                 write_file(styled, target)
                 stats.num_changed += 1
                 stats.changed_files.append(target)
-    except ParseError:
+    except (ParseError, LexError) as exception:
         if options.write_ignore:
             write_ignore_header(target)
             stats.num_ignored += 1
@@ -127,6 +137,8 @@ def sqlean_unignored_file(
         else:
             stats.num_unparsable += 1
             stats.unparsable_files.append(target)
+        if options.verbose:
+            rprint(exception)
 
 
 def read_file(target: Path) -> List[str]:
