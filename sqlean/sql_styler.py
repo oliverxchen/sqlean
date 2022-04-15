@@ -98,36 +98,6 @@ class TerminalMixin(BaseMixin):
         """print WHERE"""
         return self._token_indent(token)
 
-    def CONFIG(self, token: CToken) -> str:  # pylint: disable=invalid-name
-        """print CONFIG"""
-        blacked = self._apply_black(token[2:-2])
-        return "{{\n" + self._apply_indent(blacked, 1) + "\n}}"
-
-    def __format_macro_expr(self, token: CToken) -> str:
-        """form single line macro expressions"""
-        blacked = self._apply_black(token[2:-2])
-        # single line print when black returns one line
-        if len(blacked.splitlines()) == 1:
-            return self._apply_indent("{{ " + blacked + " }}", token.type.indent_level)
-
-        # multi line print
-        return self._apply_indent(
-            "{{\n" + self._apply_indent(blacked, 1) + "\n}}",
-            token.type.indent_level,
-        )
-
-    def DBT_SOURCE(self, token: CToken) -> str:  # pylint: disable=invalid-name
-        """print DBT_SOURCE"""
-        return self.__format_macro_expr(token)
-
-    def DBT_REF(self, token: CToken) -> str:  # pylint: disable=invalid-name
-        """print DBT_REF"""
-        return self.__format_macro_expr(token)
-
-    def MACRO(self, token: CToken) -> str:  # pylint: disable=invalid-name
-        """print MACRO"""
-        return self.__format_macro_expr(token)
-
     @staticmethod
     def INLINE_COMMENT(token: Token) -> Token:  # pylint: disable=invalid-name
         """print INLINE_COMMENT"""
@@ -511,6 +481,70 @@ class JinjaMixin(BaseMixin):
         """print dbt_table_name"""
         return self._apply_indent(self._rollup_space(node), node.data.indent_level)
 
+    def python_arg_value(self, node: CTree) -> str:
+        """print python_arg_value"""
+        return self._rollup(node)
+
+    def arg_name(self, node: CTree) -> str:
+        """print arg_name"""
+        return self._rollup(node)
+
+    def python_arg_item(self, node: CTree) -> str:
+        """print python_arg_item"""
+        return self._rollup(node)
+
+    def python_arg_list(self, node: CTree) -> str:
+        """print python_arg_list"""
+        return self._rollup(node)
+
+    def python_dict_item(self, node: CTree) -> str:
+        """print python_dict_item"""
+        return self._rollup(node)
+
+    def python_dict_list(self, node: CTree) -> str:
+        """print python_dict_list"""
+        return self._rollup(node)
+
+    def dbt_config(self, node: CTree) -> str:
+        """print dbt_config"""
+        blacked = self._apply_black(f"config({node.children[3]})")
+        return "{{\n" + self._apply_indent(blacked, 1) + "\n}}"
+
+    def __format_macro_expr(self, node: CTree) -> str:
+        """form single line macro expressions"""
+        joined_children = "".join(str(child) for child in node.children[1:-1])
+        blacked = self._apply_black(joined_children)
+        # single line print when black returns one line
+        if len(blacked.splitlines()) == 1:
+            return "{{ " + blacked + " }}"
+
+        # multi line print
+        return "{{\n" + self._apply_indent(blacked, 1) + "\n}}"
+
+    def macro(self, node: CTree) -> str:
+        """print macro"""
+        return self.__format_macro_expr(node)
+
+    def dataset_id(self, node: CTree) -> str:
+        """print dataset_id"""
+        return self._apply_black(str(node.children[0]))
+
+    def table_id(self, node: CTree) -> str:
+        """print table_id"""
+        return self._apply_black(str(node.children[0]))
+
+    def dbt_reference(self, node: CTree) -> str:
+        """print dbt_reference"""
+        return self._apply_black(str(node.children[0]))
+
+    def dbt_ref(self, node: CTree) -> str:
+        """print dbt_ref"""
+        return self.__format_macro_expr(node)
+
+    def dbt_src(self, node: CTree) -> str:
+        """print dbt_src"""
+        return self.__format_macro_expr(node)
+
 
 @v_args(tree=True)
 class Styler(  # pylint: disable=too-many-ancestors
@@ -543,4 +577,6 @@ class Styler(  # pylint: disable=too-many-ancestors
             or token.type.endswith("_EXPR")
             or token.type.endswith("_ID")
             or token.type.endswith("_STRING")
+            or token.type == "SOURCE"
+            or token.type == "REF"
         )

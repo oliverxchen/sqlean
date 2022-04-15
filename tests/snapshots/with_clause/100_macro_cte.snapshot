@@ -54,7 +54,21 @@ Tree(
                     ],
                 ),
                 Token("COMMA", ","),
-                Tree("with_clause", [Token("MACRO", "{{ macro_cte() }}")]),
+                Tree(
+                    "with_clause",
+                    [
+                        Tree(
+                            "macro",
+                            [
+                                Token("VAR_START_STR", "{{"),
+                                Token("CNAME", "macro_cte"),
+                                Token("LPAR", "("),
+                                Token("RPAR", ")"),
+                                Token("VAR_END_STR", "}}"),
+                            ],
+                        )
+                    ],
+                ),
                 Tree(
                     "select_expr",
                     [

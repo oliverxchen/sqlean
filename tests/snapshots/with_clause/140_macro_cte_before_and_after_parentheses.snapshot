@@ -55,7 +55,44 @@ Tree(
                     ],
                 ),
                 Token("COMMA", ","),
-                Tree("with_clause", [Token("MACRO", '{{ macro_cte(inner_function(), "arg") }}')]),
+                Tree(
+                    "with_clause",
+                    [
+                        Tree(
+                            "macro",
+                            [
+                                Token("VAR_START_STR", "{{"),
+                                Token("CNAME", "macro_cte"),
+                                Token("LPAR", "("),
+                                Tree(
+                                    "python_arg_list",
+                                    [
+                                        Tree(
+                                            "python_arg_item",
+                                            [
+                                                Tree(
+                                                    "python_arg_value",
+                                                    [
+                                                        Token("CNAME", "inner_function"),
+                                                        Token("LPAR", "("),
+                                                        Token("RPAR", ")"),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                        Token("COMMA", ","),
+                                        Tree(
+                                            "python_arg_item",
+                                            [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"arg"')])],
+                                        ),
+                                    ],
+                                ),
+                                Token("RPAR", ")"),
+                                Token("VAR_END_STR", "}}"),
+                            ],
+                        )
+                    ],
+                ),
                 Tree(
                     "select_expr",
                     [
