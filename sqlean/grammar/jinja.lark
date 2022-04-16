@@ -7,7 +7,7 @@ VAR_END_STR: "}}"
 ////////////////
 // dbt basics //
 ////////////////
-!dbt_config: VAR_START_STR CONFIG "(" [python_arg_list] ")" VAR_END_STR 
+!dbt_config: VAR_START_STR CONFIG "(" [python_arg_list] ")" VAR_END_STR
 CONFIG: "config"
 
 !macro: VAR_START_STR CNAME "(" [python_arg_list] ")" VAR_END_STR
@@ -31,7 +31,7 @@ dbt_table_name: dbt_ref
     | "[" python_arg_list "]"
     | "{" python_dict_list "}"
     | CNAME "(" [python_arg_list] ")"
-!python_dict_list: python_dict_item ("," python_dict_item)*
+!python_dict_list: python_dict_item ("," python_dict_item)* [","]
 !python_dict_item: string ":" python_arg_value
 
 

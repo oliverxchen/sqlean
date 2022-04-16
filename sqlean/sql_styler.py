@@ -391,7 +391,7 @@ class FunctionMixin(BaseMixin):
 
     def arg_item(self, node: CTree) -> str:
         """print arg_item"""
-        return self._rollup_space(node)
+        return self._rollup_space(node).replace(linesep, " ")
 
     def data_type(self, node: CTree) -> str:
         """print data_type"""
