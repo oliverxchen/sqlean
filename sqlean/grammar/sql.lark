@@ -10,11 +10,17 @@ query_file: [dbt_config] query_expr
 /////////////////////////
 !?query_expr: "WITH"i with_clause ("," with_clause)* select_expr
     | select_expr
+    | macro
+
 !with_clause: CNAME "AS"i "(" query_expr ")"
     | macro
 
-!select_expr: select_type select_list ["FROM"i from_clause] [limit_clause]
-!select_type: "SELECT"i
+!select_expr: select_type select_list [FROM from_clause] [limit_clause]
+!select_type: SELECT
+    | SELECT "DISTINCT"i
+    | SELECT "ALL"i
+SELECT: "SELECT"i
+FROM: "FROM"i
 
 //////////
 // from //

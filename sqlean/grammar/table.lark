@@ -1,19 +1,26 @@
 ?table_item: table_name
 	| table_item_aliased
 
-?table_name: simple_table_name
-    | explicit_table_name
+?table_name: STANDARD_TABLE_NAME
 	| dbt_table_name
 
 table_item_aliased: table_name as_alias
 
-simple_table_name: CNAME
-explicit_table_name: "`" PROJECT_ID  "." DATASET_ID "." TABLE_ID "`"
-	| "`" PROJECT_ID  "`.`" DATASET_ID "`.`" TABLE_ID "`"
+STANDARD_TABLE_NAME: /\w+|\{\{\s*\w+\s*\}\}/
+	| /(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})/
+    | /`(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})`/
+// Regex is needed above to have a single token. These are of the form:
+// 1. "foo" or "{{ foo }}"
+// 2. "A.B.C" where A, B and C can be of the form: "`foo`", "foo", "`{{ foo }}`" or "{{ foo }}"
+// 3. "`A.B.C`" where A, B and C can be of the form: "foo" or "{{ foo }}"
 
-PROJECT_ID: CNAME
-DATASET_ID: CNAME
-TABLE_ID: CNAME
+TABLE_REF_FIELD_NAME: /(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})/
+	| /(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})/
+    | /`(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})`\.(\w+|\{\{\s*\w+\s*\}\})/
+// Regex is needed above to have a single token. These are of the form:
+// 1. "C.D" where C and D can be of the form "foo" or "{{ foo }}"
+// 2. "A.B.C.D" where A, B and C can be of the form: "`foo`", "foo", "`{{ foo }}`" or "{{ foo }}" and D can be of the form "foo" or "{{ foo }}"
+// 3. "`A.B.C`.D" where A, B, C and D can be of the form: "foo" or "{{ foo }}"
 
 %import common.CNAME
 %import alias.as_alias

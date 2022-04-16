@@ -2,7 +2,9 @@ select
 	function(a),
 	safe.function(a),
 	dataset_id.function(a),
-	`project_id`.dataset_id.function(a)
+	`project_id`.dataset_id.function(a),
+	`{{ project }}`.dataset_id.function(a),
+	`{{ project }}.dataset_id.function`(a),
 from
 	table
 
@@ -13,6 +15,8 @@ SELECT
   SAFE.FUNCTION(a),
   dataset_id.FUNCTION(a),
   `project_id`.dataset_id.FUNCTION(a),
+  `{{ project }}`.dataset_id.FUNCTION(a),
+  `{{ project }}.dataset_id.FUNCTION`(a),
 FROM
   table
 
@@ -34,7 +38,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "function")]),
+                                        Token("FUNCTION_NAME", "function("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
                                     ],
                                 )
@@ -46,10 +50,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree(
-                                            "function_name",
-                                            [Token("CNAME", "safe"), Token("DOT", "."), Token("CNAME", "function")],
-                                        ),
+                                        Token("FUNCTION_NAME", "safe.function("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
                                     ],
                                 )
@@ -61,14 +62,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree(
-                                            "function_name",
-                                            [
-                                                Token("CNAME", "dataset_id"),
-                                                Token("DOT", "."),
-                                                Token("CNAME", "function"),
-                                            ],
-                                        ),
+                                        Token("FUNCTION_NAME", "dataset_id.function("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
                                     ],
                                 )
@@ -80,17 +74,31 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree(
-                                            "function_name",
-                                            [
-                                                Token("BACKQUOTE", "`"),
-                                                Token("PROJECT_ID", "project_id"),
-                                                Token("ANON_20", "`."),
-                                                Token("CNAME", "dataset_id"),
-                                                Token("DOT", "."),
-                                                Token("CNAME", "function"),
-                                            ],
-                                        ),
+                                        Token("FUNCTION_NAME", "`project_id`.dataset_id.function("),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "`{{ project }}`.dataset_id.function("),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "`{{ project }}.dataset_id.function`("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
                                     ],
                                 )
@@ -99,7 +107,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
             ],
         )
     ],

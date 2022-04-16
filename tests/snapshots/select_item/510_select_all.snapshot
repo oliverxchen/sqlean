@@ -1,8 +1,8 @@
-select * from table
+select all * from table
 
 ---
 
-SELECT
+SELECT ALL
   *,
 FROM
   table
@@ -15,7 +15,7 @@ Tree(
         Tree(
             "select_expr",
             [
-                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_type", [Token("SELECT", "select"), Token("ALL", "all")]),
                 Tree("select_list", [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])]),
                 Token("FROM", "from"),
                 Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),

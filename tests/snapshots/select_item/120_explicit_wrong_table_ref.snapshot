@@ -3,9 +3,9 @@ select `a`.`b`.`c`.field from `a`.`b`.`c`
 ---
 
 SELECT
-  `a.b.c`.field,
+  `a`.`b`.`c`.field,
 FROM
-  `a.b.c`
+  `a`.`b`.`c`
 
 ---
 
@@ -17,39 +17,10 @@ Tree(
             [
                 Tree("select_type", [Token("SELECT", "select")]),
                 Tree(
-                    "select_list",
-                    [
-                        Tree(
-                            "select_item_unaliased",
-                            [
-                                Tree(
-                                    "table_referenced_field",
-                                    [
-                                        Tree(
-                                            "explicit_table_name",
-                                            [
-                                                Token("PROJECT_ID", "a"),
-                                                Token("DATASET_ID", "b"),
-                                                Token("TABLE_ID", "c"),
-                                            ],
-                                        ),
-                                        Token("CNAME", "field"),
-                                    ],
-                                )
-                            ],
-                        )
-                    ],
+                    "select_list", [Tree("select_item_unaliased", [Token("TABLE_REF_FIELD_NAME", "`a`.`b`.`c`.field")])]
                 ),
                 Token("FROM", "from"),
-                Tree(
-                    "from_clause",
-                    [
-                        Tree(
-                            "explicit_table_name",
-                            [Token("PROJECT_ID", "a"), Token("DATASET_ID", "b"), Token("TABLE_ID", "c")],
-                        )
-                    ],
-                ),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "`a`.`b`.`c`")]),
             ],
         )
     ],

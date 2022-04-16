@@ -27,7 +27,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "count")]),
+                                        Token("FUNCTION_NAME", "count("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
                                     ],
                                 )
@@ -39,7 +39,7 @@ Tree(
                 Tree(
                     "from_clause",
                     [
-                        Tree("simple_table_name", [Token("CNAME", "table")]),
+                        Token("STANDARD_TABLE_NAME", "table"),
                         Tree(
                             "groupby_modifier",
                             [
@@ -50,7 +50,7 @@ Tree(
                                         Tree(
                                             "standard_function_expression",
                                             [
-                                                Tree("function_name", [Token("CNAME", "round")]),
+                                                Token("FUNCTION_NAME", "round("),
                                                 Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
                                             ],
                                         )

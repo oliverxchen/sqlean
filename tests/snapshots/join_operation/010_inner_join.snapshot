@@ -27,9 +27,9 @@ Tree(
                         Tree(
                             "join_operation_with_condition",
                             [
-                                Tree("simple_table_name", [Token("CNAME", "table1")]),
+                                Token("STANDARD_TABLE_NAME", "table1"),
                                 Tree("inner_join", []),
-                                Tree("simple_table_name", [Token("CNAME", "table2")]),
+                                Token("STANDARD_TABLE_NAME", "table2"),
                                 Tree(
                                     "using_clause",
                                     [

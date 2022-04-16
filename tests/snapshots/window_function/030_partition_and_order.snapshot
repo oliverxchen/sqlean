@@ -28,7 +28,7 @@ Tree(
                                 Tree(
                                     "window_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "row_number")]),
+                                        Token("FUNCTION_NAME", "row_number("),
                                         Tree(
                                             "over_clause",
                                             [
@@ -80,7 +80,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "FROM"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
             ],
         )
     ],

@@ -25,7 +25,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "date_trunc")]),
+                                        Token("FUNCTION_NAME", "date_trunc("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -35,7 +35,7 @@ Tree(
                                                         Tree(
                                                             "standard_function_expression",
                                                             [
-                                                                Tree("function_name", [Token("CNAME", "date")]),
+                                                                Token("FUNCTION_NAME", "date("),
                                                                 Tree(
                                                                     "arg_list",
                                                                     [
@@ -45,14 +45,9 @@ Tree(
                                                                                 Tree(
                                                                                     "standard_function_expression",
                                                                                     [
-                                                                                        Tree(
-                                                                                            "function_name",
-                                                                                            [
-                                                                                                Token(
-                                                                                                    "CNAME",
-                                                                                                    "timestamp_millis",
-                                                                                                )
-                                                                                            ],
+                                                                                        Token(
+                                                                                            "FUNCTION_NAME",
+                                                                                            "timestamp_millis(",
                                                                                         ),
                                                                                         Tree(
                                                                                             "arg_list",
@@ -87,7 +82,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "a")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "a")]),
             ],
         )
     ],

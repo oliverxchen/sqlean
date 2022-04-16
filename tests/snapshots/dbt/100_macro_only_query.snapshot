@@ -2,7 +2,7 @@
 	config(materialized="table")
 }}
 
-select sum(a) from table
+{{ macro("foo") }}
 
 ---
 
@@ -10,10 +10,7 @@ select sum(a) from table
   config(materialized="table")
 }}
 
-SELECT
-  SUM(a),
-FROM
-  table
+{{ macro("foo") }}
 
 ---
 
@@ -43,28 +40,17 @@ Tree(
             ],
         ),
         Tree(
-            "select_expr",
+            "macro",
             [
-                Tree("select_type", [Token("SELECT", "select")]),
+                Token("VAR_START_STR", "{{"),
+                Token("CNAME", "macro"),
+                Token("LPAR", "("),
                 Tree(
-                    "select_list",
-                    [
-                        Tree(
-                            "select_item_unaliased",
-                            [
-                                Tree(
-                                    "standard_function_expression",
-                                    [
-                                        Token("FUNCTION_NAME", "sum("),
-                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
-                                    ],
-                                )
-                            ],
-                        )
-                    ],
+                    "python_arg_list",
+                    [Tree("python_arg_item", [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"foo"')])])],
                 ),
-                Token("FROM", "from"),
-                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
+                Token("RPAR", ")"),
+                Token("VAR_END_STR", "}}"),
             ],
         ),
     ],

@@ -57,7 +57,7 @@ Tree(
                             "select_item_aliased", [Token("SINGLE_QUOTED_STRING", "'foo'"), Token("CNAME", "field_3")]
                         ),
                         Tree("select_item_aliased", [Token("SIGNED_NUMBER", "1"), Token("CNAME", "field_4")]),
-                        Tree("select_item_aliased", [Token("SIGNED_NUMBER", "3.2"), Token("CNAME", "field_5")]),
+                        Tree("select_item_aliased", [Token("TABLE_REF_FIELD_NAME", "3.2"), Token("CNAME", "field_5")]),
                         Tree("select_item_aliased", [Token("SIGNED_NUMBER", "-2.3"), Token("CNAME", "field_6")]),
                         Tree("select_item_aliased", [Token("SIGNED_NUMBER", "1e30"), Token("CNAME", "field_7")]),
                         Tree("select_item_aliased", [Token("TRUE", "True"), Token("CNAME", "field_8")]),
@@ -69,7 +69,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "date")]),
+                                        Token("FUNCTION_NAME", "date("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -114,7 +114,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
             ],
         )
     ],

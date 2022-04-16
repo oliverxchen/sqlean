@@ -28,7 +28,7 @@ Tree(
                                 Tree(
                                     "window_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "SUM")]),
+                                        Token("FUNCTION_NAME", "SUM("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
                                         Tree(
                                             "over_clause",
@@ -55,7 +55,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "FROM"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
             ],
         )
     ],
