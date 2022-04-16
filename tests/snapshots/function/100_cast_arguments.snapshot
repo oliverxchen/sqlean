@@ -7,6 +7,7 @@ select
 	cast(f as bytes(3)),
 	cast(g as decimal),
 	cast(h as float64),
+    safe_cast(i as timestamp)
 from table
 
 ---
@@ -20,6 +21,7 @@ SELECT
   CAST(f AS BYTES(3)),
   CAST(g AS DECIMAL),
   CAST(h AS FLOAT64),
+  SAFE_CAST(i AS TIMESTAMP),
 FROM
   table
 
@@ -229,6 +231,30 @@ Tree(
                                                         Token("CNAME", "h"),
                                                         Token("AS", "as"),
                                                         Tree("data_type", [Token("FLOAT64", "float64")]),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "safe_cast")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Token("CNAME", "i"),
+                                                        Token("AS", "as"),
+                                                        Tree("data_type", [Token("TIMESTAMP", "timestamp")]),
                                                     ],
                                                 )
                                             ],

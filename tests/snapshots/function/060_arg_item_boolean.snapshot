@@ -1,0 +1,144 @@
+select
+    IF(field_a is null, "bad", "good"),
+    IF(field_b = "FOO", "good", "bad"),
+    IF(field_c > 3 AND field_d < 2, "good", "bad")
+from table_a
+
+---
+
+SELECT
+  IF(field_a IS NULL, "bad", "good"),
+  IF(field_b = "FOO", "good", "bad"),
+  IF(field_c > 3 AND field_d < 2, "good", "bad"),
+FROM
+  table_a
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "IF")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Tree(
+                                                            "trailing_unary_bool_operation",
+                                                            [
+                                                                Token("CNAME", "field_a"),
+                                                                Tree(
+                                                                    "trailing_unary_bool_operator",
+                                                                    [Token("IS", "is"), Token("NULL", "null")],
+                                                                ),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                                Tree("arg_item", [Token("DOUBLE_QUOTED_STRING", '"bad"')]),
+                                                Tree("arg_item", [Token("DOUBLE_QUOTED_STRING", '"good"')]),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "IF")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Tree(
+                                                            "binary_comparison_operation",
+                                                            [
+                                                                Token("CNAME", "field_b"),
+                                                                Token("BINARY_COMPARISON_OPERATOR", "="),
+                                                                Token("DOUBLE_QUOTED_STRING", '"FOO"'),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                                Tree("arg_item", [Token("DOUBLE_QUOTED_STRING", '"good"')]),
+                                                Tree("arg_item", [Token("DOUBLE_QUOTED_STRING", '"bad"')]),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "IF")]),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree(
+                                                    "arg_item",
+                                                    [
+                                                        Tree(
+                                                            "binary_bool_operation",
+                                                            [
+                                                                Tree(
+                                                                    "binary_comparison_operation",
+                                                                    [
+                                                                        Token("CNAME", "field_c"),
+                                                                        Token("BINARY_COMPARISON_OPERATOR", ">"),
+                                                                        Token("SIGNED_NUMBER", "3"),
+                                                                    ],
+                                                                ),
+                                                                Token("AND", "AND"),
+                                                                Tree(
+                                                                    "binary_comparison_operation",
+                                                                    [
+                                                                        Token("CNAME", "field_d"),
+                                                                        Token("BINARY_COMPARISON_OPERATOR", "<"),
+                                                                        Token("SIGNED_NUMBER", "2"),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                                Tree("arg_item", [Token("DOUBLE_QUOTED_STRING", '"good"')]),
+                                                Tree("arg_item", [Token("DOUBLE_QUOTED_STRING", '"bad"')]),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table_a")])]),
+            ],
+        )
+    ],
+)

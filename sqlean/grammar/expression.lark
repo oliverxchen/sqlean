@@ -54,6 +54,9 @@ arg_list: arg_item ("," arg_item)*
     | base_expression "AS"i data_type
     | interval "FROM"i base_expression
     | INTERVAL INT interval
+    | comparison_expression
+    | unary_bool_operation
+    | binary_bool_operation
 DISTINCT: "DISTINCT"i
 INTERVAL: "INTERVAL"i
 

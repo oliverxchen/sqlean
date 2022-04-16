@@ -1,0 +1,101 @@
+{{
+  config(
+    partition_by={
+      "field" : "partition_field",
+      "data_type" : "date",
+    },
+  )
+}}
+
+select * from table
+
+---
+
+{{
+  config(
+    partition_by={
+      "field": "partition_field",
+      "data_type": "date",
+    },
+  )
+}}
+
+SELECT
+  *,
+FROM
+  table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "dbt_config",
+            [
+                Token("VAR_START_STR", "{{"),
+                Token("CONFIG", "config"),
+                Token("LPAR", "("),
+                Tree(
+                    "python_arg_list",
+                    [
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "partition_by"), Token("EQUAL", "=")]),
+                                Tree(
+                                    "python_arg_value",
+                                    [
+                                        Token("LBRACE", "{"),
+                                        Tree(
+                                            "python_dict_list",
+                                            [
+                                                Tree(
+                                                    "python_dict_item",
+                                                    [
+                                                        Token("DOUBLE_QUOTED_STRING", '"field"'),
+                                                        Token("COLON", ":"),
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"partition_field"')],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Token("COMMA", ","),
+                                                Tree(
+                                                    "python_dict_item",
+                                                    [
+                                                        Token("DOUBLE_QUOTED_STRING", '"data_type"'),
+                                                        Token("COLON", ":"),
+                                                        Tree(
+                                                            "python_arg_value",
+                                                            [Token("DOUBLE_QUOTED_STRING", '"date"')],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Token("COMMA", ","),
+                                            ],
+                                        ),
+                                        Token("RBRACE", "}"),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("COMMA", ","),
+                    ],
+                ),
+                Token("RPAR", ")"),
+                Token("VAR_END_STR", "}}"),
+            ],
+        ),
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])]),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        ),
+    ],
+)

@@ -3,6 +3,7 @@
     | "BYTES"i ["(" INT ")"]
     | "DATE"i
     | "DATETIME"i
+    | "TIMESTAMP"i
     | "INT64"i
     | "INT"i
     | "SMALLINT"i
