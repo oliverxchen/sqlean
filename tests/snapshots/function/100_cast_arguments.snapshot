@@ -52,7 +52,7 @@ Tree(
                                                     [
                                                         Token("CNAME", "a"),
                                                         Token("AS", "as"),
-                                                        Tree("data_type", [Token("ANON_0", "int")]),
+                                                        Tree("data_type", [Token("ANON_6", "int")]),
                                                     ],
                                                 )
                                             ],
@@ -77,7 +77,7 @@ Tree(
                                                     [
                                                         Token("CNAME", "b"),
                                                         Token("AS", "as"),
-                                                        Tree("data_type", [Token("INT64", "int64")]),
+                                                        Tree("data_type", [Token("ANON_5", "int64")]),
                                                     ],
                                                 )
                                             ],
@@ -102,7 +102,7 @@ Tree(
                                                     [
                                                         Token("CNAME", "c"),
                                                         Token("AS", "as"),
-                                                        Tree("data_type", [Token("STRING", "string")]),
+                                                        Tree("data_type", [Token("ANON_17", "string")]),
                                                     ],
                                                 )
                                             ],
@@ -126,7 +126,7 @@ Tree(
                                                     [
                                                         Token("CNAME", "d"),
                                                         Token("AS", "as"),
-                                                        Tree("data_type", [Token("NUMERIC", "numeric")]),
+                                                        Tree("data_type", [Token("ANON_12", "numeric")]),
                                                     ],
                                                 )
                                             ],
@@ -150,7 +150,7 @@ Tree(
                                                     [
                                                         Token("CNAME", "e"),
                                                         Token("AS", "as"),
-                                                        Tree("data_type", [Token("BYTES", "bytes")]),
+                                                        Tree("data_type", [Token("ANON_1", "bytes")]),
                                                     ],
                                                 )
                                             ],
@@ -177,7 +177,7 @@ Tree(
                                                         Tree(
                                                             "data_type",
                                                             [
-                                                                Token("BYTES", "bytes"),
+                                                                Token("ANON_1", "bytes"),
                                                                 Token("LPAR", "("),
                                                                 Token("INT", "3"),
                                                                 Token("RPAR", ")"),
@@ -206,7 +206,7 @@ Tree(
                                                     [
                                                         Token("CNAME", "g"),
                                                         Token("AS", "as"),
-                                                        Tree("data_type", [Token("DECIMAL", "decimal")]),
+                                                        Tree("data_type", [Token("ANON_13", "decimal")]),
                                                     ],
                                                 )
                                             ],
@@ -230,7 +230,7 @@ Tree(
                                                     [
                                                         Token("CNAME", "h"),
                                                         Token("AS", "as"),
-                                                        Tree("data_type", [Token("FLOAT64", "float64")]),
+                                                        Tree("data_type", [Token("ANON_16", "float64")]),
                                                     ],
                                                 )
                                             ],
@@ -254,7 +254,7 @@ Tree(
                                                     [
                                                         Token("CNAME", "i"),
                                                         Token("AS", "as"),
-                                                        Tree("data_type", [Token("TIMESTAMP", "timestamp")]),
+                                                        Tree("data_type", [Token("ANON_4", "timestamp")]),
                                                     ],
                                                 )
                                             ],
