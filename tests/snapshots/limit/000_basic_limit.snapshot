@@ -17,7 +17,7 @@ Tree(
             "select_expr",
             [
                 Tree("select_type", [Token("SELECT", "select")]),
-                Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                Tree("select_list", [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])]),
                 Token("FROM", "from"),
                 Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
                 Tree("limit_clause", [Token("LIMIT", "limit"), Token("INT", "100")]),

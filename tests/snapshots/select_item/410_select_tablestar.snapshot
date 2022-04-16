@@ -1,14 +1,14 @@
-select * from table1 inner  join table2 using(field_a, field_b)
+select table_2.* from table_1 inner join table_2 using (id)
 
 ---
 
 SELECT
-  *,
+  table_2.*,
 FROM
-  table1
+  table_1
 INNER JOIN
-  table2
-USING (field_a, field_b)
+  table_2
+USING (id)
 
 ---
 
@@ -19,7 +19,15 @@ Tree(
             "select_expr",
             [
                 Tree("select_type", [Token("SELECT", "select")]),
-                Tree("select_list", [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [Tree("star_expression", [Token("CNAME", "table_2"), Token("ANON_2", ".*")])],
+                        )
+                    ],
+                ),
                 Token("FROM", "from"),
                 Tree(
                     "from_clause",
@@ -27,15 +35,15 @@ Tree(
                         Tree(
                             "join_operation_with_condition",
                             [
-                                Tree("simple_table_name", [Token("CNAME", "table1")]),
+                                Tree("simple_table_name", [Token("CNAME", "table_1")]),
                                 Tree("inner_join", []),
-                                Tree("simple_table_name", [Token("CNAME", "table2")]),
+                                Tree("simple_table_name", [Token("CNAME", "table_2")]),
                                 Tree(
                                     "using_clause",
                                     [
                                         Token("USING", "using"),
                                         Token("LPAR", "("),
-                                        Tree("using_list", [Token("CNAME", "field_a"), Token("CNAME", "field_b")]),
+                                        Tree("using_list", [Token("CNAME", "id")]),
                                         Token("RPAR", ")"),
                                     ],
                                 ),

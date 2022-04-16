@@ -165,6 +165,22 @@ class SelectMixin(BaseMixin):
         """print select_type"""
         return self._apply_indent(self._rollup_space(node), node.data.indent_level)
 
+    def star_expression(self, node: CTree) -> str:
+        """print star_expression"""
+        return self._apply_indent(self._rollup(node), node.data.indent_level)
+
+    def except_expression(self, node: CTree) -> str:
+        """print except_expression"""
+        return " " + self._rollup(node)
+
+    def except_list(self, node: CTree) -> str:
+        """print except_list"""
+        return self._rollup_comma_inline(node)
+
+    def except_item(self, node: CTree) -> str:
+        """print except_item"""
+        return self._rollup(node)
+
     @staticmethod
     def select_list(node: CTree) -> str:
         """rollup items in select_list"""

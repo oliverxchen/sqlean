@@ -294,7 +294,12 @@ Tree(
                                                                             [
                                                                                 Tree(
                                                                                     "select_item_unaliased",
-                                                                                    [Token("STAR", "*")],
+                                                                                    [
+                                                                                        Tree(
+                                                                                            "star_expression",
+                                                                                            [Token("STAR", "*")],
+                                                                                        )
+                                                                                    ],
                                                                                 )
                                                                             ],
                                                                         ),
@@ -596,7 +601,10 @@ Tree(
                     "select_expr",
                     [
                         Tree("select_type", [Token("SELECT", "SELEct")]),
-                        Tree("select_list", [Tree("select_item_unaliased", [Token("STAR", "*")])]),
+                        Tree(
+                            "select_list",
+                            [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])],
+                        ),
                         Token("FROM", "from"),
                         Tree(
                             "from_clause",
