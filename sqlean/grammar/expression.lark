@@ -50,10 +50,11 @@ window_orderby_modifier: ORDER_BY orderby_list
 
 arg_list: arg_item ("," arg_item)*
 !arg_item: interval
-    | base_expression
+    | [DISTINCT] base_expression
     | base_expression "AS"i data_type
     | interval "FROM"i base_expression
     | INTERVAL INT interval
+DISTINCT: "DISTINCT"i
 INTERVAL: "INTERVAL"i
 
 //////////
