@@ -53,6 +53,8 @@ arg_list: arg_item ("," arg_item)*
     | base_expression
     | base_expression "AS"i data_type
     | interval "FROM"i base_expression
+    | INTERVAL INT interval
+INTERVAL: "INTERVAL"i
 
 //////////
 // case //
