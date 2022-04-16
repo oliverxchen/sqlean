@@ -1,0 +1,59 @@
+select * except(a, table.b, 2) from table
+
+---
+
+SELECT
+  * EXCEPT(a, table.b, 2),
+FROM
+  table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree("star_expression", [Token("STAR", "*")]),
+                                Tree(
+                                    "except_expression",
+                                    [
+                                        Token("EXCEPT", "except"),
+                                        Token("LPAR", "("),
+                                        Tree(
+                                            "except_list",
+                                            [
+                                                Tree("except_item", [Token("CNAME", "a")]),
+                                                Tree(
+                                                    "except_item",
+                                                    [
+                                                        Tree(
+                                                            "table_referenced_field",
+                                                            [Token("CNAME", "table"), Token("CNAME", "b")],
+                                                        )
+                                                    ],
+                                                ),
+                                                Tree("except_item", [Token("INT", "2")]),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                    ],
+                                ),
+                            ],
+                        )
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+            ],
+        )
+    ],
+)
