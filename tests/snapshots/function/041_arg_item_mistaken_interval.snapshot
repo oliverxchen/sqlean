@@ -1,0 +1,44 @@
+select
+    max(days_before) -- if not treated properly, day is considered as a DATE_INTERVAL
+from a
+
+---
+
+SELECT
+  MAX(days_before),  -- if not treated properly, day is considered as a DATE_INTERVAL
+FROM
+  a
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Tree("function_name", [Token("CNAME", "max")]),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "days_before")])]),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Token("INLINE_COMMENT", "-- if not treated properly, day is considered as a DATE_INTERVAL"),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "a")])]),
+            ],
+        )
+    ],
+)

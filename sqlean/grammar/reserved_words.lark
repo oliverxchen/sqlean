@@ -1,37 +1,37 @@
 // BigQuery data types, mainly for casting to
-!data_type: "BOOL"i
-    | "BYTES"i ["(" INT ")"]
-    | "DATE"i
-    | "DATETIME"i
-    | "TIMESTAMP"i
-    | "INT64"i
-    | "INT"i
-    | "SMALLINT"i
-    | "INTEGER"i
-    | "BIGINT"i
-    | "TINYINT"i
-    | "BYTEINT"i
-    | "NUMERIC"i
-    | "DECIMAL"i
-    | "BIGNUMERIC"i
-    | "BIGDECIMAL"i
-    | "FLOAT64"i
-    | "STRING"i
+!data_type: /\bBOOL\b/i
+    | /\bBYTES\b/i ["(" INT ")"]
+    | /\bDATE\b/i
+    | /\bDATETIME\b/i
+    | /\bTIMESTAMP\b/i
+    | /\bINT64\b/i
+    | /\bINT\b/i
+    | /\bSMALLINT\b/i
+    | /\bINTEGER\b/i
+    | /\bBIGINT\b/i
+    | /\bTINYINT\b/i
+    | /\bBYTEINT\b/i
+    | /\bNUMERIC\b/i
+    | /\bDECIMAL\b/i
+    | /\bBIGNUMERIC\b/i
+    | /\bBIGDECIMAL\b/i
+    | /\bFLOAT64\b/i
+    | /\bSTRING\b/i
 
 // BigQuery date/time intervals
 ?interval: DATE_INTERVAL
     | TIME_INTERVAL
-DATE_INTERVAL.2: "DAY"i
-    | "DAYOFYEAR"i
-    | "MONTH"i
-    | "WEEK"i
-    | "ISOWEEK"i
-    | "YEAR"i
-    | "ISOYEAR"i
-TIME_INTERVAL.2: "MICROSECOND"i
-    | "MILLISECOND"i
-    | "SECOND"i
-    | "MINUTE"i
-    | "HOUR"i
+DATE_INTERVAL.2: /\bDAY\b/i
+    | /\bDAYOFYEAR\b/i
+    | /\bMONTH\b/i
+    | /\bWEEK\b/i
+    | /\bISOWEEK\b/i
+    | /\bYEAR\b/i
+    | /\bISOYEAR\b/i
+TIME_INTERVAL.2: /\bMICROSECOND\b/i
+    | /\bMILLISECOND\b/i
+    | /\bSECOND\b/i
+    | /\bMINUTE\b/i
+    | /\bHOUR\b/i
 
 %import common.INT
