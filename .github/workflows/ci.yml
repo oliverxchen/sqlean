@@ -30,7 +30,6 @@ jobs:
       with:
         path: |
           .venv
-          poetry.lock
           .mypy_cache
           .pytest_cache
         # Cache the complete venv dir for a given python version and poetry.lock
