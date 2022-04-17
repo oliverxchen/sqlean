@@ -1,66 +1,60 @@
 WITH
 
+-- this is an inline comment after the WITH
+/* this is a block comment after the WITH */
 cte_1 AS (
-    select
-	    a, --comment on why to include a
-	    b, --comment on why to include b
-	    c --comment on why to include c
-    from table
+    select a from table
 ),
 
+-- this is an inline comment after a comma
+/* this is a block comment after a comma */
 cte_2 AS (
-    select
-	    a,
-	    b, --another comment on b
-	    c
-    from table_2
-),
+    select a from table_2
+)
 
-cte_3 AS (
-    select
-	    a, --another comment on a
-	    b,
-	    c --another comment on c
-    from table_3
+-- this is an inline comment before a comma
+/* this is a block comment before a comma */
+, cte_3 AS (
+    select a from table_3
 )
 
 SELECT
-    a --comment on a
+    a
 FROM cte_1
 
 ---
 
 WITH
 
+-- this is an inline comment after the WITH
+/* this is a block comment after the WITH */
 cte_1 AS (
   SELECT
-    a,  -- comment on why to include a
-    b,  -- comment on why to include b
-    c,  -- comment on why to include c
+    a,
   FROM
     table
 ),
 
+-- this is an inline comment after a comma
+/* this is a block comment after a comma */
 cte_2 AS (
   SELECT
     a,
-    b,  -- another comment on b
-    c,
   FROM
     table_2
 ),
 
+-- this is an inline comment before a comma
+/* this is a block comment before a comma */
 cte_3 AS (
   SELECT
-    a,  -- another comment on a
-    b,
-    c,  -- another comment on c
+    a,
   FROM
     table_3
 )
 
 SELECT
-  a,  -- comment on a
+  a,
 FROM
   cte_1
 
@@ -73,6 +67,8 @@ Tree(
             "query_expr",
             [
                 Token("WITH", "WITH"),
+                Token("COMMENT", "-- this is an inline comment after the WITH"),
+                Token("COMMENT", "/* this is a block comment after the WITH */"),
                 Tree(
                     "with_clause",
                     [
@@ -83,17 +79,7 @@ Tree(
                             "select_expr",
                             [
                                 Tree("select_type", [Token("SELECT", "select")]),
-                                Tree(
-                                    "select_list",
-                                    [
-                                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
-                                        Token("COMMENT", "--comment on why to include a"),
-                                        Tree("select_item_unaliased", [Token("CNAME", "b")]),
-                                        Token("COMMENT", "--comment on why to include b"),
-                                        Tree("select_item_unaliased", [Token("CNAME", "c")]),
-                                        Token("COMMENT", "--comment on why to include c"),
-                                    ],
-                                ),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "a")])]),
                                 Token("FROM", "from"),
                                 Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
                             ],
@@ -102,6 +88,8 @@ Tree(
                     ],
                 ),
                 Token("COMMA", ","),
+                Token("COMMENT", "-- this is an inline comment after a comma"),
+                Token("COMMENT", "/* this is a block comment after a comma */"),
                 Tree(
                     "with_clause",
                     [
@@ -112,15 +100,7 @@ Tree(
                             "select_expr",
                             [
                                 Tree("select_type", [Token("SELECT", "select")]),
-                                Tree(
-                                    "select_list",
-                                    [
-                                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
-                                        Tree("select_item_unaliased", [Token("CNAME", "b")]),
-                                        Token("COMMENT", "--another comment on b"),
-                                        Tree("select_item_unaliased", [Token("CNAME", "c")]),
-                                    ],
-                                ),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "a")])]),
                                 Token("FROM", "from"),
                                 Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_2")]),
                             ],
@@ -128,6 +108,8 @@ Tree(
                         Token("RPAR", ")"),
                     ],
                 ),
+                Token("COMMENT", "-- this is an inline comment before a comma"),
+                Token("COMMENT", "/* this is a block comment before a comma */"),
                 Token("COMMA", ","),
                 Tree(
                     "with_clause",
@@ -139,16 +121,7 @@ Tree(
                             "select_expr",
                             [
                                 Tree("select_type", [Token("SELECT", "select")]),
-                                Tree(
-                                    "select_list",
-                                    [
-                                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
-                                        Token("COMMENT", "--another comment on a"),
-                                        Tree("select_item_unaliased", [Token("CNAME", "b")]),
-                                        Tree("select_item_unaliased", [Token("CNAME", "c")]),
-                                        Token("COMMENT", "--another comment on c"),
-                                    ],
-                                ),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "a")])]),
                                 Token("FROM", "from"),
                                 Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_3")]),
                             ],
@@ -160,10 +133,7 @@ Tree(
                     "select_expr",
                     [
                         Tree("select_type", [Token("SELECT", "SELECT")]),
-                        Tree(
-                            "select_list",
-                            [Tree("select_item_unaliased", [Token("CNAME", "a")]), Token("COMMENT", "--comment on a")],
-                        ),
+                        Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "a")])]),
                         Token("FROM", "FROM"),
                         Tree("from_clause", [Token("STANDARD_TABLE_NAME", "cte_1")]),
                     ],

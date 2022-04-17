@@ -33,7 +33,7 @@ Tree(
                                 )
                             ],
                         ),
-                        Token("INLINE_COMMENT", "-- if not treated properly, day is considered as a DATE_INTERVAL"),
+                        Token("COMMENT", "-- if not treated properly, day is considered as a DATE_INTERVAL"),
                     ],
                 ),
                 Token("FROM", "from"),

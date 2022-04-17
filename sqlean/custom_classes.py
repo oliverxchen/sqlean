@@ -9,8 +9,11 @@ class CData(str):
     """Custom data structure for trees and tokens"""
 
     indent_level: int
+    lines_from_previous: int
 
-    def __new__(cls, name: str, indent_level: int = 0) -> "CData":
+    def __new__(
+        cls, name: str, indent_level: int = 0, lines_from_previous: int = 0
+    ) -> "CData":
         """Class method to create a new instance of CData.
         CData inherits from `str` to be a valid object for
         Tree.data and Token.type.
@@ -19,6 +22,7 @@ class CData(str):
         of CData that are specified here."""
         obj = str.__new__(cls, name)
         obj.indent_level = indent_level
+        obj.lines_from_previous = lines_from_previous
         return obj
 
 

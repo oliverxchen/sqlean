@@ -48,7 +48,8 @@ class Parser:
 
 
 class TreeGroomer(Visitor_Recursive[Token]):
-    """Grooms the trees of ugly branches and leaves, sets indentation."""
+    """Grooms the trees of ugly branches and leaves, sets indentation,
+    determines line spacing for comments."""
 
     root = "query_file"
 
@@ -92,9 +93,11 @@ class TreeGroomer(Visitor_Recursive[Token]):
         if tree.data == TreeGroomer.root:
             tree.data = CData(name=TreeGroomer.root, indent_level=0)
 
-        for child in tree.children:
+        for idx, child in enumerate(tree.children):
             child = self.__remove_prefix_from_node(child)
             child = self.__set_indent_level(child, tree.data)
+            if isinstance(child, Token) and child.type == "COMMENT" and idx > 0:
+                child = self.__set_lines_from_previous(child, tree.children[idx - 1])
 
     def __remove_prefix_from_node(
         self, node: Union[CTree, CToken]
@@ -130,6 +133,27 @@ class TreeGroomer(Visitor_Recursive[Token]):
         elif parent_data in self.parents_to_indent:
             increment_level = 1
         return parent_data.indent_level + increment_level
+
+    def __set_lines_from_previous(
+        self, child: CToken, prev_child: Union[CTree, CToken]
+    ) -> CToken:
+        name = child.type
+        indent_level = child.type.indent_level
+        lines_from_previous = child.line - self.__get_tree_end_line(prev_child)
+        child.type = CData(
+            name=name,
+            indent_level=indent_level,
+            lines_from_previous=lines_from_previous,
+        )
+        return child
+
+    def __get_tree_end_line(self, child: Union[CTree, CToken]) -> int:
+        end_line: int
+        if isinstance(child, Tree):
+            end_line = self.__get_tree_end_line(child.children[-1])
+        else:
+            end_line = child.end_line
+        return end_line
 
 
 class Debugger(Visitor_Recursive[Token]):
