@@ -20,12 +20,7 @@ Tree(
                 Token("FROM", "from"),
                 Tree(
                     "from_clause",
-                    [
-                        Tree(
-                            "table_item_aliased",
-                            [Tree("simple_table_name", [Token("CNAME", "table")]), Token("CNAME", "t")],
-                        )
-                    ],
+                    [Tree("table_item_aliased", [Token("STANDARD_TABLE_NAME", "table"), Token("CNAME", "t")])],
                 ),
             ],
         )

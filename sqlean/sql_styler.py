@@ -35,8 +35,11 @@ class BaseMixin(Transformer):  # type: ignore
         lines = [f"{self.indent * indent_level}{line}" for line in text.split(linesep)]
         return linesep.join(lines)
 
-    def _token_indent(self, token: CToken) -> str:
+    def _token_indent_adjust_case(self, token: CToken) -> str:
         return self._apply_indent(token.upper(), token.type.indent_level)
+
+    def _token_indent(self, token: CToken) -> str:
+        return self._apply_indent(token, token.type.indent_level)
 
     @staticmethod
     def _stringify_children(node: CTree) -> List[str]:
@@ -59,10 +62,6 @@ class BaseMixin(Transformer):  # type: ignore
         """Join list with space"""
         output = [child.lstrip() for child in self._stringify_children(node)]
         return " ".join(output)
-
-    def _rollup_dot(self, node: CTree) -> str:
-        """Join list with space"""
-        return ".".join(self._stringify_children(node))
 
     def _rollup_comma_inline(self, node: CTree) -> str:
         """Join list with comma space"""
@@ -92,11 +91,11 @@ class TerminalMixin(BaseMixin):
 
     def FROM(self, token: CToken) -> str:  # pylint: disable=invalid-name
         """print FROM"""
-        return self._token_indent(token)
+        return self._token_indent_adjust_case(token)
 
     def WHERE(self, token: CToken) -> str:  # pylint: disable=invalid-name
         """print WHERE"""
-        return self._token_indent(token)
+        return self._token_indent_adjust_case(token)
 
     @staticmethod
     def INLINE_COMMENT(token: Token) -> Token:  # pylint: disable=invalid-name
@@ -104,6 +103,10 @@ class TerminalMixin(BaseMixin):
         content = "-- " + token[2:].strip()
         token = token.update(value=content)
         return token
+
+    def STANDARD_TABLE_NAME(self, token: CToken) -> str:  # pylint: disable=invalid-name
+        """print STANDARD_TABLE_NAME"""
+        return self._token_indent(token)
 
 
 @v_args(tree=True)
@@ -212,10 +215,6 @@ class SelectMixin(BaseMixin):
         output = f"{node.children[0]} AS {node.children[1]}"
         return self._apply_indent(output, node.data.indent_level)
 
-    def table_referenced_field(self, node: CTree) -> str:
-        """print table_referenced_field"""
-        return self._rollup_dot(node)
-
     def when_item(self, node: CTree) -> str:
         """print when_item"""
         # turn multi-line expression into single line
@@ -253,15 +252,6 @@ class FromMixin(BaseMixin):
     def from_clause(self, node: CTree) -> str:
         """rollup items in from_clause"""
         return self._rollup_linesep(node)
-
-    def simple_table_name(self, node: CTree) -> str:
-        """print simple_table_name"""
-        return self._simple_indent(node)
-
-    def explicit_table_name(self, node: CTree) -> str:
-        """print explicit_table_name"""
-        output = f"`{self._rollup_dot(node)}`"
-        return self._apply_indent(output, node.data.indent_level)
 
     def table_item_aliased(self, node: CTree) -> str:
         """print explicit_table_name"""
@@ -366,24 +356,17 @@ class FunctionMixin(BaseMixin):
     @staticmethod
     def standard_function_expression(node: CTree) -> str:
         """print standard_function_expression"""
-        return f"{str(node.children[0])}({node.children[1]})"
+        return f"{node.children[0]}{node.children[1]})"
 
     @staticmethod
-    def function_name(node: CTree) -> str:
-        """print function_name"""
-        if len(node.children) == 6:
-            upper_set = {5}
-        elif len(node.children) == 3 and str(node.children[0]).upper() != "SAFE":
-            upper_set = {2}
-        else:
-            upper_set = set(range(len(node.children)))
-        children: List[str] = []
-        for i, child in enumerate(node.children):
-            if i in upper_set:
-                children.append(str(child).upper())
-            else:
-                children.append(str(child))
-        return "".join(children)
+    def FUNCTION_NAME(token: CToken) -> str:  # pylint: disable=invalid-name
+        """print FUNCTION_NAME"""
+        children = token.value.split(".")
+        children[-1] = children[-1].upper()
+        for i, child in enumerate(children):
+            if child.upper() == "SAFE":
+                children[i] = "SAFE"
+        return ".".join(children)
 
     def arg_list(self, node: CTree) -> str:
         """rollup arg_list"""
@@ -409,9 +392,9 @@ class FunctionMixin(BaseMixin):
     def window_function_expression(node: CTree) -> str:
         """print window_function_expression"""
         if len(node.children) == 3:
-            output = f"{node.children[0]}({node.children[1]}) {node.children[2]}"
+            output = f"{node.children[0]}{node.children[1]}) {node.children[2]}"
         elif len(node.children) == 2:
-            output = f"{str(node.children[0])}() {node.children[1]}"
+            output = f"{node.children[0]}) {node.children[1]}"
         else:
             raise NotImplementedError(
                 "window_function_expression: "
@@ -541,12 +524,12 @@ class JinjaMixin(BaseMixin):
         """print macro"""
         return self.__format_macro_expr(node)
 
-    def dataset_id(self, node: CTree) -> str:
-        """print dataset_id"""
+    def source_name(self, node: CTree) -> str:
+        """print source_name"""
         return self._apply_black(str(node.children[0]))
 
-    def table_id(self, node: CTree) -> str:
-        """print table_id"""
+    def table_name(self, node: CTree) -> str:
+        """print table_name"""
         return self._apply_black(str(node.children[0]))
 
     def dbt_reference(self, node: CTree) -> str:

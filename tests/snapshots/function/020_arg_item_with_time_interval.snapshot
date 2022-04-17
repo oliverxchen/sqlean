@@ -25,7 +25,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "time_trunc")]),
+                                        Token("FUNCTION_NAME", "time_trunc("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -40,7 +40,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "c")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "c")]),
             ],
         )
     ],

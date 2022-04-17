@@ -31,7 +31,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "IF")]),
+                                        Token("FUNCTION_NAME", "IF("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -64,7 +64,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "IF")]),
+                                        Token("FUNCTION_NAME", "IF("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -95,7 +95,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "IF")]),
+                                        Token("FUNCTION_NAME", "IF("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -137,7 +137,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table_a")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_a")]),
             ],
         )
     ],

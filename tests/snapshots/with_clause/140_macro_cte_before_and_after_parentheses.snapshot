@@ -51,7 +51,7 @@ Tree(
                                     [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])],
                                 ),
                                 Token("FROM", "from"),
-                                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table_a")])]),
+                                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_a")]),
                             ],
                         ),
                         Token("RPAR", ")"),
@@ -110,7 +110,7 @@ Tree(
                                         Tree(
                                             "standard_function_expression",
                                             [
-                                                Tree("function_name", [Token("CNAME", "sum")]),
+                                                Token("FUNCTION_NAME", "sum("),
                                                 Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
                                             ],
                                         )
@@ -119,7 +119,7 @@ Tree(
                             ],
                         ),
                         Token("FROM", "from"),
-                        Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "macro_cte")])]),
+                        Tree("from_clause", [Token("STANDARD_TABLE_NAME", "macro_cte")]),
                     ],
                 ),
             ],

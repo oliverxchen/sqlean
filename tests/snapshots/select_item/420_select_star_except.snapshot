@@ -32,15 +32,7 @@ Tree(
                                             "except_list",
                                             [
                                                 Tree("except_item", [Token("CNAME", "a")]),
-                                                Tree(
-                                                    "except_item",
-                                                    [
-                                                        Tree(
-                                                            "table_referenced_field",
-                                                            [Token("CNAME", "table"), Token("CNAME", "b")],
-                                                        )
-                                                    ],
-                                                ),
+                                                Tree("except_item", [Token("TABLE_REF_FIELD_NAME", "table.b")]),
                                                 Tree("except_item", [Token("INT", "2")]),
                                             ],
                                         ),
@@ -52,7 +44,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
             ],
         )
     ],

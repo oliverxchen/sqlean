@@ -24,7 +24,7 @@ Tree(
                     [
                         Tree(
                             "select_item_unaliased",
-                            [Tree("star_expression", [Token("CNAME", "table_2"), Token("ANON_19", ".*")])],
+                            [Tree("star_expression", [Token("CNAME", "table_2"), Token("ANON_18", ".*")])],
                         )
                     ],
                 ),
@@ -35,9 +35,9 @@ Tree(
                         Tree(
                             "join_operation_with_condition",
                             [
-                                Tree("simple_table_name", [Token("CNAME", "table_1")]),
+                                Token("STANDARD_TABLE_NAME", "table_1"),
                                 Tree("inner_join", []),
-                                Tree("simple_table_name", [Token("CNAME", "table_2")]),
+                                Token("STANDARD_TABLE_NAME", "table_2"),
                                 Tree(
                                     "using_clause",
                                     [

@@ -27,7 +27,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "max")]),
+                                        Token("FUNCTION_NAME", "max("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "days_before")])]),
                                     ],
                                 )
@@ -37,7 +37,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "a")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "a")]),
             ],
         )
     ],

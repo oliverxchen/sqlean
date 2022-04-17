@@ -10,15 +10,19 @@ VAR_END_STR: "}}"
 !dbt_config: VAR_START_STR CONFIG "(" [python_arg_list] ")" VAR_END_STR
 CONFIG: "config"
 
-!macro: VAR_START_STR CNAME "(" [python_arg_list] ")" VAR_END_STR
-
 !dbt_ref: VAR_START_STR "ref" "(" dbt_reference ")" VAR_END_STR
-!dbt_src: VAR_START_STR "source" "(" dataset_id "," table_id ")" VAR_END_STR
+!dbt_src: VAR_START_STR "source" "(" source_name "," table_name ")" VAR_END_STR
 dbt_reference: string
-dataset_id: string
-table_id: string
+source_name: string
+table_name: string
 dbt_table_name: dbt_ref
     | dbt_src
+
+///////////
+// jinja //
+///////////
+!macro: VAR_START_STR CNAME "(" [python_arg_list] ")" VAR_END_STR
+// !jinja_variable: VAR_START_STR CNAME VAR_END_STR
 
 /////////////////
 // python args //

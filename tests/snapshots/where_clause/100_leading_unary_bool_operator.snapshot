@@ -23,7 +23,7 @@ Tree(
                 Tree(
                     "from_clause",
                     [
-                        Tree("simple_table_name", [Token("CNAME", "table")]),
+                        Token("STANDARD_TABLE_NAME", "table"),
                         Token("WHERE", "where"),
                         Tree(
                             "indented_bool_expression",

@@ -26,9 +26,9 @@ Tree(
                         Tree(
                             "cross_join_operation",
                             [
-                                Tree("simple_table_name", [Token("CNAME", "table1")]),
+                                Token("STANDARD_TABLE_NAME", "table1"),
                                 Tree("cross_join", []),
-                                Tree("simple_table_name", [Token("CNAME", "table2")]),
+                                Token("STANDARD_TABLE_NAME", "table2"),
                             ],
                         )
                     ],

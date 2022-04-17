@@ -43,7 +43,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Token("FUNCTION_NAME", "cast("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -68,7 +68,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Token("FUNCTION_NAME", "cast("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -93,7 +93,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Token("FUNCTION_NAME", "cast("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -117,7 +117,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Token("FUNCTION_NAME", "cast("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -141,7 +141,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Token("FUNCTION_NAME", "cast("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -165,7 +165,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Token("FUNCTION_NAME", "cast("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -197,7 +197,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Token("FUNCTION_NAME", "cast("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -221,7 +221,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "cast")]),
+                                        Token("FUNCTION_NAME", "cast("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -245,7 +245,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "safe_cast")]),
+                                        Token("FUNCTION_NAME", "safe_cast("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -266,7 +266,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
             ],
         )
     ],

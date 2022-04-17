@@ -17,30 +17,34 @@ select_item_aliased: base_expression as_alias
 EXCEPT: "EXCEPT"i
 except_list: except_item ("," except_item)*
 except_item: CNAME
-    | table_referenced_field
+    | TABLE_REF_FIELD_NAME
     | INT
 
 /////////////////////
 // base_expression //
 /////////////////////
-?base_expression: table_referenced_field
-    | standard_function_expression
+?base_expression: standard_function_expression
     | window_function_expression
+    | TABLE_REF_FIELD_NAME
     | case_expression
     | macro
     | CNAME
     | literal
 
-table_referenced_field: CNAME "." CNAME
-    | explicit_table_name "." CNAME
-
 ///////////////
 // functions //
 ///////////////
-standard_function_expression: function_name "(" arg_list ")"
-window_function_expression: function_name "(" [arg_list] ")" "OVER"i over_clause
-!function_name: CNAME
-    | ["`" PROJECT_ID  "`."] CNAME "." CNAME
+standard_function_expression: FUNCTION_NAME arg_list ")"
+window_function_expression: FUNCTION_NAME [arg_list] ")" "OVER"i over_clause
+FUNCTION_NAME.10: /(?!(?:\bfrom\b))\w+\s*\(/i
+    | /\w+\.\w+\s*\(/
+    | /(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})(\s*\()/
+    | /`(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})`(\s*\()/
+// Regex is needed above to have a single token. These are of the form:
+// 1. "function (" [not "from (" though so that sub-queries are not captured. But "afrom (" and "frommage (" are allowed]
+// 2. "dataset.function ("
+// 3. "A.B.C (" where A, B and C can be of the form: "`foo`", "foo", "`{{ foo }}`" or "{{ foo }}"
+// 4. "`A.B.C` (" where A, B and C can be of the form: "foo" or "{{ foo }}"
 
 over_clause: "(" window_specification  ")" // or named_window
 window_specification: [partition_modifier] [window_orderby_modifier] // [window_frame_clause] TODO
@@ -149,9 +153,7 @@ orderby_list: orderby_item ("," orderby_item)*
 %import jinja.macro
 %import reserved_words.data_type
 %import reserved_words.interval
-%import table.explicit_table_name
-%import table.PROJECT_ID
-%import table.DATASET_ID
+%import table.TABLE_REF_FIELD_NAME
 %import literal.literal
 %import literal.nullable_boolean
 %import literal.string

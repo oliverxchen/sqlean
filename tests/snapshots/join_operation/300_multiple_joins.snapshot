@@ -39,9 +39,9 @@ Tree(
                                 Tree(
                                     "join_operation_with_condition",
                                     [
-                                        Tree("simple_table_name", [Token("CNAME", "table_a")]),
+                                        Token("STANDARD_TABLE_NAME", "table_a"),
                                         Tree("inner_join", []),
-                                        Tree("simple_table_name", [Token("CNAME", "table_b")]),
+                                        Token("STANDARD_TABLE_NAME", "table_b"),
                                         Tree(
                                             "using_clause",
                                             [
@@ -57,9 +57,9 @@ Tree(
                                 Tree(
                                     "join_operation_with_condition",
                                     [
-                                        Tree("simple_table_name", [Token("CNAME", "table_c")]),
+                                        Token("STANDARD_TABLE_NAME", "table_c"),
                                         Tree("right_join", []),
-                                        Tree("simple_table_name", [Token("CNAME", "table_d")]),
+                                        Token("STANDARD_TABLE_NAME", "table_d"),
                                         Tree(
                                             "on_clause",
                                             [
@@ -70,15 +70,9 @@ Tree(
                                                         Tree(
                                                             "binary_comparison_operation",
                                                             [
-                                                                Tree(
-                                                                    "table_referenced_field",
-                                                                    [Token("CNAME", "table_c"), Token("CNAME", "id")],
-                                                                ),
+                                                                Token("TABLE_REF_FIELD_NAME", "table_c.id"),
                                                                 Token("BINARY_COMPARISON_OPERATOR", "="),
-                                                                Tree(
-                                                                    "table_referenced_field",
-                                                                    [Token("CNAME", "table_d"), Token("CNAME", "id")],
-                                                                ),
+                                                                Token("TABLE_REF_FIELD_NAME", "table_d.id"),
                                                             ],
                                                         )
                                                     ],

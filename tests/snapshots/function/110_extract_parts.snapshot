@@ -33,7 +33,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "EXTRACT")]),
+                                        Token("FUNCTION_NAME", "EXTRACT("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -58,7 +58,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "extract")]),
+                                        Token("FUNCTION_NAME", "extract("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -83,7 +83,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "extract")]),
+                                        Token("FUNCTION_NAME", "extract("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -107,7 +107,7 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Tree("function_name", [Token("CNAME", "extract")]),
+                                        Token("FUNCTION_NAME", "extract("),
                                         Tree(
                                             "arg_list",
                                             [
@@ -128,7 +128,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Tree("simple_table_name", [Token("CNAME", "table")])]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
             ],
         )
     ],
