@@ -4,11 +4,13 @@
 // for dbt config //
 ////////////////////
 query_file: [dbt_config] query_expr
+    | COMMENT* [dbt_config] query_expr
+    | dbt_config COMMENT* query_expr
 
 /////////////////////////
 // general sql queries //
 /////////////////////////
-!?query_expr: "WITH"i with_clause ("," with_clause)* select_expr
+!?query_expr: "WITH"i COMMENT* with_clause ( COMMENT* "," COMMENT* with_clause)* select_expr
     | select_expr
     | macro
 
@@ -62,6 +64,10 @@ using_list: CNAME ("," CNAME)*
 !limit_clause: "LIMIT"i INT ["OFFSET"i INT]
 
 
+%import common.CNAME
+%import common.INT
+%import common.WS
+%import comment.COMMENT
 %import expression.indented_bool_expression
 %import expression.groupby_modifier
 %import expression.orderby_modifier
@@ -69,7 +75,4 @@ using_list: CNAME ("," CNAME)*
 %import jinja.dbt_config
 %import jinja.macro
 %import table.table_item
-%import common.CNAME
-%import common.INT
-%import common.WS
 %ignore WS

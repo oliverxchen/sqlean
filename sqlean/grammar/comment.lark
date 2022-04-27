@@ -1,1 +1,6 @@
-INLINE_COMMENT: /--.*/
+COMMENT: C_COMMENT
+    | SQL_COMMENT
+
+
+%import common.C_COMMENT
+%import common.SQL_COMMENT

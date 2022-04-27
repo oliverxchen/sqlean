@@ -1,0 +1,70 @@
+/* this
+is
+a
+block comment before the config
+*/
+-- this is an inline comment before the config
+
+{{ config(foo="bar") }}
+
+select * from table
+
+---
+
+/* this
+is
+a
+block comment before the config
+*/
+
+-- this is an inline comment before the config
+
+{{
+  config(foo="bar")
+}}
+
+SELECT
+  *,
+FROM
+  table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Token("COMMENT", "/* this\nis\na\nblock comment before the config\n*/"),
+        Token("COMMENT", "-- this is an inline comment before the config"),
+        Tree(
+            "dbt_config",
+            [
+                Token("VAR_START_STR", "{{"),
+                Token("CONFIG", "config"),
+                Token("LPAR", "("),
+                Tree(
+                    "python_arg_list",
+                    [
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "foo"), Token("EQUAL", "=")]),
+                                Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"bar"')]),
+                            ],
+                        )
+                    ],
+                ),
+                Token("RPAR", ")"),
+                Token("VAR_END_STR", "}}"),
+            ],
+        ),
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])]),
+                Token("FROM", "from"),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
+            ],
+        ),
+    ],
+)

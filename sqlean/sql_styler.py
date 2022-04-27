@@ -1,7 +1,7 @@
 """Styling of SQL queries"""
 
 from os import linesep
-from typing import List
+from typing import List, Union
 
 import black
 from lark.tree import Tree
@@ -98,10 +98,11 @@ class TerminalMixin(BaseMixin):
         return self._token_indent_adjust_case(token)
 
     @staticmethod
-    def INLINE_COMMENT(token: Token) -> Token:  # pylint: disable=invalid-name
-        """print INLINE_COMMENT"""
-        content = "-- " + token[2:].strip()
-        token = token.update(value=content)
+    def COMMENT(token: Token) -> Token:  # pylint: disable=invalid-name
+        """print COMMENT"""
+        if not token.startswith("---") and not token.startswith("/*"):
+            content = "-- " + token[2:].strip()
+            token = token.update(value=content)
         return token
 
     def STANDARD_TABLE_NAME(self, token: CToken) -> str:  # pylint: disable=invalid-name
@@ -118,19 +119,51 @@ class QueryMixin(BaseMixin):
         return self._rollup_double_linesep(node)
 
     def query_expr(self, node: CTree) -> str:
-        """rollup itms in query_expr"""
-        output: List[str] = []
-        counter = 0
+        """rollup items in query_expr"""
+        query_parts = self._remove_commas_from_query_expr(node)
+        query_parts = self._insert_commas_linesep_to_query_expr(query_parts)
+        return linesep.join([str(p) for p in query_parts])
+
+    def _remove_commas_from_query_expr(
+        self, node: CTree
+    ) -> List[Union[CTree, CToken, str]]:
+        """Remove commas from query_expr and indent WITH"""
+        query_parts: List[Union[CTree, CToken, str]] = []
+        is_first: bool = True
         for child in node.children:
             if str(child) == ",":
-                output[counter - 1] += ","
-            elif counter == 0:
-                output.append(self._apply_indent(str(child), node.data.indent_level))
-                counter += 1
+                continue
+            if is_first:
+                query_parts.append(
+                    self._apply_indent(str(child), node.data.indent_level)
+                )
+                is_first = False
             else:
-                output.append(str(child))
-                counter += 1
-        return (2 * linesep).join(output)
+                query_parts.append(child)
+        return query_parts
+
+    @staticmethod
+    def _insert_commas_linesep_to_query_expr(
+        query_parts: List[Union[CTree, CToken, str]]
+    ) -> List[Union[CTree, CToken, str]]:
+        """Insert commas and linesep after CTEs, linesep after WITH.
+        No additional linesep after comments."""
+        last_with: int = 0
+        for idx, part in enumerate(query_parts):
+            clean_part = str(part).strip().lower()
+            if not (
+                clean_part == "with"
+                or isinstance(part, Token)
+                or clean_part.startswith("select")
+            ):
+                query_parts[idx] = str(part) + "," + linesep
+                last_with = idx
+            if idx == 0 and clean_part == "with":
+                query_parts[idx] = str(part) + linesep
+        query_parts[last_with] = (
+            str(query_parts[last_with]).rstrip("," + linesep) + linesep
+        )
+        return query_parts
 
     def sub_query_expr(self, node: CTree) -> str:
         """print sub_query_expr"""
@@ -193,10 +226,7 @@ class SelectMixin(BaseMixin):
             child = node.children[counter]
             if counter + 1 < len(node.children):
                 next_child = node.children[counter + 1]
-                if (
-                    isinstance(next_child, Token)
-                    and next_child.type == "INLINE_COMMENT"
-                ):
+                if isinstance(next_child, Token) and next_child.type == "COMMENT":
                     output.append(f"{str(child)},  {str(next_child)}")
                     counter += 1
                 else:
@@ -576,6 +606,7 @@ class Styler(  # pylint: disable=too-many-ancestors
             or token.type.endswith("_EXPR")
             or token.type.endswith("_ID")
             or token.type.endswith("_STRING")
+            or token.type.endswith("COMMENT")
             or token.type == "SOURCE"
             or token.type == "REF"
         )
