@@ -76,7 +76,13 @@ class TreeGroomer(Visitor_Recursive[Token]):
     # These tokens will be incremented by the value with respect to the
     # token's parent's indent level. Otherwise, the token's indent level will
     # not be set.
-    token_indent_map = {"FROM": 0, "WHERE": -1, "STANDARD_TABLE_NAME": 0, "WITH": 0}
+    token_indent_map = {
+        "COMMENT": 0,
+        "FROM": 0,
+        "STANDARD_TABLE_NAME": 0,
+        "WHERE": -1,
+        "WITH": 0,
+    }
 
     # If a node has one of these as a parent, it will be indented by one more
     # than its parent.

@@ -1,4 +1,4 @@
-WITH
+WITH--this is an inline comment on the WITH line
 
 -- this is an inline comment after the WITH
 
@@ -24,7 +24,7 @@ FROM cte_1
 
 ---
 
-WITH
+WITH  -- this is an inline comment on the WITH line
 
 -- this is an inline comment after the WITH
 
@@ -67,6 +67,7 @@ Tree(
             "query_expr",
             [
                 Token("WITH", "WITH"),
+                Token("COMMENT", "--this is an inline comment on the WITH line"),
                 Token("COMMENT", "-- this is an inline comment after the WITH"),
                 Token("COMMENT", "/* this is a block comment with a line break before it */"),
                 Tree(

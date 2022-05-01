@@ -22,6 +22,7 @@ class CommentedListClass:  # pylint: disable=too-many-instance-attributes
         line_separator: str = linesep,
         has_ending_separator: bool = True,
         item_types: Set[str] = set(),
+        indent: str = "  ",
     ) -> None:
         self.children = children
         self.separator = separator
@@ -31,6 +32,7 @@ class CommentedListClass:  # pylint: disable=too-many-instance-attributes
         self.num_children = len(children)
         self.last_item_idx = self.__get_last_item_idx()
         self.output: List[str] = []
+        self.indent = indent
 
     def __get_last_item_idx(self) -> int:
         counter = len(self.children) - 1
@@ -71,6 +73,7 @@ class CommentedListClass:  # pylint: disable=too-many-instance-attributes
         self.output.append(str(self.children[0]))
         for idx in range(1, self.num_children):
             self._append_child_by_idx(idx)
+        self.output[-1] += self._get_separator_by_idx(self.num_children - 1, True)
 
     def _append_child_by_idx(self, idx: int) -> None:
         child = self.children[idx]
@@ -83,12 +86,23 @@ class CommentedListClass:  # pylint: disable=too-many-instance-attributes
             self.output.append(str(child))
 
     def _append_comment(
-        self, comment: Union[CToken, CTree], lines_between: int, idx: int
+        self, child: Union[CToken, CTree], lines_between: int, idx: int
     ) -> None:
         this_separator = self._get_separator_by_idx(idx - 1, is_inline=True)
         self.output[-1] += this_separator
-        spacer = 2 * " " if lines_between == 0 else ""
-        self.output.append(lines_between * linesep + spacer + str(comment))
+        if lines_between == 0:
+            self.output.append(lines_between * linesep + "  " + str(child))
+        else:
+            self.output.append(lines_between * linesep + self._indent_if_comment(child))
+
+    def _indent_if_comment(self, child: Union[CToken, CTree]) -> str:
+        if isinstance(child, Token) and child.type == "COMMENT":
+            lines = [
+                f"{self.indent * child.type.indent_level}{line}"
+                for line in child.split(linesep)
+            ]
+            return linesep.join(lines)
+        return str(child)
 
     def _get_separator_by_idx(self, idx: int, is_inline: bool) -> str:
         """This assumes that the child at idx has already been added to the output
@@ -178,6 +192,24 @@ class BaseMixin(Transformer):  # type: ignore
                 lines[i] = line.replace(" " * 4, " " * indent_size)
         return linesep.join(lines)
 
+    def _rollup_list(  # pylint: disable=too-many-arguments
+        self,
+        children: List[Union[CToken, CTree]],
+        separator: str,
+        line_separator: str,
+        has_ending_separator: bool,
+        item_types: Set[str],
+    ) -> str:
+        list_ = CommentedListClass(
+            children=children,
+            separator=separator,
+            line_separator=line_separator,
+            has_ending_separator=has_ending_separator,
+            item_types=item_types,
+            indent=self.indent,
+        )
+        return list_.rollup_list()
+
 
 @v_args(tree=True)
 class TerminalMixin(BaseMixin):
@@ -195,13 +227,27 @@ class TerminalMixin(BaseMixin):
         """print WITH"""
         return self._token_indent_adjust_case(token)
 
-    @staticmethod
-    def COMMENT(token: Token) -> Token:  # pylint: disable=invalid-name
+    def COMMENT(self, token: Token) -> Token:  # pylint: disable=invalid-name
         """print COMMENT"""
-        if not token.startswith("---") and not token.startswith("/*"):
+        if token.startswith("/*"):
+            token = token.update(value=self._format_block_comment(str(token)))
+        elif not token.startswith("---"):
             content = "-- " + token[2:].strip()
             token = token.update(value=content)
         return token
+
+    @staticmethod
+    def _format_block_comment(block_comment: str) -> str:
+        lines = [line.lstrip() for line in block_comment.split(linesep)]
+        output: List[str] = []
+        for line in lines:
+            if line.startswith("/*"):
+                output.append(f"/* {line[2:].lstrip()}")
+            elif line.startswith("*/"):
+                output.append(line)
+            else:
+                output.append(f"   {line}")
+        return linesep.join(output)
 
     def STANDARD_TABLE_NAME(self, token: CToken) -> str:  # pylint: disable=invalid-name
         """print STANDARD_TABLE_NAME"""
@@ -212,29 +258,25 @@ class TerminalMixin(BaseMixin):
 class QueryMixin(BaseMixin):
     """Mixin for query level nodes"""
 
-    @staticmethod
-    def query_file(node: CTree) -> str:
+    def query_file(self, node: CTree) -> str:
         """print query_file"""
-        list_ = CommentedListClass(
+        return self._rollup_list(
             children=list(node.children),
             separator="",
             line_separator=2 * linesep,
             has_ending_separator=True,
             item_types={"dbt_config"},
         )
-        return list_.rollup_list()
 
-    @staticmethod
-    def query_expr(node: CTree) -> str:
+    def query_expr(self, node: CTree) -> str:
         """rollup items in query_expr"""
-        list_ = CommentedListClass(
+        return self._rollup_list(
             children=list(node.children),
             separator=",",
             line_separator=2 * linesep,
             has_ending_separator=False,
             item_types={"with_clause"},
         )
-        return list_.rollup_list()
 
     def sub_query_expr(self, node: CTree) -> str:
         """print sub_query_expr"""
@@ -292,33 +334,29 @@ class SelectMixin(BaseMixin):
         """print except_item"""
         return self._rollup(node)
 
-    @staticmethod
-    def select_list(node: CTree) -> str:
+    def select_list(self, node: CTree) -> str:
         """rollup items in select_list"""
-        counter = 0
-        output: List[str] = []
-        while counter < len(node.children):
-            child = node.children[counter]
-            if counter + 1 < len(node.children):
-                next_child = node.children[counter + 1]
-                if isinstance(next_child, Token) and next_child.type == "COMMENT":
-                    output.append(f"{str(child)},  {str(next_child)}")
-                    counter += 1
-                else:
-                    output.append(str(child) + ",")
-            else:
-                output.append(str(child) + ",")
-            counter += 1
-        return linesep.join(output)
+        return self._rollup_list(
+            children=list(node.children),
+            separator=",",
+            line_separator=linesep,
+            has_ending_separator=True,
+            item_types={"select_item"},
+        )
 
-    def select_item_unaliased(self, node: CTree) -> str:
-        """print select_item_unaliased"""
-        return self._simple_indent(node)
+    def select_item_unaliased(self, node: CTree) -> CToken:
+        """Returns a token of type select_item
+        for identification by the parent"""
+        return CToken(type_=CData("select_item"), value=self._simple_indent(node))
 
     def select_item_aliased(self, node: CTree) -> str:
-        """print select_item_aliased"""
+        """Returns a token of type select_item
+        for identification by the parent"""
         output = f"{node.children[0]} AS {node.children[1]}"
-        return self._apply_indent(output, node.data.indent_level)
+        return CToken(
+            type_=CData("select_item"),
+            value=self._apply_indent(output, node.data.indent_level),
+        )
 
     def when_item(self, node: CTree) -> str:
         """print when_item"""

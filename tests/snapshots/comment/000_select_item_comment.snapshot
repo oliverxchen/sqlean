@@ -12,6 +12,10 @@ cte_2 AS (
     select
 	    a,
 	    b, --another comment on b
+
+     /* block
+     comment */
+ -- comment after a block comment
 	    c
     from table_2
 ),
@@ -45,6 +49,10 @@ cte_2 AS (
   SELECT
     a,
     b,  -- another comment on b
+
+    /* block
+       comment */
+    -- comment after a block comment
     c,
   FROM
     table_2
@@ -117,6 +125,8 @@ Tree(
                                         Tree("select_item_unaliased", [Token("CNAME", "a")]),
                                         Tree("select_item_unaliased", [Token("CNAME", "b")]),
                                         Token("COMMENT", "--another comment on b"),
+                                        Token("COMMENT", "/* block\n        comment */"),
+                                        Token("COMMENT", "-- comment after a block comment"),
                                         Tree("select_item_unaliased", [Token("CNAME", "c")]),
                                     ],
                                 ),
