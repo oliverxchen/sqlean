@@ -1,14 +1,112 @@
 """Styling of SQL queries"""
 
 from os import linesep
-from typing import List, Union
+from typing import List, Optional, Set, Union
 
 import black
 from lark.tree import Tree
 from lark.lexer import Token
 from lark.visitors import v_args, Transformer
 
-from sqlean.custom_classes import CToken, CTree
+from sqlean.custom_classes import CData, CToken, CTree
+
+
+class CommentedListClass:  # pylint: disable=too-many-instance-attributes
+    """Generic object to hold a list of children that may contain comments, to style
+    them properly"""
+
+    def __init__(  # pylint: disable=too-many-arguments, dangerous-default-value
+        self,
+        children: List[Union[CToken, CTree]] = [],
+        separator: str = ",",
+        line_separator: str = linesep,
+        has_ending_separator: bool = True,
+        item_types: Set[str] = set(),
+    ) -> None:
+        self.children = children
+        self.separator = separator
+        self.line_separator = line_separator
+        self.has_ending_separator = has_ending_separator
+        self.item_types = item_types
+        self.num_children = len(children)
+        self.last_item_idx = self.__get_last_item_idx()
+        self.output: List[str] = []
+
+    def __get_last_item_idx(self) -> int:
+        counter = len(self.children) - 1
+        while counter >= 0:
+            child = self.children[counter]
+            if self._is_item(child):
+                return counter
+            counter -= 1
+        return -1
+
+    @staticmethod
+    def _lines_from_previous(
+        child: Union[CToken, CTree], prev_child: Union[CToken, CTree]
+    ) -> Optional[int]:
+        """Returns None if both child and prev_child are not comments.
+        If one or both of them are, returns the number of lines between them.
+        """
+        if isinstance(child, Token) and child.type == "COMMENT":
+            return child.type.lines_from_previous
+        if isinstance(prev_child, Token) and prev_child.type == "COMMENT":
+            return prev_child.type.lines_to_next
+        return None
+
+    def _is_item(self, child: Union[CToken, CTree]) -> bool:
+        is_item = False
+        if isinstance(child, Tree) and str(child.data) in self.item_types:
+            is_item = True
+        elif isinstance(child, Token) and str(child.type) in self.item_types:
+            is_item = True
+        return is_item
+
+    def rollup_list(self) -> str:
+        """Rolls up the list of children (which may have comments) into a string"""
+        self._fill_output()
+        return "".join(self.output)
+
+    def _fill_output(self) -> None:
+        self.output.append(str(self.children[0]))
+        for idx in range(1, self.num_children):
+            self._append_child_by_idx(idx)
+
+    def _append_child_by_idx(self, idx: int) -> None:
+        child = self.children[idx]
+        prev_child = self.children[idx - 1]  # the 0th child was added separately
+        lines_from_neighbor = self._lines_from_previous(child, prev_child)
+        if lines_from_neighbor is not None:
+            self._append_comment(child, lines_from_neighbor, idx)
+        else:
+            self.output[-1] += self._get_separator_by_idx(idx - 1, False)
+            self.output.append(str(child))
+
+    def _append_comment(
+        self, comment: Union[CToken, CTree], lines_between: int, idx: int
+    ) -> None:
+        this_separator = self._get_separator_by_idx(idx - 1, is_inline=True)
+        self.output[-1] += this_separator
+        spacer = 2 * " " if lines_between == 0 else ""
+        self.output.append(lines_between * linesep + spacer + str(comment))
+
+    def _get_separator_by_idx(self, idx: int, is_inline: bool) -> str:
+        """This assumes that the child at idx has already been added to the output
+        at the last index"""
+        child = self.children[idx]
+        if self._is_item(child):
+            if idx < self.last_item_idx:
+                this_separator = self.separator
+            else:
+                if self.has_ending_separator:
+                    this_separator = self.separator
+                else:
+                    this_separator = ""
+        elif idx < self.num_children:
+            this_separator = ""
+        if is_inline:
+            return this_separator
+        return this_separator + self.line_separator
 
 
 class BaseMixin(Transformer):  # type: ignore
@@ -54,10 +152,6 @@ class BaseMixin(Transformer):  # type: ignore
         """Join list with linesep"""
         return linesep.join(self._stringify_children(node))
 
-    def _rollup_double_linesep(self, node: CTree) -> str:
-        """Join list with a double linesep"""
-        return (2 * linesep).join(self._stringify_children(node))
-
     def _rollup_space(self, node: CTree) -> str:
         """Join list with space"""
         output = [child.lstrip() for child in self._stringify_children(node)]
@@ -97,6 +191,10 @@ class TerminalMixin(BaseMixin):
         """print WHERE"""
         return self._token_indent_adjust_case(token)
 
+    def WITH(self, token: CToken) -> str:  # pylint: disable=invalid-name
+        """print WITH"""
+        return self._token_indent_adjust_case(token)
+
     @staticmethod
     def COMMENT(token: Token) -> Token:  # pylint: disable=invalid-name
         """print COMMENT"""
@@ -114,56 +212,29 @@ class TerminalMixin(BaseMixin):
 class QueryMixin(BaseMixin):
     """Mixin for query level nodes"""
 
-    def query_file(self, node: CTree) -> str:
+    @staticmethod
+    def query_file(node: CTree) -> str:
         """print query_file"""
-        return self._rollup_double_linesep(node)
-
-    def query_expr(self, node: CTree) -> str:
-        """rollup items in query_expr"""
-        query_parts = self._remove_commas_from_query_expr(node)
-        query_parts = self._insert_commas_linesep_to_query_expr(query_parts)
-        return linesep.join([str(p) for p in query_parts])
-
-    def _remove_commas_from_query_expr(
-        self, node: CTree
-    ) -> List[Union[CTree, CToken, str]]:
-        """Remove commas from query_expr and indent WITH"""
-        query_parts: List[Union[CTree, CToken, str]] = []
-        is_first: bool = True
-        for child in node.children:
-            if str(child) == ",":
-                continue
-            if is_first:
-                query_parts.append(
-                    self._apply_indent(str(child), node.data.indent_level)
-                )
-                is_first = False
-            else:
-                query_parts.append(child)
-        return query_parts
+        list_ = CommentedListClass(
+            children=list(node.children),
+            separator="",
+            line_separator=2 * linesep,
+            has_ending_separator=True,
+            item_types={"dbt_config"},
+        )
+        return list_.rollup_list()
 
     @staticmethod
-    def _insert_commas_linesep_to_query_expr(
-        query_parts: List[Union[CTree, CToken, str]]
-    ) -> List[Union[CTree, CToken, str]]:
-        """Insert commas and linesep after CTEs, linesep after WITH.
-        No additional linesep after comments."""
-        last_with: int = 0
-        for idx, part in enumerate(query_parts):
-            clean_part = str(part).strip().lower()
-            if not (
-                clean_part == "with"
-                or isinstance(part, Token)
-                or clean_part.startswith("select")
-            ):
-                query_parts[idx] = str(part) + "," + linesep
-                last_with = idx
-            if idx == 0 and clean_part == "with":
-                query_parts[idx] = str(part) + linesep
-        query_parts[last_with] = (
-            str(query_parts[last_with]).rstrip("," + linesep) + linesep
+    def query_expr(node: CTree) -> str:
+        """rollup items in query_expr"""
+        list_ = CommentedListClass(
+            children=list(node.children),
+            separator=",",
+            line_separator=2 * linesep,
+            has_ending_separator=False,
+            item_types={"with_clause"},
         )
-        return query_parts
+        return list_.rollup_list()
 
     def sub_query_expr(self, node: CTree) -> str:
         """print sub_query_expr"""
@@ -175,17 +246,21 @@ class QueryMixin(BaseMixin):
             + self._apply_indent(str(node.children[2]), node.data.indent_level)
         )
 
-    def with_clause(self, node: CTree) -> str:
-        """print with_clause"""
+    def with_clause(self, node: CTree) -> CToken:
+        """Returns a token of type `with_clause` for identification by the parent"""
         if len(node.children) == 1:
-            return self._simple_indent(node)
+            return CToken(type_=CData("with_clause"), value=self._simple_indent(node))
 
-        return (
+        value = (
             self._apply_indent(f"{node.children[0]} AS (", node.data.indent_level)
             + linesep
             + str(node.children[3])
             + linesep
             + self._apply_indent(str(node.children[4]), node.data.indent_level)
+        )
+        return CToken(
+            type_=CData("with_clause"),
+            value=value,
         )
 
 

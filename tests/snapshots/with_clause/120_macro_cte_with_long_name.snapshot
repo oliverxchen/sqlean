@@ -71,7 +71,6 @@ Tree(
                         Token("RPAR", ")"),
                     ],
                 ),
-                Token("COMMA", ","),
                 Tree(
                     "with_clause",
                     [

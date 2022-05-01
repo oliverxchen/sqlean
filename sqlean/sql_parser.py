@@ -76,7 +76,7 @@ class TreeGroomer(Visitor_Recursive[Token]):
     # These tokens will be incremented by the value with respect to the
     # token's parent's indent level. Otherwise, the token's indent level will
     # not be set.
-    token_indent_map = {"FROM": 0, "WHERE": -1, "STANDARD_TABLE_NAME": 0}
+    token_indent_map = {"FROM": 0, "WHERE": -1, "STANDARD_TABLE_NAME": 0, "WITH": 0}
 
     # If a node has one of these as a parent, it will be indented by one more
     # than its parent.
@@ -96,8 +96,13 @@ class TreeGroomer(Visitor_Recursive[Token]):
         for idx, child in enumerate(tree.children):
             child = self.__remove_prefix_from_node(child)
             child = self.__set_indent_level(child, tree.data)
-            if isinstance(child, Token) and child.type == "COMMENT" and idx > 0:
-                child = self.__set_lines_from_previous(child, tree.children[idx - 1])
+            if isinstance(child, Token) and child.type == "COMMENT":
+                if idx > 0:
+                    child = self.__set_lines_from_previous(
+                        child, tree.children[idx - 1]
+                    )
+                if idx < len(tree.children) - 1:
+                    child = self.__set_lines_to_next(child, tree.children[idx + 1])
 
     def __remove_prefix_from_node(
         self, node: Union[CTree, CToken]
@@ -154,6 +159,29 @@ class TreeGroomer(Visitor_Recursive[Token]):
         else:
             end_line = child.end_line
         return end_line
+
+    def __set_lines_to_next(
+        self, child: CToken, next_child: Union[CTree, CToken]
+    ) -> CToken:
+        name = child.type
+        indent_level = child.type.indent_level
+        lines_from_previous = child.type.lines_from_previous
+        lines_to_next = self.__get_tree_start_line(next_child) - child.end_line
+        child.type = CData(
+            name=name,
+            indent_level=indent_level,
+            lines_from_previous=lines_from_previous,
+            lines_to_next=lines_to_next,
+        )
+        return child
+
+    def __get_tree_start_line(self, child: Union[CTree, CToken]) -> int:
+        start_line: int
+        if isinstance(child, Tree):
+            start_line = self.__get_tree_start_line(child.children[0])
+        else:
+            start_line = child.line
+        return start_line
 
 
 class Debugger(Visitor_Recursive[Token]):
