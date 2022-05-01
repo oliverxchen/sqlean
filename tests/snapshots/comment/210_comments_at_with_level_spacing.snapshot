@@ -1,0 +1,142 @@
+WITH
+
+-- this is an inline comment after the WITH
+
+/* this is a block comment with a line break before it */
+cte_1 AS (
+    select a from table
+), -- this is an inline comment on the same line as a comma
+
+cte_2 AS (
+    select a from table_2
+) /* this is a block comment on the same line as a CTE */
+
+-- this is an inline comment before a comma
+
+/* this is a block comment before a comma with a line break before it */
+, cte_3 AS (
+    select a from table_3
+)
+
+SELECT
+    a
+FROM cte_1
+
+---
+
+WITH
+
+-- this is an inline comment after the WITH
+
+/* this is a block comment with a line break before it */
+cte_1 AS (
+  SELECT
+    a,
+  FROM
+    table
+),  -- this is an inline comment on the same line as a comma
+
+cte_2 AS (
+  SELECT
+    a,
+  FROM
+    table_2
+),  /* this is a block comment on the same line as a CTE */
+
+-- this is an inline comment before a comma
+
+/* this is a block comment before a comma with a line break before it */
+cte_3 AS (
+  SELECT
+    a,
+  FROM
+    table_3
+)
+
+SELECT
+  a,
+FROM
+  cte_1
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "WITH"),
+                Token("COMMENT", "-- this is an inline comment after the WITH"),
+                Token("COMMENT", "/* this is a block comment with a line break before it */"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_1"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "a")])]),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMENT", "-- this is an inline comment on the same line as a comma"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_2"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "a")])]),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_2")]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMENT", "/* this is a block comment on the same line as a CTE */"),
+                Token("COMMENT", "-- this is an inline comment before a comma"),
+                Token("COMMENT", "/* this is a block comment before a comma with a line break before it */"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_3"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "a")])]),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_3")]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "SELECT")]),
+                        Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "a")])]),
+                        Token("FROM", "FROM"),
+                        Tree("from_clause", [Token("STANDARD_TABLE_NAME", "cte_1")]),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

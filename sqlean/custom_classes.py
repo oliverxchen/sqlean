@@ -10,9 +10,14 @@ class CData(str):
 
     indent_level: int
     lines_from_previous: int
+    lines_to_next: int
 
     def __new__(
-        cls, name: str, indent_level: int = 0, lines_from_previous: int = 0
+        cls,
+        name: str,
+        indent_level: int = 0,
+        lines_from_previous: int = 0,
+        lines_to_next: int = 0,
     ) -> "CData":
         """Class method to create a new instance of CData.
         CData inherits from `str` to be a valid object for
@@ -23,6 +28,7 @@ class CData(str):
         obj = str.__new__(cls, name)
         obj.indent_level = indent_level
         obj.lines_from_previous = lines_from_previous
+        obj.lines_to_next = lines_to_next
         return obj
 
 

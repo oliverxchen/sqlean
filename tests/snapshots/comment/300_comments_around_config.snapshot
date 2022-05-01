@@ -1,6 +1,11 @@
-{{ config(foo="bar") }}
+/* this
+is
+a
+block comment before the config
+*/
+-- this is an inline comment before the config
 
--- this is an inline comment after the config
+{{ config(foo="bar") }} -- this is an inline comment after the config on the same line
 /* this
 is
 a
@@ -10,12 +15,16 @@ select * from table
 
 ---
 
+/* this
+is
+a
+block comment before the config
+*/
+-- this is an inline comment before the config
+
 {{
   config(foo="bar")
-}}
-
--- this is an inline comment after the config
-
+}}  -- this is an inline comment after the config on the same line
 /* this
 is
 a
@@ -31,6 +40,8 @@ FROM
 Tree(
     "query_file",
     [
+        Token("COMMENT", "/* this\nis\na\nblock comment before the config\n*/"),
+        Token("COMMENT", "-- this is an inline comment before the config"),
         Tree(
             "dbt_config",
             [
@@ -53,7 +64,7 @@ Tree(
                 Token("VAR_END_STR", "}}"),
             ],
         ),
-        Token("COMMENT", "-- this is an inline comment after the config"),
+        Token("COMMENT", "-- this is an inline comment after the config on the same line"),
         Token("COMMENT", "/* this\nis\na\nblock comment after the config*/"),
         Tree(
             "select_expr",
