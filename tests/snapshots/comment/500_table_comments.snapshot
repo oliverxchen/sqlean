@@ -1,0 +1,60 @@
+select
+  *
+from
+  table -- this is an inline comment
+  /* table_2 */
+where
+  a > b
+
+---
+
+SELECT
+  *,
+FROM
+  table  -- this is an inline comment
+  /* table_2 */
+WHERE
+  a > b
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])]),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [
+                        Tree(
+                            "from_item",
+                            [
+                                Token("STANDARD_TABLE_NAME", "table"),
+                                Token("COMMENT", "-- this is an inline comment"),
+                                Token("COMMENT", "/* table_2 */"),
+                            ],
+                        ),
+                        Token("WHERE", "where"),
+                        Tree(
+                            "indented_bool_expression",
+                            [
+                                Tree(
+                                    "binary_comparison_operation",
+                                    [
+                                        Token("CNAME", "a"),
+                                        Token("BINARY_COMPARISON_OPERATOR", ">"),
+                                        Token("CNAME", "b"),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

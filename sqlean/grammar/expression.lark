@@ -1,7 +1,7 @@
 ////////////
 // select //
 ////////////
-select_list: select_item ("," COMMENT* select_item)* [","] COMMENT*
+select_list: COMMENT* select_item (COMMENT* "," COMMENT* select_item)* [","] COMMENT*
 ?select_item: select_item_unaliased
     | select_item_aliased
 select_item_aliased: base_expression as_alias
@@ -85,7 +85,7 @@ indented_bool_expression: bool_expression
     | unary_bool_operation
     | base_expression
 
-binary_bool_operation: bool_expression AND bool_expression
+binary_bool_operation: bool_expression COMMENT* AND COMMENT* bool_expression COMMENT*
     | bool_expression OR bool_expression
 AND: "AND"i
 OR: "OR"i
