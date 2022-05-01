@@ -16,9 +16,9 @@ select * from table
 ---
 
 /* this
-is
-a
-block comment before the config
+   is
+   a
+   block comment before the config
 */
 -- this is an inline comment before the config
 
@@ -26,9 +26,9 @@ block comment before the config
   config(foo="bar")
 }}  -- this is an inline comment after the config on the same line
 /* this
-is
-a
-block comment after the config*/
+   is
+   a
+   block comment after the config*/
 
 SELECT
   *,

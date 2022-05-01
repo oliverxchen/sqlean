@@ -5,7 +5,7 @@ from lark.exceptions import VisitError
 import pytest
 
 from sqlean.custom_classes import CData, CTree, CToken
-from sqlean.sql_styler import Styler, BaseMixin, CommentedListClass
+from sqlean.sql_styler import Styler, BaseMixin, CommentedListClass, TerminalMixin
 
 
 def test_commented_list_class__get_last_item_idx() -> None:
@@ -80,3 +80,16 @@ def test_change_indent_size() -> None:
     expected = f"a\n{two_space_indent}b\n{two_space_indent}c\n"
     actual = BaseMixin._change_indent_size(input_str, 2)
     assert actual == expected
+
+
+def test__format_block_comment() -> None:
+    block_comment = "/*This\nis\na\nblock\ncomment*/"
+    assert (
+        TerminalMixin._format_block_comment(block_comment)
+        == "/* This\n   is\n   a\n   block\n   comment*/"
+    )
+    another_block_comment = "/*   Another\nblock\ncomment\n*/"
+    assert (
+        TerminalMixin._format_block_comment(another_block_comment)
+        == "/* Another\n   block\n   comment\n*/"
+    )

@@ -14,9 +14,9 @@ select * from table
 
 
 /* this
-is
-a
-block comment at the beginning of the file */
+   is
+   a
+   block comment at the beginning of the file */
 
 SELECT
   *,
