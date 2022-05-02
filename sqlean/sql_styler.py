@@ -70,7 +70,7 @@ class CommentedListClass:  # pylint: disable=too-many-instance-attributes
         return "".join(self.output)
 
     def _fill_output(self) -> None:
-        self.output.append(str(self.children[0]))
+        self.output.append(self._indent_if_comment(self.children[0]))
         for idx in range(1, self.num_children):
             self._append_child_by_idx(idx)
         self.output[-1] += self._get_separator_by_idx(self.num_children - 1, True)
@@ -401,6 +401,16 @@ class FromMixin(BaseMixin):
         output = f"{str(node.children[0]).lstrip()} AS {node.children[1]}"
         return self._apply_indent(output, node.data.indent_level)
 
+    def from_item(self, node: CTree) -> str:
+        """print from_item"""
+        return self._rollup_list(
+            children=list(node.children),
+            separator="",
+            line_separator=linesep,
+            has_ending_separator=False,
+            item_types=set(),
+        )
+
 
 @v_args(tree=True)
 class JoinMixin(BaseMixin):
@@ -575,7 +585,15 @@ class ExpressionMixin(BaseMixin):
     @staticmethod
     def binary_bool_operation(node: CTree) -> str:
         """print binary_bool_operation"""
-        return f"{node.children[0]}\n{node.children[1]} {node.children[2]}"
+        list_ = CommentedListClass(
+            children=list(node.children),
+            separator="",
+            line_separator=linesep,
+            has_ending_separator=False,
+            indent="",
+        )
+        output = list_.rollup_list()
+        return output.replace("AND" + linesep, "AND ").replace("OR" + linesep, "OR ")
 
     @staticmethod
     def parenthetical_bool_expression(node: CTree) -> str:

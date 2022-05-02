@@ -1,0 +1,94 @@
+select
+  *
+from
+  table
+where
+  a > b
+  -- and b < c
+
+  /* mark a new section */
+  and /* test */ c < d -- about c
+  and d < e -- about e
+
+---
+
+SELECT
+  *,
+FROM
+  table
+WHERE
+  a > b
+  -- and b < c
+  
+  /* mark a new section */
+  AND  /* test */  c < d  -- about c
+  AND d < e  -- about e
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])]),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [
+                        Token("STANDARD_TABLE_NAME", "table"),
+                        Token("WHERE", "where"),
+                        Tree(
+                            "indented_bool_expression",
+                            [
+                                Tree(
+                                    "binary_bool_operation",
+                                    [
+                                        Tree(
+                                            "binary_comparison_operation",
+                                            [
+                                                Token("CNAME", "a"),
+                                                Token("BINARY_COMPARISON_OPERATOR", ">"),
+                                                Token("CNAME", "b"),
+                                            ],
+                                        ),
+                                        Token("COMMENT", "-- and b < c"),
+                                        Token("COMMENT", "/* mark a new section */"),
+                                        Token("AND", "and"),
+                                        Token("COMMENT", "/* test */"),
+                                        Tree(
+                                            "binary_bool_operation",
+                                            [
+                                                Tree(
+                                                    "binary_comparison_operation",
+                                                    [
+                                                        Token("CNAME", "c"),
+                                                        Token("BINARY_COMPARISON_OPERATOR", "<"),
+                                                        Token("CNAME", "d"),
+                                                    ],
+                                                ),
+                                                Token("COMMENT", "-- about c"),
+                                                Token("AND", "and"),
+                                                Tree(
+                                                    "binary_comparison_operation",
+                                                    [
+                                                        Token("CNAME", "d"),
+                                                        Token("BINARY_COMPARISON_OPERATOR", "<"),
+                                                        Token("CNAME", "e"),
+                                                    ],
+                                                ),
+                                                Token("COMMENT", "-- about e"),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

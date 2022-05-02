@@ -29,7 +29,7 @@ FROM: "FROM"i
 //////////
 !from_clause: from_item ["WHERE"i indented_bool_expression] [groupby_modifier] [orderby_modifier]
 !?from_item: join_operation
-    | table_item
+    | table_item COMMENT*
     | sub_query_expr
 
 !sub_query_expr: "(" query_expr ")"

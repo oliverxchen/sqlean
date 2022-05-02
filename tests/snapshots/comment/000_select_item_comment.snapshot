@@ -18,14 +18,6 @@ cte_2 AS (
  -- comment after a block comment
 	    c
     from table_2
-),
-
-cte_3 AS (
-    select
-	    a, --another comment on a
-	    b,
-	    c --another comment on c
-    from table_3
 )
 
 SELECT
@@ -56,15 +48,6 @@ cte_2 AS (
     c,
   FROM
     table_2
-),
-
-cte_3 AS (
-  SELECT
-    a,  -- another comment on a
-    b,
-    c,  -- another comment on c
-  FROM
-    table_3
 )
 
 SELECT
@@ -125,40 +108,13 @@ Tree(
                                         Tree("select_item_unaliased", [Token("CNAME", "a")]),
                                         Tree("select_item_unaliased", [Token("CNAME", "b")]),
                                         Token("COMMENT", "--another comment on b"),
-                                        Token("COMMENT", "/* block\n        comment */"),
+                                        Token("COMMENT", "/* block\n     comment */"),
                                         Token("COMMENT", "-- comment after a block comment"),
                                         Tree("select_item_unaliased", [Token("CNAME", "c")]),
                                     ],
                                 ),
                                 Token("FROM", "from"),
                                 Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_2")]),
-                            ],
-                        ),
-                        Token("RPAR", ")"),
-                    ],
-                ),
-                Tree(
-                    "with_clause",
-                    [
-                        Token("CNAME", "cte_3"),
-                        Token("AS", "AS"),
-                        Token("LPAR", "("),
-                        Tree(
-                            "select_expr",
-                            [
-                                Tree("select_type", [Token("SELECT", "select")]),
-                                Tree(
-                                    "select_list",
-                                    [
-                                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
-                                        Token("COMMENT", "--another comment on a"),
-                                        Tree("select_item_unaliased", [Token("CNAME", "b")]),
-                                        Tree("select_item_unaliased", [Token("CNAME", "c")]),
-                                        Token("COMMENT", "--another comment on c"),
-                                    ],
-                                ),
-                                Token("FROM", "from"),
-                                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_3")]),
                             ],
                         ),
                         Token("RPAR", ")"),

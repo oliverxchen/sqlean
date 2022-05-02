@@ -1,0 +1,42 @@
+select
+    /* comment before any item */
+    a,
+    b,
+    c --trailing comment
+from table
+
+---
+
+SELECT
+  /* comment before any item */
+  a,
+  b,
+  c,  -- trailing comment
+FROM
+  table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Token("COMMENT", "/* comment before any item */"),
+                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                        Tree("select_item_unaliased", [Token("CNAME", "b")]),
+                        Tree("select_item_unaliased", [Token("CNAME", "c")]),
+                        Token("COMMENT", "--trailing comment"),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
+            ],
+        )
+    ],
+)
