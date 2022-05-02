@@ -260,13 +260,16 @@ class QueryMixin(BaseMixin):
 
     def query_file(self, node: CTree) -> str:
         """print query_file"""
-        return self._rollup_list(
+        output = self._rollup_list(
             children=list(node.children),
             separator="",
             line_separator=2 * linesep,
             has_ending_separator=True,
             item_types={"dbt_config"},
         )
+
+        # remove double linesep between set statements
+        return output.replace("%}\n\n{%", "%}\n{%")
 
     def query_expr(self, node: CTree) -> str:
         """rollup items in query_expr"""
@@ -667,11 +670,10 @@ class JinjaMixin(BaseMixin):
 
     def dbt_config(self, node: CTree) -> str:
         """print dbt_config"""
-        blacked = self._apply_black(f"config({node.children[3]})")
-        return "{{\n" + self._apply_indent(blacked, 1) + "\n}}"
+        return self.__format_macro_expr(node).replace("CONFIG", "config")
 
     def __format_macro_expr(self, node: CTree) -> str:
-        """form single line macro expressions"""
+        """format macro expression as single or multi line using black"""
         joined_children = "".join(str(child) for child in node.children[1:-1])
         blacked = self._apply_black(joined_children)
         # single line print when black returns one line
@@ -703,6 +705,22 @@ class JinjaMixin(BaseMixin):
 
     def dbt_src(self, node: CTree) -> str:
         """print dbt_src"""
+        return self.__format_macro_expr(node)
+
+    def jinja_set_block(self, node: CTree) -> str:
+        """print jinja_set_block"""
+        joined_children = "".join(str(child) for child in node.children[1:-1])
+        blacked = self._apply_black(joined_children)
+        # single line print when black returns one line
+        if len(blacked.splitlines()) == 1:
+            output = "{% " + blacked + " %}"
+        else:
+            # multi line print
+            output = "{%\n" + self._apply_indent(blacked, 1) + "\n%}"
+        return output.replace("SET", "set ")
+
+    def jinja_variable(self, node: CTree) -> str:
+        """print jinja_variable"""
         return self.__format_macro_expr(node)
 
 

@@ -3,6 +3,8 @@
 ///////////////////
 VAR_START_STR: "{{"
 VAR_END_STR: "}}"
+BLOCK_START_STR: "{%"
+BLOCK_END_STR: "%}"
 
 ////////////////
 // dbt basics //
@@ -22,13 +24,14 @@ dbt_table_name: dbt_ref
 // jinja //
 ///////////
 !macro: VAR_START_STR CNAME "(" [python_arg_list] ")" VAR_END_STR
-// !jinja_variable: VAR_START_STR CNAME VAR_END_STR
+!jinja_set_block: BLOCK_START_STR "set" CNAME "=" python_arg_value BLOCK_END_STR
+jinja_variable: VAR_START_STR CNAME VAR_END_STR
 
 /////////////////
 // python args //
 /////////////////
 !python_arg_list: python_arg_item ("," python_arg_item)* [","]
-!python_arg_item: arg_name python_arg_value
+python_arg_item: arg_name python_arg_value
     | python_arg_value
 !?arg_name: CNAME "="
 !python_arg_value: literal

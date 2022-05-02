@@ -6,9 +6,7 @@ select sum(a) from table
 
 ---
 
-{{
-  config(materialized="table", sql_header=set_start_date())
-}}
+{{ config(materialized="table", sql_header=set_start_date()) }}
 
 SELECT
   SUM(a),

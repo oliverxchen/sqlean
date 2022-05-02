@@ -22,9 +22,7 @@ select * from table
 */
 -- this is an inline comment before the config
 
-{{
-  config(foo="bar")
-}}  -- this is an inline comment after the config on the same line
+{{ config(foo="bar") }}  -- this is an inline comment after the config on the same line
 /* this
    is
    a

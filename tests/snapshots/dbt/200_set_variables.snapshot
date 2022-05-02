@@ -1,0 +1,239 @@
+{{config(materialized="table")}}
+
+{% set foo = 'DATE("2020-01-01")' %}
+{%set bar = var("ds")%}
+{% set baz = ["apples", "oranges", "lemons", "cherries", "plums", "peaches", "nectarines", "durian", "longan"] %}
+
+SELECT {{ bar }} as field FROM table where a > {{foo}} and b = {{bar}}
+
+---
+
+{{ config(materialized="table") }}
+
+{% set foo = 'DATE("2020-01-01")' %}
+{% set bar = var("ds") %}
+{%
+  set baz = [
+    "apples",
+    "oranges",
+    "lemons",
+    "cherries",
+    "plums",
+    "peaches",
+    "nectarines",
+    "durian",
+    "longan",
+  ]
+%}
+
+SELECT
+  {{ bar }} AS field,
+FROM
+  table
+WHERE
+  a > {{ foo }}
+  AND b = {{ bar }}
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "dbt_config",
+            [
+                Token("VAR_START_STR", "{{"),
+                Token("CONFIG", "config"),
+                Token("LPAR", "("),
+                Tree(
+                    "python_arg_list",
+                    [
+                        Tree(
+                            "python_arg_item",
+                            [
+                                Tree("arg_name", [Token("CNAME", "materialized"), Token("EQUAL", "=")]),
+                                Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"table"')]),
+                            ],
+                        )
+                    ],
+                ),
+                Token("RPAR", ")"),
+                Token("VAR_END_STR", "}}"),
+            ],
+        ),
+        Tree(
+            "jinja_set_block",
+            [
+                Token("BLOCK_START_STR", "{%"),
+                Token("SET", "set"),
+                Token("CNAME", "foo"),
+                Token("EQUAL", "="),
+                Tree("python_arg_value", [Token("SINGLE_QUOTED_STRING", "'DATE(\"2020-01-01\")'")]),
+                Token("BLOCK_END_STR", "%}"),
+            ],
+        ),
+        Tree(
+            "jinja_set_block",
+            [
+                Token("BLOCK_START_STR", "{%"),
+                Token("SET", "set"),
+                Token("CNAME", "bar"),
+                Token("EQUAL", "="),
+                Tree(
+                    "python_arg_value",
+                    [
+                        Token("CNAME", "var"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "python_arg_list",
+                            [
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"ds"')])],
+                                )
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("BLOCK_END_STR", "%}"),
+            ],
+        ),
+        Tree(
+            "jinja_set_block",
+            [
+                Token("BLOCK_START_STR", "{%"),
+                Token("SET", "set"),
+                Token("CNAME", "baz"),
+                Token("EQUAL", "="),
+                Tree(
+                    "python_arg_value",
+                    [
+                        Token("LSQB", "["),
+                        Tree(
+                            "python_arg_list",
+                            [
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"apples"')])],
+                                ),
+                                Token("COMMA", ","),
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"oranges"')])],
+                                ),
+                                Token("COMMA", ","),
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"lemons"')])],
+                                ),
+                                Token("COMMA", ","),
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"cherries"')])],
+                                ),
+                                Token("COMMA", ","),
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"plums"')])],
+                                ),
+                                Token("COMMA", ","),
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"peaches"')])],
+                                ),
+                                Token("COMMA", ","),
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"nectarines"')])],
+                                ),
+                                Token("COMMA", ","),
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"durian"')])],
+                                ),
+                                Token("COMMA", ","),
+                                Tree(
+                                    "python_arg_item",
+                                    [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"longan"')])],
+                                ),
+                            ],
+                        ),
+                        Token("RSQB", "]"),
+                    ],
+                ),
+                Token("BLOCK_END_STR", "%}"),
+            ],
+        ),
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "SELECT")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "jinja_variable",
+                                    [Token("VAR_START_STR", "{{"), Token("CNAME", "bar"), Token("VAR_END_STR", "}}")],
+                                ),
+                                Token("CNAME", "field"),
+                            ],
+                        )
+                    ],
+                ),
+                Token("FROM", "FROM"),
+                Tree(
+                    "from_clause",
+                    [
+                        Token("STANDARD_TABLE_NAME", "table"),
+                        Token("WHERE", "where"),
+                        Tree(
+                            "indented_bool_expression",
+                            [
+                                Tree(
+                                    "binary_bool_operation",
+                                    [
+                                        Tree(
+                                            "binary_comparison_operation",
+                                            [
+                                                Token("CNAME", "a"),
+                                                Token("BINARY_COMPARISON_OPERATOR", ">"),
+                                                Tree(
+                                                    "jinja_variable",
+                                                    [
+                                                        Token("VAR_START_STR", "{{"),
+                                                        Token("CNAME", "foo"),
+                                                        Token("VAR_END_STR", "}}"),
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("AND", "and"),
+                                        Tree(
+                                            "binary_comparison_operation",
+                                            [
+                                                Token("CNAME", "b"),
+                                                Token("BINARY_COMPARISON_OPERATOR", "="),
+                                                Tree(
+                                                    "jinja_variable",
+                                                    [
+                                                        Token("VAR_START_STR", "{{"),
+                                                        Token("CNAME", "bar"),
+                                                        Token("VAR_END_STR", "}}"),
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+)

@@ -85,14 +85,16 @@ def assert_snapshot_correct(
 ) -> AllResults:
     raw, styled, tree_repr = parse_snapshot(file_path)
     actual_styled = sql_parser.print(raw)
-    actual_tree = str(sql_parser.get_tree(raw))
+    actual_tree = black.format_str(
+        str(sql_parser.get_tree(raw)),
+        mode=black.Mode(),  # type: ignore
+    )
     try:
         styled_styled = str(sql_parser.print(actual_styled))
     except LarkError as error:
         title = "Idempotence Error: " + get_short_file_path(file_path)
         rprint(Panel(str(error), title=title))
         styled_styled = ""
-
     all_test_results.parse.update_test_results(
         actual=normalise_string(actual_tree),
         expected=normalise_string(tree_repr),

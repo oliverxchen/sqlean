@@ -3,7 +3,7 @@
 ////////////////////
 // for dbt config //
 ////////////////////
-query_file: COMMENT* dbt_config COMMENT* query_expr
+query_file: COMMENT* dbt_config COMMENT* jinja_set_block* query_expr
     | COMMENT* query_expr
 
 /////////////////////////
@@ -73,6 +73,7 @@ using_list: CNAME ("," CNAME)*
 %import expression.orderby_modifier
 %import expression.select_list
 %import jinja.dbt_config
+%import jinja.jinja_set_block
 %import jinja.macro
 %import table.table_item
 %ignore WS
