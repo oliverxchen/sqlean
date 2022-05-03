@@ -173,6 +173,7 @@ Tree(
                                                 )
                                             ],
                                         ),
+                                        Token("RPAR", ")"),
                                     ],
                                 ),
                                 Token("CNAME", "field_4"),

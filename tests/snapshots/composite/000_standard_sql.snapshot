@@ -137,6 +137,7 @@ Tree(
                                                     [
                                                         Token("FUNCTION_NAME", "sum("),
                                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                                        Token("RPAR", ")"),
                                                     ],
                                                 ),
                                                 Token("CNAME", "total_b"),
@@ -150,6 +151,7 @@ Tree(
                                                     [
                                                         Token("FUNCTION_NAME", "stddev("),
                                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "c")])]),
+                                                        Token("RPAR", ")"),
                                                     ],
                                                 ),
                                                 Token("CNAME", "standard_deviation_c"),
@@ -249,6 +251,7 @@ Tree(
                                                                                                         )
                                                                                                     ],
                                                                                                 ),
+                                                                                                Token("RPAR", ")"),
                                                                                             ],
                                                                                         )
                                                                                     ],
@@ -259,6 +262,7 @@ Tree(
                                                                                 ),
                                                                             ],
                                                                         ),
+                                                                        Token("RPAR", ")"),
                                                                     ],
                                                                 ),
                                                                 Token("CNAME", "month"),
@@ -396,6 +400,7 @@ Tree(
                                                                                                         )
                                                                                                     ],
                                                                                                 ),
+                                                                                                Token("RPAR", ")"),
                                                                                             ],
                                                                                         )
                                                                                     ],
@@ -406,6 +411,7 @@ Tree(
                                                                                 ),
                                                                             ],
                                                                         ),
+                                                                        Token("RPAR", ")"),
                                                                     ],
                                                                 ),
                                                                 Token("CNAME", "month"),
@@ -472,6 +478,7 @@ Tree(
                                                                         ),
                                                                     ],
                                                                 ),
+                                                                Token("RPAR", ")"),
                                                             ],
                                                         ),
                                                         Token("CNAME", "month"),

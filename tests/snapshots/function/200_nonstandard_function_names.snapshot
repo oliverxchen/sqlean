@@ -40,6 +40,7 @@ Tree(
                                     [
                                         Token("FUNCTION_NAME", "function("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],
@@ -52,6 +53,7 @@ Tree(
                                     [
                                         Token("FUNCTION_NAME", "safe.function("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],
@@ -64,6 +66,7 @@ Tree(
                                     [
                                         Token("FUNCTION_NAME", "dataset_id.function("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],
@@ -76,6 +79,7 @@ Tree(
                                     [
                                         Token("FUNCTION_NAME", "`project_id`.dataset_id.function("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],
@@ -88,6 +92,7 @@ Tree(
                                     [
                                         Token("FUNCTION_NAME", "`{{ project }}`.dataset_id.function("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],
@@ -100,6 +105,7 @@ Tree(
                                     [
                                         Token("FUNCTION_NAME", "`{{ project }}.dataset_id.function`("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],

@@ -28,14 +28,14 @@ except_item: CNAME
     | TABLE_REF_FIELD_NAME
     | case_expression
     | macro
-    | CNAME
+    | CNAME [array_subscript_specifier]
     | literal
     | jinja_variable
 
 ///////////////
 // functions //
 ///////////////
-standard_function_expression: FUNCTION_NAME arg_list ")"
+!standard_function_expression: FUNCTION_NAME arg_list ")" [array_subscript_specifier]
 window_function_expression: FUNCTION_NAME [arg_list] ")" "OVER"i over_clause
 FUNCTION_NAME.10: /(?!(?:\bfrom\b))\w+\s*\(/i
     | /\w+\.\w+\s*\(/
@@ -62,8 +62,16 @@ arg_list: arg_item ("," arg_item)*
     | comparison_expression
     | unary_bool_operation
     | binary_bool_operation
+    | star_expression
 DISTINCT: "DISTINCT"i
 INTERVAL: "INTERVAL"i
+
+//////////////////////
+// array_subscripts //
+//////////////////////
+!array_subscript_specifier: "[" OFFSET_TYPE (INT | CNAME) ")" "]"
+OFFSET_TYPE.20: /(OFFSET|SAFE_OFFSET|ORDINAL|SAFE_ORDINAL)\s*\(/i
+// Regex is needed to give this higher priority than standard function names
 
 //////////
 // case //

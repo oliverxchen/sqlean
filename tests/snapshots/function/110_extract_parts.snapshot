@@ -47,6 +47,7 @@ Tree(
                                                 )
                                             ],
                                         ),
+                                        Token("RPAR", ")"),
                                     ],
                                 ),
                                 Token("CNAME", "alias"),
@@ -72,6 +73,7 @@ Tree(
                                                 )
                                             ],
                                         ),
+                                        Token("RPAR", ")"),
                                     ],
                                 ),
                                 Token("CNAME", "alias_2"),
@@ -97,6 +99,7 @@ Tree(
                                                 )
                                             ],
                                         ),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],
@@ -121,6 +124,7 @@ Tree(
                                                 )
                                             ],
                                         ),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],
