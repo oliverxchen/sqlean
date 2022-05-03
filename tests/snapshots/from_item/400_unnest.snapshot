@@ -1,0 +1,154 @@
+with
+
+cte_1 AS (
+    select * from unnest(items)
+),
+
+cte_2 as (
+    select * from unnest(generate_date_array('2020-01-01', '2021-01-01', INTERVAL 1 MONTH))
+)
+
+
+select
+    *
+from
+    cte_1
+
+---
+
+WITH
+
+cte_1 AS (
+  SELECT
+    *,
+  FROM
+    UNNEST(items)
+),
+
+cte_2 AS (
+  SELECT
+    *,
+  FROM
+    UNNEST(GENERATE_DATE_ARRAY('2020-01-01', '2021-01-01', INTERVAL 1 MONTH))
+)
+
+SELECT
+  *,
+FROM
+  cte_1
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "with"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_1"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree(
+                                    "select_list",
+                                    [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])],
+                                ),
+                                Token("FROM", "from"),
+                                Tree(
+                                    "from_clause",
+                                    [
+                                        Tree(
+                                            "table_name",
+                                            [Token("UNNEST", "unnest("), Token("CNAME", "items"), Token("RPAR", ")")],
+                                        )
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_2"),
+                        Token("AS", "as"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree(
+                                    "select_list",
+                                    [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])],
+                                ),
+                                Token("FROM", "from"),
+                                Tree(
+                                    "from_clause",
+                                    [
+                                        Tree(
+                                            "table_name",
+                                            [
+                                                Token("UNNEST", "unnest("),
+                                                Tree(
+                                                    "standard_function_expression",
+                                                    [
+                                                        Token("FUNCTION_NAME", "generate_date_array("),
+                                                        Tree(
+                                                            "arg_list",
+                                                            [
+                                                                Tree(
+                                                                    "arg_item",
+                                                                    [Token("SINGLE_QUOTED_STRING", "'2020-01-01'")],
+                                                                ),
+                                                                Tree(
+                                                                    "arg_item",
+                                                                    [Token("SINGLE_QUOTED_STRING", "'2021-01-01'")],
+                                                                ),
+                                                                Tree(
+                                                                    "arg_item",
+                                                                    [
+                                                                        Token("INTERVAL", "INTERVAL"),
+                                                                        Token("INT", "1"),
+                                                                        Token("DATE_INTERVAL", "MONTH"),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Token("RPAR", ")"),
+                                                    ],
+                                                ),
+                                                Token("RPAR", ")"),
+                                            ],
+                                        )
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "select")]),
+                        Tree(
+                            "select_list",
+                            [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])],
+                        ),
+                        Token("FROM", "from"),
+                        Tree("from_clause", [Token("STANDARD_TABLE_NAME", "cte_1")]),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

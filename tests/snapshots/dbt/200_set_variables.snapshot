@@ -4,7 +4,7 @@
 {%set bar = var("ds")%}
 {% set baz = ["apples", "oranges", "lemons", "cherries", "plums", "peaches", "nectarines", "durian", "longan"] %}
 
-SELECT {{ bar }} as field FROM table where a > {{foo}} and b = {{bar}}
+SELECT {{ bar }} as field FROM table where a > {{foo}} and b = {{bar}} and c = {{ var('ds') }}
 
 ---
 
@@ -33,6 +33,7 @@ FROM
 WHERE
   a > {{ foo }}
   AND b = {{ bar }}
+  AND c = {{ var("ds") }}
 
 ---
 
@@ -213,16 +214,58 @@ Tree(
                                         ),
                                         Token("AND", "and"),
                                         Tree(
-                                            "binary_comparison_operation",
+                                            "binary_bool_operation",
                                             [
-                                                Token("CNAME", "b"),
-                                                Token("BINARY_COMPARISON_OPERATOR", "="),
                                                 Tree(
-                                                    "jinja_variable",
+                                                    "binary_comparison_operation",
                                                     [
-                                                        Token("VAR_START_STR", "{{"),
-                                                        Token("CNAME", "bar"),
-                                                        Token("VAR_END_STR", "}}"),
+                                                        Token("CNAME", "b"),
+                                                        Token("BINARY_COMPARISON_OPERATOR", "="),
+                                                        Tree(
+                                                            "jinja_variable",
+                                                            [
+                                                                Token("VAR_START_STR", "{{"),
+                                                                Token("CNAME", "bar"),
+                                                                Token("VAR_END_STR", "}}"),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                                Token("AND", "and"),
+                                                Tree(
+                                                    "binary_comparison_operation",
+                                                    [
+                                                        Token("CNAME", "c"),
+                                                        Token("BINARY_COMPARISON_OPERATOR", "="),
+                                                        Tree(
+                                                            "macro",
+                                                            [
+                                                                Token("VAR_START_STR", "{{"),
+                                                                Token("CNAME", "var"),
+                                                                Token("LPAR", "("),
+                                                                Tree(
+                                                                    "python_arg_list",
+                                                                    [
+                                                                        Tree(
+                                                                            "python_arg_item",
+                                                                            [
+                                                                                Tree(
+                                                                                    "python_arg_value",
+                                                                                    [
+                                                                                        Token(
+                                                                                            "SINGLE_QUOTED_STRING",
+                                                                                            "'ds'",
+                                                                                        )
+                                                                                    ],
+                                                                                )
+                                                                            ],
+                                                                        )
+                                                                    ],
+                                                                ),
+                                                                Token("RPAR", ")"),
+                                                                Token("VAR_END_STR", "}}"),
+                                                            ],
+                                                        ),
                                                     ],
                                                 ),
                                             ],

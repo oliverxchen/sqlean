@@ -20,6 +20,14 @@ except_item: CNAME
     | TABLE_REF_FIELD_NAME
     | INT
 
+TABLE_REF_FIELD_NAME: /(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})/
+	| /(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})/
+    | /`(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})`\.(\w+|\{\{\s*\w+\s*\}\})/
+// Regex is needed above to have a single token. These are of the form:
+// 1. "C.D" where C and D can be of the form "foo" or "{{ foo }}"
+// 2. "A.B.C.D" where A, B and C can be of the form: "`foo`", "foo", "`{{ foo }}`" or "{{ foo }}" and D can be of the form "foo" or "{{ foo }}"
+// 3. "`A.B.C`.D" where A, B, C and D can be of the form: "foo" or "{{ foo }}"
+
 /////////////////////
 // base_expression //
 /////////////////////
@@ -47,12 +55,6 @@ FUNCTION_NAME.10: /(?!(?:\bfrom\b))\w+\s*\(/i
 // 3. "A.B.C (" where A, B and C can be of the form: "`foo`", "foo", "`{{ foo }}`" or "{{ foo }}"
 // 4. "`A.B.C` (" where A, B and C can be of the form: "foo" or "{{ foo }}"
 
-over_clause: "(" window_specification  ")" // or named_window
-window_specification: [partition_modifier] [window_orderby_modifier] // [window_frame_clause] TODO
-partition_modifier: PARTITION_BY field_list
-PARTITION_BY: "PARTITION"i WS "BY"i
-window_orderby_modifier: ORDER_BY orderby_list
-
 arg_list: arg_item ("," arg_item)*
 !arg_item: interval
     | [DISTINCT] base_expression
@@ -65,6 +67,25 @@ arg_list: arg_item ("," arg_item)*
     | star_expression
 DISTINCT: "DISTINCT"i
 INTERVAL: "INTERVAL"i
+
+//////////////////////
+// window_functions //
+//////////////////////
+over_clause: "(" window_specification  ")" // or named_window
+window_specification: [partition_modifier] [window_orderby_modifier] [window_frame_clause]
+partition_modifier: PARTITION_BY field_list
+PARTITION_BY: "PARTITION"i WS "BY"i
+window_orderby_modifier: ORDER_BY orderby_list
+
+!window_frame_clause: ("ROWS"i | "RANGE"i) (frame_start | frame_between)
+frame_between: BETWEEN frame_start AND frame_end
+!frame_start: "UNBOUNDED"i "PRECEDING"i
+    | NUMBER "PRECEDING"i
+    | "CURRENT"i "ROW"i
+!frame_end: "UNBOUNDED"i "FOLLOWING"i
+    | NUMBER "FOLLOWING"i
+    | "CURRENT"i "ROW"i
+    | NUMBER "PRECEDING"i
 
 //////////////////////
 // array_subscripts //
@@ -156,6 +177,7 @@ orderby_list: orderby_item ("," orderby_item)*
 
 %import common.CNAME
 %import common.INT
+%import common.NUMBER
 %import common.WS
 %import comment.COMMENT
 %import alias.as_alias
@@ -163,7 +185,6 @@ orderby_list: orderby_item ("," orderby_item)*
 %import jinja.jinja_variable
 %import reserved_words.data_type
 %import reserved_words.interval
-%import table.TABLE_REF_FIELD_NAME
 %import literal.literal
 %import literal.nullable_boolean
 %import literal.string

@@ -1,0 +1,470 @@
+SELECT
+    a,
+    sum(a) OVER (PARTITION BY b ORDER BY c ROWS UNBOUNDED PRECEDING) AS sum_1,
+    sum(a) OVER (PARTITION BY b ORDER BY c RANGE 5.3 PRECEDING) AS sum_2,
+    sum(a) OVER (PARTITION BY b ORDER BY c ROWS BETWEEN 3 PRECEDING AND UNBOUNDED FOLLOWING) AS sum_3,
+    sum(a) OVER (PARTITION BY b ORDER BY c RANGE BETWEEN UNBOUNDED PRECEDING AND 3.5 FOLLOWING) AS sum_4,
+    sum(a) OVER (PARTITION BY b ORDER BY c ROWS CURRENT ROW) AS sum_5,
+    sum(a) OVER (PARTITION BY b ORDER BY c ROWS BETWEEN CURRENT ROW AND 3 FOLLOWING) AS sum_6,
+    sum(a) OVER (PARTITION BY b ORDER BY c ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS sum_7,
+FROM table
+
+---
+
+SELECT
+  a,
+  SUM(a) OVER (PARTITION BY b ORDER BY c ROWS UNBOUNDED PRECEDING) AS sum_1,
+  SUM(a) OVER (PARTITION BY b ORDER BY c RANGE 5.3 PRECEDING) AS sum_2,
+  SUM(a) OVER (PARTITION BY b ORDER BY c ROWS BETWEEN 3 PRECEDING AND UNBOUNDED FOLLOWING) AS sum_3,
+  SUM(a) OVER (PARTITION BY b ORDER BY c RANGE BETWEEN UNBOUNDED PRECEDING AND 3.5 FOLLOWING) AS sum_4,
+  SUM(a) OVER (PARTITION BY b ORDER BY c ROWS CURRENT ROW) AS sum_5,
+  SUM(a) OVER (PARTITION BY b ORDER BY c ROWS BETWEEN CURRENT ROW AND 3 FOLLOWING) AS sum_6,
+  SUM(a) OVER (PARTITION BY b ORDER BY c ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS sum_7,
+FROM
+  table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "SELECT")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "sum("),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "partition_modifier",
+                                                            [
+                                                                Token("PARTITION_BY", "PARTITION BY"),
+                                                                Tree("field_list", [Token("CNAME", "b")]),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_orderby_modifier",
+                                                            [
+                                                                Token("ORDER_BY", "ORDER BY"),
+                                                                Tree(
+                                                                    "orderby_list",
+                                                                    [Tree("orderby_item", [Token("CNAME", "c")])],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_frame_clause",
+                                                            [
+                                                                Token("ROWS", "ROWS"),
+                                                                Tree(
+                                                                    "frame_start",
+                                                                    [
+                                                                        Token("UNBOUNDED", "UNBOUNDED"),
+                                                                        Token("PRECEDING", "PRECEDING"),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "sum_1"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "sum("),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "partition_modifier",
+                                                            [
+                                                                Token("PARTITION_BY", "PARTITION BY"),
+                                                                Tree("field_list", [Token("CNAME", "b")]),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_orderby_modifier",
+                                                            [
+                                                                Token("ORDER_BY", "ORDER BY"),
+                                                                Tree(
+                                                                    "orderby_list",
+                                                                    [Tree("orderby_item", [Token("CNAME", "c")])],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_frame_clause",
+                                                            [
+                                                                Token("RANGE", "RANGE"),
+                                                                Tree(
+                                                                    "frame_start",
+                                                                    [
+                                                                        Token("NUMBER", "5.3"),
+                                                                        Token("PRECEDING", "PRECEDING"),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "sum_2"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "sum("),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "partition_modifier",
+                                                            [
+                                                                Token("PARTITION_BY", "PARTITION BY"),
+                                                                Tree("field_list", [Token("CNAME", "b")]),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_orderby_modifier",
+                                                            [
+                                                                Token("ORDER_BY", "ORDER BY"),
+                                                                Tree(
+                                                                    "orderby_list",
+                                                                    [Tree("orderby_item", [Token("CNAME", "c")])],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_frame_clause",
+                                                            [
+                                                                Token("ROWS", "ROWS"),
+                                                                Tree(
+                                                                    "frame_between",
+                                                                    [
+                                                                        Token("BETWEEN", "BETWEEN"),
+                                                                        Tree(
+                                                                            "frame_start",
+                                                                            [
+                                                                                Token("NUMBER", "3"),
+                                                                                Token("PRECEDING", "PRECEDING"),
+                                                                            ],
+                                                                        ),
+                                                                        Token("AND", "AND"),
+                                                                        Tree(
+                                                                            "frame_end",
+                                                                            [
+                                                                                Token("UNBOUNDED", "UNBOUNDED"),
+                                                                                Token("FOLLOWING", "FOLLOWING"),
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "sum_3"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "sum("),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "partition_modifier",
+                                                            [
+                                                                Token("PARTITION_BY", "PARTITION BY"),
+                                                                Tree("field_list", [Token("CNAME", "b")]),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_orderby_modifier",
+                                                            [
+                                                                Token("ORDER_BY", "ORDER BY"),
+                                                                Tree(
+                                                                    "orderby_list",
+                                                                    [Tree("orderby_item", [Token("CNAME", "c")])],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_frame_clause",
+                                                            [
+                                                                Token("RANGE", "RANGE"),
+                                                                Tree(
+                                                                    "frame_between",
+                                                                    [
+                                                                        Token("BETWEEN", "BETWEEN"),
+                                                                        Tree(
+                                                                            "frame_start",
+                                                                            [
+                                                                                Token("UNBOUNDED", "UNBOUNDED"),
+                                                                                Token("PRECEDING", "PRECEDING"),
+                                                                            ],
+                                                                        ),
+                                                                        Token("AND", "AND"),
+                                                                        Tree(
+                                                                            "frame_end",
+                                                                            [
+                                                                                Token("NUMBER", "3.5"),
+                                                                                Token("FOLLOWING", "FOLLOWING"),
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "sum_4"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "sum("),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "partition_modifier",
+                                                            [
+                                                                Token("PARTITION_BY", "PARTITION BY"),
+                                                                Tree("field_list", [Token("CNAME", "b")]),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_orderby_modifier",
+                                                            [
+                                                                Token("ORDER_BY", "ORDER BY"),
+                                                                Tree(
+                                                                    "orderby_list",
+                                                                    [Tree("orderby_item", [Token("CNAME", "c")])],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_frame_clause",
+                                                            [
+                                                                Token("ROWS", "ROWS"),
+                                                                Tree(
+                                                                    "frame_start",
+                                                                    [Token("CURRENT", "CURRENT"), Token("ROW", "ROW")],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "sum_5"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "sum("),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "partition_modifier",
+                                                            [
+                                                                Token("PARTITION_BY", "PARTITION BY"),
+                                                                Tree("field_list", [Token("CNAME", "b")]),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_orderby_modifier",
+                                                            [
+                                                                Token("ORDER_BY", "ORDER BY"),
+                                                                Tree(
+                                                                    "orderby_list",
+                                                                    [Tree("orderby_item", [Token("CNAME", "c")])],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_frame_clause",
+                                                            [
+                                                                Token("ROWS", "ROWS"),
+                                                                Tree(
+                                                                    "frame_between",
+                                                                    [
+                                                                        Token("BETWEEN", "BETWEEN"),
+                                                                        Tree(
+                                                                            "frame_start",
+                                                                            [
+                                                                                Token("CURRENT", "CURRENT"),
+                                                                                Token("ROW", "ROW"),
+                                                                            ],
+                                                                        ),
+                                                                        Token("AND", "AND"),
+                                                                        Tree(
+                                                                            "frame_end",
+                                                                            [
+                                                                                Token("NUMBER", "3"),
+                                                                                Token("FOLLOWING", "FOLLOWING"),
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "sum_6"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "window_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "sum("),
+                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                        Tree(
+                                            "over_clause",
+                                            [
+                                                Tree(
+                                                    "window_specification",
+                                                    [
+                                                        Tree(
+                                                            "partition_modifier",
+                                                            [
+                                                                Token("PARTITION_BY", "PARTITION BY"),
+                                                                Tree("field_list", [Token("CNAME", "b")]),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_orderby_modifier",
+                                                            [
+                                                                Token("ORDER_BY", "ORDER BY"),
+                                                                Tree(
+                                                                    "orderby_list",
+                                                                    [Tree("orderby_item", [Token("CNAME", "c")])],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        Tree(
+                                                            "window_frame_clause",
+                                                            [
+                                                                Token("ROWS", "ROWS"),
+                                                                Tree(
+                                                                    "frame_between",
+                                                                    [
+                                                                        Token("BETWEEN", "BETWEEN"),
+                                                                        Tree(
+                                                                            "frame_start",
+                                                                            [
+                                                                                Token("NUMBER", "3"),
+                                                                                Token("PRECEDING", "PRECEDING"),
+                                                                            ],
+                                                                        ),
+                                                                        Token("AND", "AND"),
+                                                                        Tree(
+                                                                            "frame_end",
+                                                                            [
+                                                                                Token("CURRENT", "CURRENT"),
+                                                                                Token("ROW", "ROW"),
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "sum_7"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "FROM"),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
+            ],
+        )
+    ],
+)

@@ -13,10 +13,10 @@ BLOCK_END_STR: "%}"
 CONFIG: "config"
 
 !dbt_ref: VAR_START_STR "ref" "(" dbt_reference ")" VAR_END_STR
-!dbt_src: VAR_START_STR "source" "(" source_name "," table_name [","] ")" VAR_END_STR
+!dbt_src: VAR_START_STR "source" "(" source_id "," table_id [","] ")" VAR_END_STR
 dbt_reference: string
-source_name: string
-table_name: string
+source_id: string
+table_id: string
 dbt_table_name: dbt_ref
     | dbt_src
 
