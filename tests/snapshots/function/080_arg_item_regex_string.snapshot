@@ -1,11 +1,13 @@
-select datetime_add(event_time, interval 3 hour) from a
+select
+   REGEXP_EXTRACT(text, r"^[^\?]*")
+from table_a
 
 ---
 
 SELECT
-  DATETIME_ADD(event_time, INTERVAL 3 HOUR),
+  REGEXP_EXTRACT(text, r"^[^\?]*"),
 FROM
-  a
+  table_a
 
 ---
 
@@ -25,18 +27,14 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Token("FUNCTION_NAME", "datetime_add("),
+                                        Token("FUNCTION_NAME", "REGEXP_EXTRACT("),
                                         Tree(
                                             "arg_list",
                                             [
-                                                Tree("arg_item", [Token("CNAME", "event_time")]),
+                                                Tree("arg_item", [Token("CNAME", "text")]),
                                                 Tree(
                                                     "arg_item",
-                                                    [
-                                                        Token("INTERVAL", "interval"),
-                                                        Token("INT", "3"),
-                                                        Token("TIME_INTERVAL", "hour"),
-                                                    ],
+                                                    [Tree("rstring", [Token("DOUBLE_QUOTED_STRING", '"^[^\\?]*"')])],
                                                 ),
                                             ],
                                         ),
@@ -48,7 +46,7 @@ Tree(
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "a")]),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_a")]),
             ],
         )
     ],

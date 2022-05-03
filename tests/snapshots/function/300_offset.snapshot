@@ -1,0 +1,142 @@
+select
+    split(text, "\n")[safe_offset(1)] as field_1,
+    array_1[offset(idx)] as field_2,
+    split(csv_string, ",")[safe_ordinal(3)] as field_3,
+    array_2[ordinal(idx)] as field_4,
+from
+	table
+
+---
+
+SELECT
+  SPLIT(text, "\n")[SAFE_OFFSET(1)] AS field_1,
+  array_1[OFFSET(idx)] AS field_2,
+  SPLIT(csv_string, ",")[SAFE_ORDINAL(3)] AS field_3,
+  array_2[ORDINAL(idx)] AS field_4,
+FROM
+  table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "split("),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree("arg_item", [Token("CNAME", "text")]),
+                                                Tree("arg_item", [Token("DOUBLE_QUOTED_STRING", '"\\n"')]),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                        Tree(
+                                            "array_subscript_specifier",
+                                            [
+                                                Token("LSQB", "["),
+                                                Token("OFFSET_TYPE", "safe_offset("),
+                                                Token("INT", "1"),
+                                                Token("RPAR", ")"),
+                                                Token("RSQB", "]"),
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "field_1"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "base_expression",
+                                    [
+                                        Token("CNAME", "array_1"),
+                                        Tree(
+                                            "array_subscript_specifier",
+                                            [
+                                                Token("LSQB", "["),
+                                                Token("OFFSET_TYPE", "offset("),
+                                                Token("CNAME", "idx"),
+                                                Token("RPAR", ")"),
+                                                Token("RSQB", "]"),
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "field_2"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "standard_function_expression",
+                                    [
+                                        Token("FUNCTION_NAME", "split("),
+                                        Tree(
+                                            "arg_list",
+                                            [
+                                                Tree("arg_item", [Token("CNAME", "csv_string")]),
+                                                Tree("arg_item", [Token("DOUBLE_QUOTED_STRING", '","')]),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                        Tree(
+                                            "array_subscript_specifier",
+                                            [
+                                                Token("LSQB", "["),
+                                                Token("OFFSET_TYPE", "safe_ordinal("),
+                                                Token("INT", "3"),
+                                                Token("RPAR", ")"),
+                                                Token("RSQB", "]"),
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "field_3"),
+                            ],
+                        ),
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "base_expression",
+                                    [
+                                        Token("CNAME", "array_2"),
+                                        Tree(
+                                            "array_subscript_specifier",
+                                            [
+                                                Token("LSQB", "["),
+                                                Token("OFFSET_TYPE", "ordinal("),
+                                                Token("CNAME", "idx"),
+                                                Token("RPAR", ")"),
+                                                Token("RSQB", "]"),
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Token("CNAME", "field_4"),
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
+            ],
+        )
+    ],
+)

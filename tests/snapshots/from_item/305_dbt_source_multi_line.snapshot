@@ -1,0 +1,60 @@
+select field from {{source("long_dataset_name", "really_long_table_name_to_demonstrate_multiline_spillover_and_added_trailing_comma")}}
+
+---
+
+SELECT
+  field,
+FROM
+  {{
+    source(
+      "long_dataset_name",
+      "really_long_table_name_to_demonstrate_multiline_spillover_and_added_trailing_comma",
+    )
+  }}
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [
+                        Tree(
+                            "dbt_table_name",
+                            [
+                                Tree(
+                                    "dbt_src",
+                                    [
+                                        Token("VAR_START_STR", "{{"),
+                                        Token("SOURCE", "source"),
+                                        Token("LPAR", "("),
+                                        Tree("source_name", [Token("DOUBLE_QUOTED_STRING", '"long_dataset_name"')]),
+                                        Token("COMMA", ","),
+                                        Tree(
+                                            "table_name",
+                                            [
+                                                Token(
+                                                    "DOUBLE_QUOTED_STRING",
+                                                    '"really_long_table_name_to_demonstrate_multiline_spillover_and_added_trailing_comma"',
+                                                )
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                        Token("VAR_END_STR", "}}"),
+                                    ],
+                                )
+                            ],
+                        )
+                    ],
+                ),
+            ],
+        )
+    ],
+)

@@ -55,6 +55,7 @@ Tree(
                                                     [
                                                         Token("FUNCTION_NAME", "count("),
                                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                                        Token("RPAR", ")"),
                                                     ],
                                                 )
                                             ],
@@ -81,6 +82,7 @@ Tree(
                                                                     "arg_list",
                                                                     [Tree("arg_item", [Token("CNAME", "a")])],
                                                                 ),
+                                                                Token("RPAR", ")"),
                                                             ],
                                                         )
                                                     ],
@@ -108,6 +110,7 @@ Tree(
                                                                                         )
                                                                                     ],
                                                                                 ),
+                                                                                Token("RPAR", ")"),
                                                                             ],
                                                                         ),
                                                                         Token("BINARY_COMPARISON_OPERATOR", ">"),

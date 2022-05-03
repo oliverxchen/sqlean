@@ -253,6 +253,12 @@ class TerminalMixin(BaseMixin):
         """print STANDARD_TABLE_NAME"""
         return self._token_indent(token)
 
+    @staticmethod
+    def rstring(node: CTree) -> str:
+        """print rstring. Not technically a terminal as defined in the grammar,
+        but close enough."""
+        return f"r{node.children[0]}"
+
 
 @v_args(tree=True)
 class QueryMixin(BaseMixin):
@@ -509,20 +515,23 @@ class FromModifierMixin(BaseMixin):
 class FunctionMixin(BaseMixin):
     """Mixin for function related nodes"""
 
-    @staticmethod
-    def standard_function_expression(node: CTree) -> str:
+    def standard_function_expression(self, node: CTree) -> str:
         """print standard_function_expression"""
-        return f"{node.children[0]}{node.children[1]})"
+        return self._rollup(node)
 
     @staticmethod
     def FUNCTION_NAME(token: CToken) -> str:  # pylint: disable=invalid-name
         """print FUNCTION_NAME"""
+        # Ensure that the function name is capitalized (and project.datasets are not)
         children = token.value.split(".")
         children[-1] = children[-1].upper()
         for i, child in enumerate(children):
             if child.upper() == "SAFE":
                 children[i] = "SAFE"
-        return ".".join(children)
+        output = ".".join(children)
+        # Ensure that there is no space between the function name and
+        # the opening parenthesis
+        return output[:-1].rstrip() + "("
 
     def arg_list(self, node: CTree) -> str:
         """rollup arg_list"""
@@ -609,6 +618,14 @@ class ExpressionMixin(BaseMixin):
     def indented_bool_expression(self, node: CTree) -> str:
         """rollup indented_bool_expression"""
         return self._simple_indent(node)
+
+    def array_subscript_specifier(self, node: CTree) -> str:
+        """rollup array_subscript_specifier"""
+        return self._rollup(node)
+
+    def base_expression(self, node: CTree) -> str:
+        """rollup base_expression"""
+        return self._rollup(node)
 
 
 @v_args(tree=True)

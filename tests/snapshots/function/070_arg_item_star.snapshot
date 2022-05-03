@@ -1,14 +1,13 @@
-select a, count(b) from table group by a
+select
+    count(*)
+from table_a
 
 ---
 
 SELECT
-  a,
-  COUNT(b),
+  COUNT(*),
 FROM
-  table
-GROUP BY
-  a
+  table_a
 
 ---
 
@@ -22,7 +21,6 @@ Tree(
                 Tree(
                     "select_list",
                     [
-                        Tree("select_item_unaliased", [Token("CNAME", "a")]),
                         Tree(
                             "select_item_unaliased",
                             [
@@ -30,25 +28,19 @@ Tree(
                                     "standard_function_expression",
                                     [
                                         Token("FUNCTION_NAME", "count("),
-                                        Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                        Tree(
+                                            "arg_list",
+                                            [Tree("arg_item", [Tree("star_expression", [Token("STAR", "*")])])],
+                                        ),
                                         Token("RPAR", ")"),
                                     ],
                                 )
                             ],
-                        ),
+                        )
                     ],
                 ),
                 Token("FROM", "from"),
-                Tree(
-                    "from_clause",
-                    [
-                        Token("STANDARD_TABLE_NAME", "table"),
-                        Tree(
-                            "groupby_modifier",
-                            [Token("GROUP_BY", "group by"), Tree("field_list", [Token("CNAME", "a")])],
-                        ),
-                    ],
-                ),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_a")]),
             ],
         )
     ],

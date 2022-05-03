@@ -33,6 +33,7 @@ Tree(
                                                 Tree("arg_item", [Token("TIME_INTERVAL", "SECOND")]),
                                             ],
                                         ),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],

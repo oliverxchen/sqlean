@@ -62,12 +62,14 @@ Tree(
                                                                                                 )
                                                                                             ],
                                                                                         ),
+                                                                                        Token("RPAR", ")"),
                                                                                     ],
                                                                                 )
                                                                             ],
                                                                         )
                                                                     ],
                                                                 ),
+                                                                Token("RPAR", ")"),
                                                             ],
                                                         )
                                                     ],
@@ -75,6 +77,7 @@ Tree(
                                                 Tree("arg_item", [Token("DATE_INTERVAL", "month")]),
                                             ],
                                         ),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],

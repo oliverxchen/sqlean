@@ -29,6 +29,7 @@ Tree(
                                     [
                                         Token("FUNCTION_NAME", "max("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "days_before")])]),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],

@@ -29,6 +29,7 @@ Tree(
                                     [
                                         Token("FUNCTION_NAME", "count("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "b")])]),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],
@@ -52,6 +53,7 @@ Tree(
                                             [
                                                 Token("FUNCTION_NAME", "round("),
                                                 Tree("arg_list", [Tree("arg_item", [Token("CNAME", "a")])]),
+                                                Token("RPAR", ")"),
                                             ],
                                         )
                                     ],

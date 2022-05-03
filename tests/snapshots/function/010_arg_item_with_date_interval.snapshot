@@ -33,6 +33,7 @@ Tree(
                                                 Tree("arg_item", [Token("DATE_INTERVAL", "month")]),
                                             ],
                                         ),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],

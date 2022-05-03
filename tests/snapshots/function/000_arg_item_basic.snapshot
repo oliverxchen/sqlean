@@ -1,4 +1,4 @@
-select SUM(x) from c
+select SUM (x) from c
 
 ---
 
@@ -25,8 +25,9 @@ Tree(
                                 Tree(
                                     "standard_function_expression",
                                     [
-                                        Token("FUNCTION_NAME", "SUM("),
+                                        Token("FUNCTION_NAME", "SUM ("),
                                         Tree("arg_list", [Tree("arg_item", [Token("CNAME", "x")])]),
+                                        Token("RPAR", ")"),
                                     ],
                                 )
                             ],
