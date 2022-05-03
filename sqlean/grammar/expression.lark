@@ -30,6 +30,7 @@ except_item: CNAME
     | macro
     | CNAME
     | literal
+    | jinja_variable
 
 ///////////////
 // functions //
@@ -151,6 +152,7 @@ orderby_list: orderby_item ("," orderby_item)*
 %import comment.COMMENT
 %import alias.as_alias
 %import jinja.macro
+%import jinja.jinja_variable
 %import reserved_words.data_type
 %import reserved_words.interval
 %import table.TABLE_REF_FIELD_NAME
