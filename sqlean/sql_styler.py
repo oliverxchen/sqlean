@@ -672,6 +672,18 @@ class ExpressionMixin(BaseMixin):
         """rollup base_expression"""
         return self._rollup(node)
 
+    def negated_expression(self, node: CTree) -> str:
+        """print negated_expression"""
+        return self._rollup(node)
+
+    def arithmetic_expression(self, node: CTree) -> str:
+        """print arithmetic_expression"""
+        return self._rollup_space(node)
+
+    def parenthetic_expression(self, node: CTree) -> str:
+        """print parenthetic_expression"""
+        return self._rollup(node)
+
 
 @v_args(tree=True)
 class ComparisonMixin(BaseMixin):

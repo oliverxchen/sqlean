@@ -1,0 +1,192 @@
+select
+  -a
+  , a+b
+  , (a+b)*c
+  , (a-b)/c
+  , (a*b)+(c)
+from table
+where
+  (a + b) * c > (a - b) / (c)
+
+---
+
+SELECT
+  -a,
+  a + b,
+  (a + b) * c,
+  (a - b) / c,
+  (a * b) + (c),
+FROM
+  table
+WHERE
+  (a + b) * c > (a - b) / (c)
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_unaliased",
+                            [Tree("negated_expression", [Token("MINUS", "-"), Token("CNAME", "a")])],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "arithmetic_expression",
+                                    [Token("CNAME", "a"), Token("PLUS", "+"), Token("CNAME", "b")],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "arithmetic_expression",
+                                    [
+                                        Tree(
+                                            "parenthetic_expression",
+                                            [
+                                                Token("LPAR", "("),
+                                                Tree(
+                                                    "arithmetic_expression",
+                                                    [Token("CNAME", "a"), Token("PLUS", "+"), Token("CNAME", "b")],
+                                                ),
+                                                Token("RPAR", ")"),
+                                            ],
+                                        ),
+                                        Token("STAR", "*"),
+                                        Token("CNAME", "c"),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "arithmetic_expression",
+                                    [
+                                        Tree(
+                                            "parenthetic_expression",
+                                            [
+                                                Token("LPAR", "("),
+                                                Tree(
+                                                    "arithmetic_expression",
+                                                    [Token("CNAME", "a"), Token("MINUS", "-"), Token("CNAME", "b")],
+                                                ),
+                                                Token("RPAR", ")"),
+                                            ],
+                                        ),
+                                        Token("SLASH", "/"),
+                                        Token("CNAME", "c"),
+                                    ],
+                                )
+                            ],
+                        ),
+                        Tree(
+                            "select_item_unaliased",
+                            [
+                                Tree(
+                                    "arithmetic_expression",
+                                    [
+                                        Tree(
+                                            "parenthetic_expression",
+                                            [
+                                                Token("LPAR", "("),
+                                                Tree(
+                                                    "arithmetic_expression",
+                                                    [Token("CNAME", "a"), Token("STAR", "*"), Token("CNAME", "b")],
+                                                ),
+                                                Token("RPAR", ")"),
+                                            ],
+                                        ),
+                                        Token("PLUS", "+"),
+                                        Tree(
+                                            "parenthetic_expression",
+                                            [Token("LPAR", "("), Token("CNAME", "c"), Token("RPAR", ")")],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree(
+                    "from_clause",
+                    [
+                        Token("STANDARD_TABLE_NAME", "table"),
+                        Token("WHERE", "where"),
+                        Tree(
+                            "indented_bool_expression",
+                            [
+                                Tree(
+                                    "binary_comparison_operation",
+                                    [
+                                        Tree(
+                                            "arithmetic_expression",
+                                            [
+                                                Tree(
+                                                    "parenthetic_expression",
+                                                    [
+                                                        Token("LPAR", "("),
+                                                        Tree(
+                                                            "arithmetic_expression",
+                                                            [
+                                                                Token("CNAME", "a"),
+                                                                Token("PLUS", "+"),
+                                                                Token("CNAME", "b"),
+                                                            ],
+                                                        ),
+                                                        Token("RPAR", ")"),
+                                                    ],
+                                                ),
+                                                Token("STAR", "*"),
+                                                Token("CNAME", "c"),
+                                            ],
+                                        ),
+                                        Token("BINARY_COMPARISON_OPERATOR", ">"),
+                                        Tree(
+                                            "arithmetic_expression",
+                                            [
+                                                Tree(
+                                                    "parenthetic_expression",
+                                                    [
+                                                        Token("LPAR", "("),
+                                                        Tree(
+                                                            "arithmetic_expression",
+                                                            [
+                                                                Token("CNAME", "a"),
+                                                                Token("MINUS", "-"),
+                                                                Token("CNAME", "b"),
+                                                            ],
+                                                        ),
+                                                        Token("RPAR", ")"),
+                                                    ],
+                                                ),
+                                                Token("SLASH", "/"),
+                                                Tree(
+                                                    "parenthetic_expression",
+                                                    [Token("LPAR", "("), Token("CNAME", "c"), Token("RPAR", ")")],
+                                                ),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

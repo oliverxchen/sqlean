@@ -39,6 +39,13 @@ TABLE_REF_FIELD_NAME: /(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})/
     | CNAME [array_subscript_specifier]
     | literal
     | jinja_variable
+    | negated_expression
+    | arithmetic_expression
+    | parenthetic_expression
+
+!negated_expression: "-" base_expression
+!arithmetic_expression: base_expression ("+" | "-" | "*" | "/") base_expression
+!parenthetic_expression: "(" base_expression ")"
 
 ///////////////
 // functions //
