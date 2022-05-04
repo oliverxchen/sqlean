@@ -1,0 +1,165 @@
+with
+
+cte as (
+	select * from table_a
+) --no comma should be added here
+
+{{ macro_cte1("arg1") }}
+
+-- the leading comma should move to after the previous macro
+, cte2 as (
+    select * from table_b
+), --the comma should stay here
+
+{{ macro_cte3("arg2") }}
+
+select * from macro_cte3
+
+---
+
+WITH
+
+cte AS (
+  SELECT
+    *,
+  FROM
+    table_a
+)  -- no comma should be added here
+
+{{ macro_cte1("arg1") }},
+
+-- the leading comma should move to after the previous macro
+cte2 AS (
+  SELECT
+    *,
+  FROM
+    table_b
+),  -- the comma should stay here
+
+{{ macro_cte3("arg2") }}
+
+SELECT
+  *,
+FROM
+  macro_cte3
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "with"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte"),
+                        Token("AS", "as"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree(
+                                    "select_list",
+                                    [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])],
+                                ),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_a")]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMENT", "--no comma should be added here"),
+                Tree(
+                    "with_clause",
+                    [
+                        Tree(
+                            "macro",
+                            [
+                                Token("VAR_START_STR", "{{"),
+                                Token("CNAME", "macro_cte1"),
+                                Token("LPAR", "("),
+                                Tree(
+                                    "python_arg_list",
+                                    [
+                                        Tree(
+                                            "python_arg_item",
+                                            [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"arg1"')])],
+                                        )
+                                    ],
+                                ),
+                                Token("RPAR", ")"),
+                                Token("VAR_END_STR", "}}"),
+                            ],
+                        )
+                    ],
+                ),
+                Token("COMMENT", "-- the leading comma should move to after the previous macro"),
+                Token("COMMA", ","),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte2"),
+                        Token("AS", "as"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree(
+                                    "select_list",
+                                    [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])],
+                                ),
+                                Token("FROM", "from"),
+                                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table_b")]),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Token("COMMENT", "--the comma should stay here"),
+                Tree(
+                    "with_clause",
+                    [
+                        Tree(
+                            "macro",
+                            [
+                                Token("VAR_START_STR", "{{"),
+                                Token("CNAME", "macro_cte3"),
+                                Token("LPAR", "("),
+                                Tree(
+                                    "python_arg_list",
+                                    [
+                                        Tree(
+                                            "python_arg_item",
+                                            [Tree("python_arg_value", [Token("DOUBLE_QUOTED_STRING", '"arg2"')])],
+                                        )
+                                    ],
+                                ),
+                                Token("RPAR", ")"),
+                                Token("VAR_END_STR", "}}"),
+                            ],
+                        )
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "select")]),
+                        Tree(
+                            "select_list",
+                            [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])],
+                        ),
+                        Token("FROM", "from"),
+                        Tree("from_clause", [Token("STANDARD_TABLE_NAME", "macro_cte3")]),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

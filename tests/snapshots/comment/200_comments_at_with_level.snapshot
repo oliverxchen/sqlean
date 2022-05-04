@@ -87,6 +87,7 @@ Tree(
                         Token("RPAR", ")"),
                     ],
                 ),
+                Token("COMMA", ","),
                 Token("COMMENT", "-- this is an inline comment after a comma"),
                 Token("COMMENT", "/* this is a block comment after a comma */"),
                 Tree(
@@ -109,6 +110,7 @@ Tree(
                 ),
                 Token("COMMENT", "-- this is an inline comment before a comma"),
                 Token("COMMENT", "/* this is a block comment before a comma */"),
+                Token("COMMA", ","),
                 Tree(
                     "with_clause",
                     [

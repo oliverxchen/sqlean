@@ -193,6 +193,7 @@ Tree(
                         Token("RPAR", ")"),
                     ],
                 ),
+                Token("COMMA", ","),
                 Tree(
                     "with_clause",
                     [
@@ -349,6 +350,7 @@ Tree(
                                         Token("RPAR", ")"),
                                     ],
                                 ),
+                                Token("COMMA", ","),
                                 Tree(
                                     "with_clause",
                                     [

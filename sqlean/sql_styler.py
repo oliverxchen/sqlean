@@ -280,12 +280,35 @@ class QueryMixin(BaseMixin):
     def query_expr(self, node: CTree) -> str:
         """rollup items in query_expr"""
         return self._rollup_list(
-            children=list(node.children),
-            separator=",",
+            children=self._treat_commas_in_query_expr(node),
+            separator="",
             line_separator=2 * linesep,
             has_ending_separator=False,
-            item_types={"with_clause"},
+            item_types=set(),
         )
+
+    @staticmethod
+    def _treat_commas_in_query_expr(node: CTree) -> List[Union[CTree, CToken]]:
+        """treat commas in query_expr"""
+        children = list(node.children)
+        counter = len(children) - 1
+        while counter >= 0:
+            if children[counter] == ",":
+                counter += -1
+                # when we find a comma, go back and append the comma to the
+                # most recent with_clause
+                while counter >= 0:
+                    child = children[counter]
+                    if isinstance(child, CToken) and child.type == "with_clause":
+                        children[counter] = CToken(
+                            type_=CData("with_clause"),
+                            value=child.value + ",",
+                        )
+                        break
+                    counter += -1
+            counter += -1
+        # remove the commas from the list
+        return [child for child in children if child != ","]
 
     def sub_query_expr(self, node: CTree) -> str:
         """print sub_query_expr"""
@@ -418,6 +441,12 @@ class FromMixin(BaseMixin):
             line_separator=linesep,
             has_ending_separator=False,
             item_types=set(),
+        )
+
+    def table_name(self, node: CTree) -> str:
+        """print table_name"""
+        return self._apply_indent(
+            self._rollup(node), indent_level=node.data.indent_level
         )
 
 
@@ -577,6 +606,22 @@ class FunctionMixin(BaseMixin):
         """print partition_modifier"""
         return f"PARTITION BY {str(node.children[1]).lstrip()}"
 
+    def frame_between(self, node: CTree) -> str:
+        """print frame_between"""
+        return self._rollup_space(node)
+
+    def frame_start(self, node: CTree) -> str:
+        """print frame_start"""
+        return self._rollup_space(node)
+
+    def frame_end(self, node: CTree) -> str:
+        """print frame_end"""
+        return self._rollup_space(node)
+
+    def window_frame_clause(self, node: CTree) -> str:
+        """print window_frame_clause"""
+        return self._rollup_space(node)
+
 
 @v_args(tree=True)
 class ExpressionMixin(BaseMixin):
@@ -704,12 +749,12 @@ class JinjaMixin(BaseMixin):
         """print macro"""
         return self.__format_macro_expr(node)
 
-    def source_name(self, node: CTree) -> str:
-        """print source_name"""
+    def source_id(self, node: CTree) -> str:
+        """print source_id"""
         return self._apply_black(str(node.children[0]))
 
-    def table_name(self, node: CTree) -> str:
-        """print table_name"""
+    def table_id(self, node: CTree) -> str:
+        """print table_id"""
         return self._apply_black(str(node.children[0]))
 
     def dbt_reference(self, node: CTree) -> str:

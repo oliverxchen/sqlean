@@ -35,10 +35,10 @@ Tree(
                                         Token("VAR_START_STR", "{{"),
                                         Token("SOURCE", "source"),
                                         Token("LPAR", "("),
-                                        Tree("source_name", [Token("DOUBLE_QUOTED_STRING", '"long_dataset_name"')]),
+                                        Tree("source_id", [Token("DOUBLE_QUOTED_STRING", '"long_dataset_name"')]),
                                         Token("COMMA", ","),
                                         Tree(
-                                            "table_name",
+                                            "table_id",
                                             [
                                                 Token(
                                                     "DOUBLE_QUOTED_STRING",

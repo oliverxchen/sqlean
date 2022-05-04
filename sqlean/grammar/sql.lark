@@ -9,7 +9,7 @@ query_file: COMMENT* dbt_config COMMENT* jinja_set_block* query_expr
 /////////////////////////
 // general sql queries //
 /////////////////////////
-?query_expr: WITH COMMENT* with_clause ( COMMENT* "," COMMENT* with_clause)* select_expr
+!?query_expr: WITH COMMENT* with_clause (COMMENT* "," COMMENT* with_clause | COMMENT* with_clause)* select_expr
     | select_expr
     | macro
 WITH: "WITH"i
