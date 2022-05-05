@@ -1,0 +1,83 @@
+select
+    struct(a + b as value1, cos(b), c as value2) as struct_col
+from table
+
+---
+
+SELECT
+  STRUCT(a + b AS value1, COS(b), c AS value2) AS struct_col,
+FROM
+  table
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "select_expr",
+            [
+                Tree("select_type", [Token("SELECT", "select")]),
+                Tree(
+                    "select_list",
+                    [
+                        Tree(
+                            "select_item_aliased",
+                            [
+                                Tree(
+                                    "struct_expression",
+                                    [
+                                        Token("STRUCT", "struct("),
+                                        Tree(
+                                            "struct_list",
+                                            [
+                                                Tree(
+                                                    "struct_item_aliased",
+                                                    [
+                                                        Tree(
+                                                            "arithmetic_expression",
+                                                            [
+                                                                Token("CNAME", "a"),
+                                                                Token("PLUS", "+"),
+                                                                Token("CNAME", "b"),
+                                                            ],
+                                                        ),
+                                                        Token("CNAME", "value1"),
+                                                    ],
+                                                ),
+                                                Tree(
+                                                    "struct_item_unaliased",
+                                                    [
+                                                        Tree(
+                                                            "standard_function_expression",
+                                                            [
+                                                                Token("FUNCTION_NAME", "cos("),
+                                                                Tree(
+                                                                    "arg_list",
+                                                                    [Tree("arg_item", [Token("CNAME", "b")])],
+                                                                ),
+                                                                Token("RPAR", ")"),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                                Tree(
+                                                    "struct_item_aliased",
+                                                    [Token("CNAME", "c"), Token("CNAME", "value2")],
+                                                ),
+                                            ],
+                                        ),
+                                        Token("RPAR", ")"),
+                                    ],
+                                ),
+                                Token("CNAME", "struct_col"),
+                            ],
+                        )
+                    ],
+                ),
+                Token("FROM", "from"),
+                Tree("from_clause", [Token("STANDARD_TABLE_NAME", "table")]),
+            ],
+        )
+    ],
+)

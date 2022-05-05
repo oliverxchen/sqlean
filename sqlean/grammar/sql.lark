@@ -12,8 +12,9 @@ query_file: COMMENT* dbt_config COMMENT* jinja_set_block* query_expr
 !?query_expr: WITH COMMENT* with_clause (COMMENT* "," COMMENT* with_clause | COMMENT* with_clause)* select_expr
     | select_expr
     | macro
-WITH: "WITH"i
+    | set_operation
 
+WITH: "WITH"i
 !with_clause: CNAME "AS"i "(" query_expr ")"
     | macro
 
@@ -63,6 +64,14 @@ using_list: CNAME ("," CNAME)*
 ///////////
 !limit_clause: "LIMIT"i INT ["OFFSET"i INT]
 
+
+////////////////////
+// set_operations //
+////////////////////
+set_operation: query_expr set_operator query_expr
+!set_operator: "UNION"i ("ALL"i | "DISTINCT"i)
+    | "INTERSECT"i "DISTINCT"i
+    | "EXCEPT"i "DISTINCT"i
 
 %import common.CNAME
 %import common.INT
