@@ -1,0 +1,277 @@
+WITH
+
+cte_1 AS (
+	select 1 as foo
+	union all
+	select 2 as foo
+),
+
+cte_2 AS (
+	select 1 as foo
+	union distinct
+	select 2 as foo
+),
+
+cte_3 AS (
+	select 1 as foo
+	intersect distinct
+	select 2 as foo
+),
+
+cte_3 AS (
+	select 1 as foo
+	except distinct
+	select 2 as foo
+)
+
+select * from cte_1
+
+---
+
+WITH
+
+cte_1 AS (
+  SELECT
+    1 AS foo,
+  UNION ALL
+  SELECT
+    2 AS foo,
+),
+
+cte_2 AS (
+  SELECT
+    1 AS foo,
+  UNION DISTINCT
+  SELECT
+    2 AS foo,
+),
+
+cte_3 AS (
+  SELECT
+    1 AS foo,
+  INTERSECT DISTINCT
+  SELECT
+    2 AS foo,
+),
+
+cte_3 AS (
+  SELECT
+    1 AS foo,
+  EXCEPT DISTINCT
+  SELECT
+    2 AS foo,
+)
+
+SELECT
+  *,
+FROM
+  cte_1
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "WITH"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_1"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "set_operation",
+                            [
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree(
+                                            "select_list",
+                                            [
+                                                Tree(
+                                                    "select_item_aliased",
+                                                    [Token("SIGNED_NUMBER", "1"), Token("CNAME", "foo")],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Tree("set_operator", [Token("UNION", "union"), Token("ALL", "all")]),
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree(
+                                            "select_list",
+                                            [
+                                                Tree(
+                                                    "select_item_aliased",
+                                                    [Token("SIGNED_NUMBER", "2"), Token("CNAME", "foo")],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_2"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "set_operation",
+                            [
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree(
+                                            "select_list",
+                                            [
+                                                Tree(
+                                                    "select_item_aliased",
+                                                    [Token("SIGNED_NUMBER", "1"), Token("CNAME", "foo")],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Tree("set_operator", [Token("UNION", "union"), Token("DISTINCT", "distinct")]),
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree(
+                                            "select_list",
+                                            [
+                                                Tree(
+                                                    "select_item_aliased",
+                                                    [Token("SIGNED_NUMBER", "2"), Token("CNAME", "foo")],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_3"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "set_operation",
+                            [
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree(
+                                            "select_list",
+                                            [
+                                                Tree(
+                                                    "select_item_aliased",
+                                                    [Token("SIGNED_NUMBER", "1"), Token("CNAME", "foo")],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Tree("set_operator", [Token("INTERSECT", "intersect"), Token("DISTINCT", "distinct")]),
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree(
+                                            "select_list",
+                                            [
+                                                Tree(
+                                                    "select_item_aliased",
+                                                    [Token("SIGNED_NUMBER", "2"), Token("CNAME", "foo")],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Token("COMMA", ","),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_3"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "set_operation",
+                            [
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree(
+                                            "select_list",
+                                            [
+                                                Tree(
+                                                    "select_item_aliased",
+                                                    [Token("SIGNED_NUMBER", "1"), Token("CNAME", "foo")],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                                Tree("set_operator", [Token("EXCEPT", "except"), Token("DISTINCT", "distinct")]),
+                                Tree(
+                                    "select_expr",
+                                    [
+                                        Tree("select_type", [Token("SELECT", "select")]),
+                                        Tree(
+                                            "select_list",
+                                            [
+                                                Tree(
+                                                    "select_item_aliased",
+                                                    [Token("SIGNED_NUMBER", "2"), Token("CNAME", "foo")],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "select")]),
+                        Tree(
+                            "select_list",
+                            [Tree("select_item_unaliased", [Tree("star_expression", [Token("STAR", "*")])])],
+                        ),
+                        Token("FROM", "from"),
+                        Tree("from_clause", [Token("STANDARD_TABLE_NAME", "cte_1")]),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

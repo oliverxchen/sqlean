@@ -381,7 +381,7 @@ class SelectMixin(BaseMixin):
         for identification by the parent"""
         return CToken(type_=CData("select_item"), value=self._simple_indent(node))
 
-    def select_item_aliased(self, node: CTree) -> str:
+    def select_item_aliased(self, node: CTree) -> CToken:
         """Returns a token of type select_item
         for identification by the parent"""
         output = f"{node.children[0]} AS {node.children[1]}"
@@ -389,6 +389,20 @@ class SelectMixin(BaseMixin):
             type_=CData("select_item"),
             value=self._apply_indent(output, node.data.indent_level),
         )
+
+    @staticmethod
+    def struct_item_unaliased(node: CTree) -> str:
+        """prints struct_item_unaliased"""
+        return str(node.children[0])
+
+    @staticmethod
+    def struct_item_aliased(node: CTree) -> str:
+        """prints struct_item_aliased"""
+        return f"{node.children[0]} AS {node.children[1]}"
+
+    def struct_list(self, node: CTree) -> str:
+        """prints struct_list"""
+        return self._rollup_comma_inline(node)
 
     def when_item(self, node: CTree) -> str:
         """print when_item"""
@@ -417,6 +431,19 @@ class SelectMixin(BaseMixin):
 
     def separate_case_expression(self, node: CTree) -> str:
         """print separate_case_expression"""
+        return self._rollup_linesep(node)
+
+
+@v_args(tree=True)
+class SetMixin(BaseMixin):
+    """Mixin for set related nodes"""
+
+    def set_operator(self, node: CTree) -> str:
+        """rollup items in set_operator"""
+        return self._apply_indent(self._rollup_space(node), node.data.indent_level)
+
+    def set_operation(self, node: CTree) -> str:
+        """rollup items in set_operation"""
         return self._rollup_linesep(node)
 
 
@@ -622,6 +649,10 @@ class FunctionMixin(BaseMixin):
         """print window_frame_clause"""
         return self._rollup_space(node)
 
+    def struct_expression(self, node: CTree) -> str:
+        """print struct_expression"""
+        return self._rollup(node)
+
 
 @v_args(tree=True)
 class ExpressionMixin(BaseMixin):
@@ -809,6 +840,7 @@ class Styler(  # pylint: disable=too-many-ancestors
     JoinMixin,
     QueryMixin,
     SelectMixin,
+    SetMixin,
     TerminalMixin,
 ):
     """Pretty printer: formats the lists of atoms and the overall query"""

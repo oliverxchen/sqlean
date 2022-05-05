@@ -33,6 +33,7 @@ TABLE_REF_FIELD_NAME: /(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})/
 /////////////////////
 ?base_expression: standard_function_expression
     | window_function_expression
+    | struct_expression
     | TABLE_REF_FIELD_NAME
     | case_expression
     | macro
@@ -93,6 +94,17 @@ frame_between: BETWEEN frame_start AND frame_end
     | NUMBER "FOLLOWING"i
     | "CURRENT"i "ROW"i
     | NUMBER "PRECEDING"i
+
+///////////////////////
+// struct_expression //
+///////////////////////
+!struct_expression: STRUCT struct_list ")"
+STRUCT.20: /STRUCT\s*\(/i
+struct_list: struct_item ("," struct_item)* [","]
+?struct_item: struct_item_unaliased
+    | struct_item_aliased
+struct_item_aliased: base_expression as_alias
+struct_item_unaliased: base_expression
 
 //////////////////////
 // array_subscripts //
