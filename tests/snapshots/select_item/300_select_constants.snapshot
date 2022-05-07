@@ -17,8 +17,8 @@ from table
 
 SELECT
   "foo" AS field_1,
-  "\"foo\"" AS field_1,
-  'foo' AS field_3,
+  '"foo"' AS field_1,
+  "foo" AS field_3,
   1 AS field_4,
   3.2 AS field_5,
   -2.3 AS field_6,
@@ -26,7 +26,7 @@ SELECT
   TRUE AS field_8,
   FALSE AS field_9,
   NULL AS field_10,
-  DATE('2022-02-11T00:00:00') AS field_11,
+  DATE("2022-02-11T00:00:00") AS field_11,
   CASE
     WHEN 1 THEN 2
     ELSE 3

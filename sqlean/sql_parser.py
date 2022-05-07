@@ -93,6 +93,9 @@ class TreeGroomer(Visitor_Recursive[Token]):
         "having_clause",
     }
 
+    # If a node has one of these as a parent, it's indent will be set to 0
+    parents_to_zero = {"in_list"}
+
     def __default__(self, tree: CTree) -> None:
         """Executed on each node of the tree"""
 
@@ -143,6 +146,8 @@ class TreeGroomer(Visitor_Recursive[Token]):
             increment_level = self.node_indent_map[name]
         elif parent_data in self.parents_to_indent:
             increment_level = 1
+        elif parent_data in self.parents_to_zero:
+            increment_level = -parent_data.indent_level
         return parent_data.indent_level + increment_level
 
     def __set_lines_from_previous(

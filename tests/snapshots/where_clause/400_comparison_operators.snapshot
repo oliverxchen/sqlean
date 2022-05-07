@@ -15,7 +15,7 @@ where
   and h like "%foo%"
   and i not like "%foo%"
   and j in (1, 2, 3)
-  and k not in ("a", "b", "c")
+  and k not in ("a", 'b', "c")
   and el between 1 and 2
   and m not between "2020-01-01" and "2022-02-22"
 
@@ -318,8 +318,8 @@ Tree(
                                                                                                                                                             '"a"',
                                                                                                                                                         ),
                                                                                                                                                         Token(
-                                                                                                                                                            "DOUBLE_QUOTED_STRING",
-                                                                                                                                                            '"b"',
+                                                                                                                                                            "SINGLE_QUOTED_STRING",
+                                                                                                                                                            "'b'",
                                                                                                                                                         ),
                                                                                                                                                         Token(
                                                                                                                                                             "DOUBLE_QUOTED_STRING",

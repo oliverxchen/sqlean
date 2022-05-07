@@ -259,6 +259,18 @@ class TerminalMixin(BaseMixin):
         but close enough."""
         return f"r{node.children[0]}"
 
+    def SINGLE_QUOTED_STRING(  # pylint: disable=invalid-name
+        self, token: CToken
+    ) -> str:
+        """print SINGLE_QUOTED_STRING"""
+        return self._apply_black(str(token))
+
+    def DOUBLE_QUOTED_STRING(  # pylint: disable=invalid-name
+        self, token: CToken
+    ) -> str:
+        """print SINGLE_QUOTED_STRING"""
+        return self._apply_black(str(token))
+
 
 @v_args(tree=True)
 class QueryMixin(BaseMixin):
@@ -310,14 +322,18 @@ class QueryMixin(BaseMixin):
         # remove the commas from the list
         return [child for child in children if child != ","]
 
-    def sub_query_expr(self, node: CTree) -> str:
-        """print sub_query_expr"""
-        return (
+    def sub_query_expr(self, node: CTree) -> CToken:
+        """Returns sub_query_expr as a CToken for identification by parent"""
+        output = (
             self._apply_indent(str(node.children[0]), node.data.indent_level)
             + linesep
             + str(node.children[1])
             + linesep
             + self._apply_indent(str(node.children[2]), node.data.indent_level)
+        )
+        return CToken(
+            type_=CData("sub_query_expr"),
+            value=output,
         )
 
     def with_clause(self, node: CTree) -> CToken:
@@ -734,6 +750,12 @@ class ComparisonMixin(BaseMixin):
 
     def in_list(self, node: CTree) -> str:
         """rollup in_list"""
+        if (
+            isinstance(node.children[0], CToken)
+            and node.children[0].type == "sub_query_expr"
+        ):
+            return str(node.children[0])
+
         return f"({self._rollup_comma_inline(node)})"
 
     def between_comparison_operation(self, node: CTree) -> str:
