@@ -77,8 +77,7 @@ def test_dryrun_verbose__fail() -> None:
     assert result.exit_code == 1
     assert "tests/fixtures/fail/dir_1/unparsable.sql:" in result.stdout
     assert (
-        "Unexpected token Token('table__STANDARD_TABLE_NAME', 'foo') "
-        + "at line 1, column 1."
+        "Unexpected token Token('STANDARD_TABLE_NAME', 'foo') at line 1, column 1."
         in result.stdout
     )
     assert "Expected one of:" in result.stdout

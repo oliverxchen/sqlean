@@ -1,0 +1,200 @@
+WITH
+
+cte_1 AS (
+	select field from table
+	where
+		b in (select a from special)
+)
+
+select
+  field
+from
+  cte_1
+where
+  a in (select item from special_items)
+
+---
+
+WITH
+
+cte_1 AS (
+  SELECT
+    field,
+  FROM
+    table
+  WHERE
+    b IN (
+      SELECT
+        a,
+      FROM
+        special
+    )
+)
+
+SELECT
+  field,
+FROM
+  cte_1
+WHERE
+  a IN (
+    SELECT
+      item,
+    FROM
+      special_items
+  )
+
+---
+
+Tree(
+    "query_file",
+    [
+        Tree(
+            "query_expr",
+            [
+                Token("WITH", "WITH"),
+                Tree(
+                    "with_clause",
+                    [
+                        Token("CNAME", "cte_1"),
+                        Token("AS", "AS"),
+                        Token("LPAR", "("),
+                        Tree(
+                            "select_expr",
+                            [
+                                Tree("select_type", [Token("SELECT", "select")]),
+                                Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
+                                Token("FROM", "from"),
+                                Tree(
+                                    "from_clause",
+                                    [
+                                        Token("STANDARD_TABLE_NAME", "table"),
+                                        Token("WHERE", "where"),
+                                        Tree(
+                                            "indented_bool_expression",
+                                            [
+                                                Tree(
+                                                    "in_comparison_operation",
+                                                    [
+                                                        Token("CNAME", "b"),
+                                                        Token("IN", "in"),
+                                                        Tree(
+                                                            "in_list",
+                                                            [
+                                                                Tree(
+                                                                    "sub_query_expr",
+                                                                    [
+                                                                        Token("LPAR", "("),
+                                                                        Tree(
+                                                                            "select_expr",
+                                                                            [
+                                                                                Tree(
+                                                                                    "select_type",
+                                                                                    [Token("SELECT", "select")],
+                                                                                ),
+                                                                                Tree(
+                                                                                    "select_list",
+                                                                                    [
+                                                                                        Tree(
+                                                                                            "select_item_unaliased",
+                                                                                            [Token("CNAME", "a")],
+                                                                                        )
+                                                                                    ],
+                                                                                ),
+                                                                                Token("FROM", "from"),
+                                                                                Tree(
+                                                                                    "from_clause",
+                                                                                    [
+                                                                                        Token(
+                                                                                            "STANDARD_TABLE_NAME",
+                                                                                            "special",
+                                                                                        )
+                                                                                    ],
+                                                                                ),
+                                                                            ],
+                                                                        ),
+                                                                        Token("RPAR", ")"),
+                                                                    ],
+                                                                )
+                                                            ],
+                                                        ),
+                                                    ],
+                                                )
+                                            ],
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                        Token("RPAR", ")"),
+                    ],
+                ),
+                Tree(
+                    "select_expr",
+                    [
+                        Tree("select_type", [Token("SELECT", "select")]),
+                        Tree("select_list", [Tree("select_item_unaliased", [Token("CNAME", "field")])]),
+                        Token("FROM", "from"),
+                        Tree(
+                            "from_clause",
+                            [
+                                Token("STANDARD_TABLE_NAME", "cte_1"),
+                                Token("WHERE", "where"),
+                                Tree(
+                                    "indented_bool_expression",
+                                    [
+                                        Tree(
+                                            "in_comparison_operation",
+                                            [
+                                                Token("CNAME", "a"),
+                                                Token("IN", "in"),
+                                                Tree(
+                                                    "in_list",
+                                                    [
+                                                        Tree(
+                                                            "sub_query_expr",
+                                                            [
+                                                                Token("LPAR", "("),
+                                                                Tree(
+                                                                    "select_expr",
+                                                                    [
+                                                                        Tree(
+                                                                            "select_type", [Token("SELECT", "select")]
+                                                                        ),
+                                                                        Tree(
+                                                                            "select_list",
+                                                                            [
+                                                                                Tree(
+                                                                                    "select_item_unaliased",
+                                                                                    [Token("CNAME", "item")],
+                                                                                )
+                                                                            ],
+                                                                        ),
+                                                                        Token("FROM", "from"),
+                                                                        Tree(
+                                                                            "from_clause",
+                                                                            [
+                                                                                Token(
+                                                                                    "STANDARD_TABLE_NAME",
+                                                                                    "special_items",
+                                                                                )
+                                                                            ],
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                Token("RPAR", ")"),
+                                                            ],
+                                                        )
+                                                    ],
+                                                ),
+                                            ],
+                                        )
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ],
+)

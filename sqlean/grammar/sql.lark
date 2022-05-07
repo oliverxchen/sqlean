@@ -73,16 +73,236 @@ set_operation: query_expr set_operator query_expr
     | "INTERSECT"i "DISTINCT"i
     | "EXCEPT"i "DISTINCT"i
 
+////////////
+// select //
+////////////
+select_list: COMMENT* select_item (COMMENT* "," COMMENT* select_item)* [","] COMMENT*
+?select_item: select_item_unaliased
+    | select_item_aliased
+select_item_aliased: base_expression ["AS"i] CNAME
+!select_item_unaliased: base_expression
+    | star_expression [except_expression]
+
+/////////////////////
+// star_expression //
+/////////////////////
+!star_expression: "*"
+    | CNAME ".*"
+!except_expression: EXCEPT "(" except_list ")"
+EXCEPT: "EXCEPT"i
+except_list: except_item ("," except_item)*
+except_item: CNAME
+    | TABLE_REF_FIELD_NAME
+    | INT
+
+TABLE_REF_FIELD_NAME: /(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})/
+	| /(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})/
+    | /`(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})`\.(\w+|\{\{\s*\w+\s*\}\})/
+// Regex is needed above to have a single token. These are of the form:
+// 1. "C.D" where C and D can be of the form "foo" or "{{ foo }}"
+// 2. "A.B.C.D" where A, B and C can be of the form: "`foo`", "foo", "`{{ foo }}`" or "{{ foo }}" and D can be of the form "foo" or "{{ foo }}"
+// 3. "`A.B.C`.D" where A, B, C and D can be of the form: "foo" or "{{ foo }}"
+
+/////////////////////
+// base_expression //
+/////////////////////
+?base_expression: standard_function_expression
+    | window_function_expression
+    | struct_expression
+    | TABLE_REF_FIELD_NAME
+    | case_expression
+    | macro
+    | CNAME [array_subscript_specifier]
+    | literal
+    | jinja_variable
+    | negated_expression
+    | arithmetic_expression
+    | parenthetic_expression
+
+!negated_expression: "-" base_expression
+!arithmetic_expression: base_expression ("+" | "-" | "*" | "/") base_expression
+!parenthetic_expression: "(" base_expression ")"
+
+///////////////
+// functions //
+///////////////
+!standard_function_expression: FUNCTION_NAME arg_list ")" [array_subscript_specifier]
+window_function_expression: FUNCTION_NAME [arg_list] ")" "OVER"i over_clause
+FUNCTION_NAME.10: /(?!(?:\bfrom\b))\w+\s*\(/i
+    | /\w+\.\w+\s*\(/
+    | /(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})(\s*\()/
+    | /`(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})`(\s*\()/
+// Regex is needed above to have a single token. These are of the form:
+// 1. "function (" [not "from (" though so that sub-queries are not captured. But "afrom (" and "frommage (" are allowed]
+// 2. "dataset.function ("
+// 3. "A.B.C (" where A, B and C can be of the form: "`foo`", "foo", "`{{ foo }}`" or "{{ foo }}"
+// 4. "`A.B.C` (" where A, B and C can be of the form: "foo" or "{{ foo }}"
+
+arg_list: arg_item ("," arg_item)*
+!arg_item: interval
+    | [DISTINCT] base_expression
+    | base_expression "AS"i data_type
+    | interval "FROM"i base_expression
+    | INTERVAL INT interval
+    | comparison_expression
+    | unary_bool_operation
+    | binary_bool_operation
+    | star_expression
+DISTINCT: "DISTINCT"i
+INTERVAL: "INTERVAL"i
+
+//////////////////////
+// window_functions //
+//////////////////////
+over_clause: "(" window_specification  ")" // or named_window
+window_specification: [partition_modifier] [window_orderby_modifier] [window_frame_clause]
+partition_modifier: PARTITION_BY field_list
+PARTITION_BY: "PARTITION"i WS "BY"i
+window_orderby_modifier: ORDER_BY orderby_list
+
+!window_frame_clause: ("ROWS"i | "RANGE"i) (frame_start | frame_between)
+frame_between: BETWEEN frame_start AND frame_end
+!frame_start: "UNBOUNDED"i "PRECEDING"i
+    | NUMBER "PRECEDING"i
+    | "CURRENT"i "ROW"i
+!frame_end: "UNBOUNDED"i "FOLLOWING"i
+    | NUMBER "FOLLOWING"i
+    | "CURRENT"i "ROW"i
+    | NUMBER "PRECEDING"i
+
+///////////////////////
+// struct_expression //
+///////////////////////
+!struct_expression: STRUCT struct_list ")"
+STRUCT.20: /STRUCT\s*\(/i
+struct_list: struct_item ("," struct_item)* [","]
+?struct_item: struct_item_unaliased
+    | struct_item_aliased
+struct_item_aliased: base_expression ["AS"i] CNAME
+struct_item_unaliased: base_expression
+
+//////////////////////
+// array_subscripts //
+//////////////////////
+!array_subscript_specifier: "[" OFFSET_TYPE (INT | CNAME) ")" "]"
+OFFSET_TYPE.20: /(OFFSET|SAFE_OFFSET|ORDINAL|SAFE_ORDINAL)\s*\(/i
+// Regex is needed to give this higher priority than standard function names
+
+//////////
+// case //
+//////////
+?case_expression: common_case_expression
+    | separate_case_expression
+!common_case_expression: "CASE"i base_expression when_list [else_clause] "END"i
+!separate_case_expression: "CASE"i when_list [else_clause] "END"i
+when_list: when_item+
+!when_item: "WHEN"i bool_expression "THEN"i base_expression
+!else_clause: "ELSE"i base_expression
+
+/////////////////////
+// bool_expression //
+/////////////////////
+indented_bool_expression: bool_expression
+!?bool_expression: binary_bool_operation
+    | comparison_expression
+    | "(" bool_expression ")" -> parenthetical_bool_expression
+    | unary_bool_operation
+    | base_expression
+
+binary_bool_operation: bool_expression COMMENT* AND COMMENT* bool_expression COMMENT*
+    | bool_expression OR bool_expression
+AND: "AND"i
+OR: "OR"i
+
+//////////////////////////
+// unary_bool_operation //
+//////////////////////////
+?unary_bool_operation: leading_unary_bool_operation
+    | trailing_unary_bool_operation
+leading_unary_bool_operation: LEADING_UNARY_BOOL_OPERATOR base_expression
+trailing_unary_bool_operation: base_expression trailing_unary_bool_operator
+LEADING_UNARY_BOOL_OPERATOR: NOT
+trailing_unary_bool_operator: IS [NOT] nullable_boolean
+NOT: "NOT"i
+IS: "IS"i
+
+///////////////////////////
+// comparison_expression //
+///////////////////////////
+?comparison_expression: binary_comparison_operation
+    | like_comparison_operation
+    | in_comparison_operation
+    | between_comparison_operation
+
+binary_comparison_operation: base_expression BINARY_COMPARISON_OPERATOR base_expression
+BINARY_COMPARISON_OPERATOR: "="
+    | ">"
+    | ">="
+    | "<"
+    | "<="
+    | NOT_EQUAL
+NOT_EQUAL: "!="
+    | "<>"
+
+like_comparison_operation: base_expression [NOT] LIKE string
+LIKE: "LIKE"i
+
+in_comparison_operation: base_expression [NOT] IN in_list
+IN: "IN"i
+in_list: "(" literal ("," literal)* ")"
+    | sub_query_expr
+
+between_comparison_operation: base_expression [NOT] BETWEEN base_expression AND base_expression
+BETWEEN.2: "BETWEEN"i
+
+////////////////////////////////
+// group by, having, order by //
+////////////////////////////////
+!groupby_modifier: GROUP_BY field_list [having_clause]
+GROUP_BY.2: "GROUP"i WS "BY"i
+field_list: base_expression ("," base_expression)*
+
+!having_clause: "HAVING"i indented_bool_expression
+
+!orderby_modifier: ORDER_BY orderby_list
+ORDER_BY.2: "ORDER"i WS "BY"i
+orderby_list: orderby_item ("," orderby_item)*
+!orderby_item: base_expression ["ASC"i | "DESC"i]
+
+////////////////
+// table_item //
+////////////////
+?table_item: table_name
+	| table_item_aliased
+
+!?table_name: STANDARD_TABLE_NAME
+	| dbt_table_name
+	| UNNEST (standard_function_expression|CNAME) ")"
+UNNEST.20: /UNNEST\s*\(/i
+
+table_item_aliased: table_name ["AS"i] CNAME
+
+STANDARD_TABLE_NAME: /\w+|\{\{\s*\w+\s*\}\}/
+	| /(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})\.(`\w+`|\w+|`\{\{\s*\w+\s*\}\}`|\{\{\s*\w+\s*\}\})/
+    | /`(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})\.(\w+|\{\{\s*\w+\s*\}\})`/
+// Regex is needed above to have a single token. These are of the form:
+// 1. "foo" or "{{ foo }}"
+// 2. "A.B.C" where A, B and C can be of the form: "`foo`", "foo", "`{{ foo }}`" or "{{ foo }}"
+// 3. "`A.B.C`" where A, B and C can be of the form: "foo" or "{{ foo }}"
+
 %import common.CNAME
 %import common.INT
+%import common.NUMBER
 %import common.WS
 %import comment.COMMENT
-%import expression.indented_bool_expression
-%import expression.groupby_modifier
-%import expression.orderby_modifier
-%import expression.select_list
 %import jinja.dbt_config
+%import jinja.dbt_table_name
 %import jinja.jinja_set_block
+%import jinja.jinja_variable
 %import jinja.macro
-%import table.table_item
+%import literal.literal
+%import literal.nullable_boolean
+%import literal.string
+%import reserved_words.data_type
+%import reserved_words.interval
 %ignore WS
