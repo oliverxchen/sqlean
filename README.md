@@ -58,7 +58,7 @@ When sqlean is run without any options, SQL files will be changed in place so
 that the files comply with sqlean's formatting rules. Here's an example of a
 successful run (with no options):
 
-<img src="docs/img/pass_summary.png" width=640 alt="Succesful run of sqlean with summary table."/>
+<img src="https://github.com/oliverxchen/sqlean/raw/main/docs/img/pass_summary.png" width=640 alt="Succesful run of sqlean with summary table."/>
 
 sqlean is thoroughly tested to ensure that original queries have the same
 abstract syntax tree (AST) as the formatted query. In plain English, that means
@@ -66,14 +66,14 @@ that sqlean should never break a query. But sqlean is very new so if you don't
 fully trust sqlean yet, you can use the dry-run option (`-d`/`--dry-run`)
 to display the diff that would happen if sqlean is run for real on the file :
 
-<img src="docs/img/diff.png" width=640 alt="Dry-run of sqlean with diff."/>
+<img src="https://github.com/oliverxchen/sqlean/raw/main/docs/img/diff.png" width=640 alt="Dry-run of sqlean with diff."/>
 
 Because sqlean needs to build an AST, if sqlean doesn't understand an SQL query
 then it is unparsable. In this case, the example query is unparsable because
 there's a problem with the query, and the verbose option (`-v`/`--verbose`)
 points to the problem:
 
-<img src="docs/img/verbose.png" width=640 alt="Verbose run of sqlean with error message."/>
+<img src="https://github.com/oliverxchen/sqlean/raw/main/docs/img/verbose.png" width=640 alt="Verbose run of sqlean with error message."/>
 
 Brief documentation on sqlean commands can be accessed with:
 
