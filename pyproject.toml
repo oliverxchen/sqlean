@@ -45,9 +45,6 @@ markers = ["generate_snapshots"]
 strict = "True"
 warn_unused_ignores = "False"
 
-[tool.coverage.run]
-omit = ["tests/*", "sqlean/parsetab.py"]
-
 [tool.pylint.master]
 ignore-paths = "tests/"
 min-public-methods = 1
