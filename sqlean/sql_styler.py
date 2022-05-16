@@ -112,10 +112,11 @@ class CommentedListClass:  # pylint: disable=too-many-instance-attributes
             if idx < self.last_item_idx:
                 this_separator = self.separator
             else:
-                if self.has_ending_separator:
-                    this_separator = self.separator
-                else:
-                    this_separator = ""
+                # if self.has_ending_separator:
+                this_separator = self.separator
+                # currently, has_ending_separator is always True
+                # else:
+                #     this_separator = ""
         elif idx < self.num_children:
             this_separator = ""
         if is_inline:
