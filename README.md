@@ -195,22 +195,29 @@ applications in mind, SQLFluff also works with Jinja templating and dbt.
 SQLFluff will auto-fix most linting errors, allowing you to focus your time on
 what matters.
 
-sqlfluff is the main alternative to sqlean with wide community adoption and
-active contributions (4000+ Github stars and 150 contributors). sqlfluff has a
+SQLFluff is the main alternative to sqlean with wide community adoption and
+active contributions (4K+ Github stars and 150+ contributors). SQLFluff has a
 wide array of rules that can be customized. Time to auto-format queries can vary
-widely. Running sqlfluff on the production code base of 1,615 queries took too
+widely. Running SQLFluff on the production code base of 1,615 queries took too
 long, so a subset of 617 queries was used for comparison:
 
-|                         | sqlean | sqlfluff |
+|                         | sqlean | SQLFluff |
 | :---------------------- | -----: | -------: |
-| Time to auto-format (s) | 3.8    | 1325.3   |
+| Time to auto-format (s) | 3.8    | 1295.2   |
 | # files auto-formatted  | 388    | 228      |
-| Version                 | 0.0.3  | 0.13.1   |
+| Version                 | 0.0.3  | 0.13.2   |
 
-While sqlfluff's performance depends on the starting queries, on this sample
-sqlean was able to run nearly 350 times faster than sqlfluff and was able to
-auto-format 70% more files than sqlfluff. sqlfluff was run with the default
+While SQLFluff's performance depends on the starting queries, on this sample
+sqlean was able to run nearly 350 times faster than SQLFluff and was able to
+auto-format 70% more files than SQLFluff. SQLFluff was run with the default
 rules using the command: `sqlfluff fix -f --dialect bigquery`.
+
+The large difference in run-times is likely due to the different approaches
+taken to format queries: [SQLFluff rules](https://docs.sqlfluff.com/en/stable/rules.html)
+are implemented as crawlers, each of which need to be run on the parsed structure.
+On the other hand, sqlean formatting are applied all in two passes of the parsed
+structure: one pass to determine indent levels and another pass to output
+the formatted query.
 
 Language: Python
 
