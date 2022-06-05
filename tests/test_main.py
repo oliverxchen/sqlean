@@ -21,7 +21,8 @@ def test_target__invalid() -> None:
 def test_dryrun__runs_on_directory() -> None:
     result = runner.invoke(app, ["-d", "."])
     assert result.exit_code == 1
-    assert "Some files failed" in result.stdout
+    assert "Some files were unparsable" in result.stdout
+    assert "Some files were dirty" in result.stdout
 
 
 def test_dryrun__missing_target() -> None:
@@ -69,7 +70,8 @@ def test_dryrun__fail() -> None:
     assert "── Unparsable files ──" in result.stdout
     assert "│ tests/fixtures/fail/dir_1/unparsable.sql" in result.stdout
     assert "Summary" in result.stdout
-    assert "Some files failed" in result.stdout
+    assert "Some files were unparsable" in result.stdout
+    assert "Some files were dirty" in result.stdout
 
 
 def test_dryrun_verbose__fail() -> None:
@@ -130,8 +132,9 @@ def test_write_ignore() -> None:
 
         # run write-ignore once
         result = runner.invoke(app, ["--write-ignore", tmpdir])
-        assert result.exit_code == 0
+        assert result.exit_code == 1
         assert "── Newly ignored files ──" in result.stdout
+        assert "Changed/sqleaned files  50.0" in result.stdout
         assert "Ignored files  33.3%" in result.stdout
         assert "Unparsable files   0.0%" in result.stdout
         with open(unparsable_file, "rt", encoding="utf-8") as reader:

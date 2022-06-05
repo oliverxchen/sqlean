@@ -4,18 +4,6 @@ from sqlean.settings import Settings
 from sqlean.stats import Stats
 
 
-def test_stats__is_passed() -> None:
-    stats = Stats()
-    assert stats.is_passed() is None
-    stats.num_files = 2
-    assert not stats.is_passed()
-    stats.num_clean = 2
-    assert stats.is_passed()
-    stats.num_clean = 1
-    stats.num_ignored = 1
-    assert stats.is_passed()
-
-
 def test_stats__print_summary__no_files(capsys: CaptureFixture[str]) -> None:
     stats = Stats()
     stats.print_summary(options=Settings())
