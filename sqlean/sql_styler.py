@@ -1,6 +1,5 @@
 """Styling of SQL queries"""
 
-from os import linesep
 from typing import List, Optional, Set, Union
 
 import black
@@ -11,6 +10,9 @@ from lark.visitors import v_args, Transformer
 from sqlean.custom_classes import CData, CToken, CTree
 
 
+LINESEP = "\n"  # https://docs.python.org/3/library/os.html?highlight=linesep#os.linesep
+
+
 class CommentedListClass:  # pylint: disable=too-many-instance-attributes
     """Generic object to hold a list of children that may contain comments, to style
     them properly"""
@@ -19,7 +21,7 @@ class CommentedListClass:  # pylint: disable=too-many-instance-attributes
         self,
         children: List[Union[CToken, CTree]] = [],
         separator: str = ",",
-        line_separator: str = linesep,
+        line_separator: str = LINESEP,
         has_ending_separator: bool = True,
         item_types: Set[str] = set(),
         indent: str = "  ",
@@ -91,17 +93,17 @@ class CommentedListClass:  # pylint: disable=too-many-instance-attributes
         this_separator = self._get_separator_by_idx(idx - 1, is_inline=True)
         self.output[-1] += this_separator
         if lines_between == 0:
-            self.output.append(lines_between * linesep + "  " + str(child))
+            self.output.append(lines_between * LINESEP + "  " + str(child))
         else:
-            self.output.append(lines_between * linesep + self._indent_if_comment(child))
+            self.output.append(lines_between * LINESEP + self._indent_if_comment(child))
 
     def _indent_if_comment(self, child: Union[CToken, CTree]) -> str:
         if isinstance(child, Token) and child.type == "COMMENT":
             lines = [
                 f"{self.indent * child.type.indent_level}{line}"
-                for line in child.split(linesep)
+                for line in child.split(LINESEP)
             ]
-            return linesep.join(lines)
+            return LINESEP.join(lines)
         return str(child)
 
     def _get_separator_by_idx(self, idx: int, is_inline: bool) -> str:
@@ -145,8 +147,8 @@ class BaseMixin(Transformer):  # type: ignore
 
     def _apply_indent(self, text: str, indent_level: int) -> str:
         """Apply indentation to text"""
-        lines = [f"{self.indent * indent_level}{line}" for line in text.split(linesep)]
-        return linesep.join(lines)
+        lines = [f"{self.indent * indent_level}{line}" for line in text.split(LINESEP)]
+        return LINESEP.join(lines)
 
     def _token_indent_adjust_case(self, token: CToken) -> str:
         return self._apply_indent(token.upper(), token.type.indent_level)
@@ -165,7 +167,7 @@ class BaseMixin(Transformer):  # type: ignore
 
     def _rollup_linesep(self, node: CTree) -> str:
         """Join list with linesep"""
-        return linesep.join(self._stringify_children(node))
+        return LINESEP.join(self._stringify_children(node))
 
     def _rollup_space(self, node: CTree) -> str:
         """Join list with space"""
@@ -187,11 +189,11 @@ class BaseMixin(Transformer):  # type: ignore
     def _change_indent_size(input_str: str, indent_size: int) -> str:
         """Change the default indent size of 4 used by black to the specified
         indent size"""
-        lines = input_str.split(linesep)
+        lines = input_str.split(LINESEP)
         for i, line in enumerate(lines):
             if line.startswith(" " * 4):
                 lines[i] = line.replace(" " * 4, " " * indent_size)
-        return linesep.join(lines)
+        return LINESEP.join(lines)
 
     def _rollup_list(  # pylint: disable=too-many-arguments
         self,
@@ -239,7 +241,7 @@ class TerminalMixin(BaseMixin):
 
     @staticmethod
     def _format_block_comment(block_comment: str) -> str:
-        lines = [line.lstrip() for line in block_comment.split(linesep)]
+        lines = [line.lstrip() for line in block_comment.split(LINESEP)]
         output: List[str] = []
         for line in lines:
             if line.startswith("/*"):
@@ -248,7 +250,7 @@ class TerminalMixin(BaseMixin):
                 output.append(line)
             else:
                 output.append(f"   {line}")
-        return linesep.join(output)
+        return LINESEP.join(output)
 
     def STANDARD_TABLE_NAME(self, token: CToken) -> str:  # pylint: disable=invalid-name
         """print STANDARD_TABLE_NAME"""
@@ -282,7 +284,7 @@ class QueryMixin(BaseMixin):
         output = self._rollup_list(
             children=list(node.children),
             separator="",
-            line_separator=2 * linesep,
+            line_separator=2 * LINESEP,
             has_ending_separator=True,
             item_types={"dbt_config"},
         )
@@ -295,7 +297,7 @@ class QueryMixin(BaseMixin):
         return self._rollup_list(
             children=self._treat_commas_in_query_expr(node),
             separator="",
-            line_separator=2 * linesep,
+            line_separator=2 * LINESEP,
             has_ending_separator=False,
             item_types=set(),
         )
@@ -327,9 +329,9 @@ class QueryMixin(BaseMixin):
         """Returns sub_query_expr as a CToken for identification by parent"""
         output = (
             self._apply_indent(str(node.children[0]), node.data.indent_level)
-            + linesep
+            + LINESEP
             + str(node.children[1])
-            + linesep
+            + LINESEP
             + self._apply_indent(str(node.children[2]), node.data.indent_level)
         )
         return CToken(
@@ -344,9 +346,9 @@ class QueryMixin(BaseMixin):
 
         value = (
             self._apply_indent(f"{node.children[0]} AS (", node.data.indent_level)
-            + linesep
+            + LINESEP
             + str(node.children[3])
-            + linesep
+            + LINESEP
             + self._apply_indent(str(node.children[4]), node.data.indent_level)
         )
         return CToken(
@@ -388,7 +390,7 @@ class SelectMixin(BaseMixin):
         return self._rollup_list(
             children=list(node.children),
             separator=",",
-            line_separator=linesep,
+            line_separator=LINESEP,
             has_ending_separator=True,
             item_types={"select_item"},
         )
@@ -438,7 +440,7 @@ class SelectMixin(BaseMixin):
     def common_case_expression(node: CTree) -> str:
         """print common_case_expression"""
         case_line = f"CASE {node.children[1]}\n"
-        other_lines = linesep.join([str(item) for item in node.children[2:]])
+        other_lines = LINESEP.join([str(item) for item in node.children[2:]])
         return case_line + other_lines
 
     def else_clause(self, node: CTree) -> str:
@@ -482,7 +484,7 @@ class FromMixin(BaseMixin):
         return self._rollup_list(
             children=list(node.children),
             separator="",
-            line_separator=linesep,
+            line_separator=LINESEP,
             has_ending_separator=False,
             item_types=set(),
         )
@@ -537,7 +539,7 @@ class JoinMixin(BaseMixin):
     def on_clause(self, node: CTree) -> str:
         """rollup on_clause"""
         output = self._apply_indent("ON", node.data.indent_level)
-        return output + linesep + str(node.children[1])
+        return output + LINESEP + str(node.children[1])
 
 
 @v_args(tree=True)
@@ -548,9 +550,9 @@ class FromModifierMixin(BaseMixin):
     def groupby_modifier(self, node: CTree) -> str:
         """rollup groupby_modifier"""
         output = self._apply_indent("GROUP BY", node.data.indent_level)
-        output += linesep + str(node.children[1])
+        output += LINESEP + str(node.children[1])
         if len(node.children) == 3:
-            output += linesep + str(node.children[2])
+            output += LINESEP + str(node.children[2])
         return output
 
     def field_list(self, node: CTree) -> str:
@@ -562,7 +564,7 @@ class FromModifierMixin(BaseMixin):
     def orderby_modifier(self, node: CTree) -> str:
         """rollup orderby_modifier"""
         output = self._apply_indent("ORDER BY", node.data.indent_level)
-        return output + linesep + str(node.children[1])
+        return output + LINESEP + str(node.children[1])
 
     def orderby_list(self, node: CTree) -> str:
         """rollup orderby_list"""
@@ -577,7 +579,7 @@ class FromModifierMixin(BaseMixin):
     def having_clause(self, node: CTree) -> str:
         """print having_clause"""
         output = self._apply_indent("HAVING", node.data.indent_level)
-        return output + linesep + str(node.children[1])
+        return output + LINESEP + str(node.children[1])
 
     def limit_clause(self, node: CTree) -> str:
         """rollup limit_clause"""
@@ -612,7 +614,7 @@ class FunctionMixin(BaseMixin):
 
     def arg_item(self, node: CTree) -> str:
         """print arg_item"""
-        return self._rollup_space(node).replace(linesep, " ")
+        return self._rollup_space(node).replace(LINESEP, " ")
 
     def data_type(self, node: CTree) -> str:
         """print data_type"""
@@ -693,19 +695,19 @@ class ExpressionMixin(BaseMixin):
         list_ = CommentedListClass(
             children=list(node.children),
             separator="",
-            line_separator=linesep,
+            line_separator=LINESEP,
             has_ending_separator=False,
             indent="",
         )
         output = list_.rollup_list()
-        return output.replace("AND" + linesep, "AND ").replace("OR" + linesep, "OR ")
+        return output.replace("AND" + LINESEP, "AND ").replace("OR" + LINESEP, "OR ")
 
     @staticmethod
     def parenthetical_bool_expression(node: CTree) -> str:
         """print parenthetical_bool_expression, removes line separators when
         parenthesized"""
         # TODO: Deal with long lines
-        output = str(node.children[1]).replace(linesep, " ")
+        output = str(node.children[1]).replace(LINESEP, " ")
         return f"({output})"
 
     def indented_bool_expression(self, node: CTree) -> str:

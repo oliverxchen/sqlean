@@ -1,6 +1,6 @@
 """CLI commands"""
+
 import difflib
-from os import linesep
 from pathlib import Path
 import re
 from typing import Iterator, List, Optional
@@ -16,6 +16,7 @@ from sqlean.stats import Stats
 
 
 app = typer.Typer(add_completion=False)
+LINESEP = "\n"  # https://docs.python.org/3/library/os.html?highlight=linesep#os.linesep
 
 
 @app.command()
@@ -175,7 +176,7 @@ def print_diff(raw: str, styled: str, target: Path) -> None:
         tofile="with sqlean",
     )
     diff_str = process_diffs(diff)
-    diff_md = Markdown(f"""```diff{linesep}{diff_str}{linesep}```""")
+    diff_md = Markdown(f"""```diff{LINESEP}{diff_str}{LINESEP}```""")
     rprint(diff_md)
 
 
@@ -191,8 +192,8 @@ def process_diffs(diff: Iterator[str]) -> str:
 def write_file(styled: str, target: Path) -> None:
     """Writes the sqleaned file."""
     # Ensure the file ends with a new line
-    if styled[-1] != linesep:
-        styled += linesep
+    if styled[-1] != LINESEP:
+        styled += LINESEP
     with open(target, "wt", encoding="utf-8") as writer:
         writer.write(styled)
 
@@ -201,7 +202,7 @@ def write_ignore_header(target: Path) -> None:
     """Writes the `# sqlean ignore` header."""
     with open(target, "rt", encoding="utf-8") as reader:
         content = reader.read()
-    write_file(f"# sqlean ignore{linesep}{content}", target)
+    write_file(f"# sqlean ignore{LINESEP}{content}", target)
 
 
 def remove_ignore_header(target: Path, raw_list: List[str]) -> str:

@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href='https://coveralls.io/github/oliverxchen/sqlean'><img src='https://coveralls.io/repos/github/oliverxchen/sqlean/badge.svg' alt='Coverage Status' /></a>
-  <a href="https://www.python.org/"><img alt="Python versions: 3.7, 3.8, 3.9, 3.10" src="https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue"></a>
+  <a href="https://www.python.org/"><img alt="Python versions: 3.7, 3.8, 3.9, 3.10" src="https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11b-blue"></a>
   <a href="https://pypi.org/project/sqlean/"><img alt="PyPI" src="https://img.shields.io/pypi/v/sqlean"></a>
   <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
   <a href="https://github.com/oliverxchen/sqlean/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-A31F34"></a>
