@@ -68,15 +68,24 @@ def main(
         elif path.is_file():
             sqlean_file(path, stats, sql_parser, options)
     stats.print_summary(options)
-    is_passed = stats.is_passed()
-    if is_passed:
-        rprint("🧘 [bold white on green]All files passed[/bold white on green] 🧘")
-    elif is_passed is False:
-        rprint("🙀 [bold white on red]Some files failed[/bold white on red] 🙀")
+
+    red_style = "bold white on red"
+    orange_style = "bold white on #e07800"
+    green_style = "bold white on green"
+    if stats.num_changed > 0:
+        rprint(f"👍 [{orange_style}]Some files were changed[/{orange_style}] 👍")
+    if stats.num_unparsable > 0:
+        rprint(f"🙀 [{red_style}]Some files were unparsable[/{red_style}] 🙀")
+    if stats.num_dirty > 0:
+        rprint(f"🙀 [{red_style}]Some files were dirty[/{red_style}] 🙀")
+    if stats.num_changed > 0 or stats.num_unparsable > 0 or stats.num_dirty > 0:
         raise typer.Exit(code=1)
-    elif is_passed is None:
+
+    if stats.num_files == 0:
         typer.echo("🤷 No files found 🤷")
         raise typer.Exit(code=1)
+
+    rprint(f"🧘 [{green_style}]All files passed[/{green_style}] 🧘")
 
 
 def sqlean_recursive(
@@ -133,6 +142,7 @@ def sqlean_unignored_file(
         if options.write_ignore:
             write_ignore_header(target)
             stats.num_ignored += 1
+            stats.num_changed += 1
             stats.newly_ignored_files.append(target)
         else:
             stats.num_unparsable += 1
